@@ -41,7 +41,7 @@ OncoTwin should start from the same general mechanistic family: a reaction-diffu
 | Data | ARTEMIS trial cohort | Public I-SPY2, BreastDCEDL, MAMA-MIA, I-SPY1, and molecular datasets |
 | Personalization | Calibration from patient MRI timepoints | Baseline MRI + pathology + molecular graph + Bayesian updates |
 | Outputs | pCR prediction and schedule simulations | Response trajectories, uncertainty, residual-risk maps, mechanism explanations, patient-facing scenario lab |
-| Safety/product | Research study | Educational/research app with strict non-recommendation constraints |
+| Safety/product | Research study | Exploratory research/decision-support app that can rank candidate options, gated behind explicit uncertainty and not-guaranteed disclaimers |
 
 ## Why not just train a pCR classifier?
 
@@ -65,7 +65,7 @@ That is the difference between a prediction tool and a twin.
 
 The app should be framed carefully:
 
-> This is a research simulation and educational explanation system. It does not diagnose disease, predict your personal outcome with certainty, or recommend treatment. It shows plausible model-based response trajectories and uncertainty factors to discuss with a qualified oncology team.
+> This is an exploratory research and decision-support simulation. It does not diagnose disease or predict your personal outcome with certainty. It can suggest and compare candidate treatment options based on the model, but these suggestions are exploratory, uncertain, and not guaranteed. Use them only as a starting point for discussion with a qualified oncology team — they are not a substitute for professional medical advice.
 
 ## Core scientific claim
 

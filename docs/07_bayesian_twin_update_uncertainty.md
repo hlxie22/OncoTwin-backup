@@ -131,32 +131,57 @@ Symptoms should primarily update the person-burden/toxicity twin, not the tumor-
 
 ## Update algorithm
 
+The update is **batch importance sampling from the amortizer prior**, not a sequential particle filter.
+
+This choice is driven by the structure of the problem:
+
+```text
+parameters θ are static biology, not a time-evolving state
+  (proliferation rate does not random-walk between scans)
+observations are few — typically 3–4 MRI timepoints over the
+  whole neoadjuvant course (T0/T1/T2/T3; see 03)
+every update re-simulates each particle anyway
+```
+
+Under these conditions a sequential reweight → resample → jitter loop buys nothing: it pays the full re-simulation cost on every update *and* accumulates particle impoverishment (the cloud collapses to duplicates after repeated resampling), which then has to be patched with parameter-noise jitter that distorts the posterior. Because the parameters are static, sequentially compounding weights over observations is mathematically equivalent to weighting once by the joint likelihood — so we do the latter, statelessly, from the original prior particles each time a new observation arrives.
+
 ```python
-def update_posterior(particles, observation):
-    updated = []
+def update_posterior(prior_particles, observations):
+    # observations = ALL observations to date (T0..T_now), not just the newest.
+    # prior_particles come from the amortizer; we always re-weight from the
+    # prior, never from a previously resampled set, so there is no
+    # impoverishment to accumulate.
+    weighted = []
 
-    for particle in particles:
-        prediction = simulate_to_observation_time(particle, observation.time)
-        likelihood = compute_likelihood(prediction, observation)
-        updated_weight = particle.weight * likelihood
-        updated.append({**particle, "weight": updated_weight})
+    for particle in prior_particles:
+        trajectory = simulate_full_course(particle)
+        log_likelihood = sum(
+            compute_log_likelihood(trajectory, obs) for obs in observations
+        )
+        weighted.append({**particle, "log_weight": particle.log_prior_weight + log_likelihood})
 
-    normalized = normalize_weights(updated)
+    normalized = normalize_log_weights(weighted)
 
     if effective_sample_size(normalized) < threshold:
-        normalized = resample_particles(normalized)
-        normalized = jitter_or_rejuvenate(normalized)
+        # Prior is far from the posterior (e.g. data contradict the amortizer).
+        # Escalate to a tempered SMC sampler with MCMC move steps, which
+        # regenerates genuine diversity instead of faking it with jitter.
+        normalized = smc_sampler_with_tempering(prior_particles, observations)
 
     return summarize_posterior(normalized)
 ```
 
-## Effective sample size
+Biomarker and treatment-event observations are not reweights (see above): a biomarker result shifts the prior, so it re-primes `prior_particles` from the amortizer before the volume/mask observations are weighted in; a treatment event only changes the schedule fed to `simulate_full_course`.
+
+## Effective sample size and the SMC fallback
 
 ```math
 ESS = \frac{1}{\sum_i w_i^2}
 ```
 
-If ESS is too low, resample particles and add small parameter noise.
+A low ESS means few particles carry most of the weight — here it is a **diagnostic that the prior is far from the posterior**, not a cue to jitter. When ESS falls below threshold, escalate to a **tempered SMC sampler**: anneal from the prior to the posterior through a sequence of intermediate distributions, running an MCMC move step at each rung so particles are *moved* toward the posterior rather than duplicated. This subsumes the particle filter, regenerates real diversity, and is the principled path for the contradictory-observation case in "Handling contradictory observations" below. Reserve it for the low-ESS path; the plain batch importance-sampling weighting is the default.
+
+A fully amortized alternative — train the SBI/NPE estimator (`06`) to condition on baseline features *plus* observations-to-date and emit the posterior in one forward pass, with no runtime simulation — is a later optimization, not the v1 path, because conditioning on variable-length irregularly-timed observations is a substantial training effort and the per-particle simulations are wanted for visualization anyway.
 
 ## Posterior summaries
 
@@ -296,10 +321,11 @@ Response:
 
 1. Weighted particle representation.
 2. Volume-observation likelihood.
-3. Posterior resampling.
-4. Uncertainty-band computation.
-5. Update explanation generator.
-6. Segmentation-confidence-aware likelihoods.
-7. Spatial residual-mask likelihood.
-8. Value-of-information module.
-9. Molecular/bio-marker update hooks.
+3. Batch importance-sampling update from the prior over all observations.
+4. ESS-gated tempered SMC-sampler fallback for low-ESS / contradictory observations.
+5. Uncertainty-band computation.
+6. Update explanation generator.
+7. Segmentation-confidence-aware likelihoods.
+8. Spatial residual-mask likelihood.
+9. Value-of-information module.
+10. Molecular/bio-marker update hooks.

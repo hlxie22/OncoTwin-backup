@@ -49,4 +49,6 @@ The core idea is not to build a black-box response predictor. The system is desi
 
 ## Key safety stance
 
-OncoTwin should be presented as a **research simulation and educational explanation system**, not as a treatment-selection or diagnosis tool. It can show plausible response trajectories, uncertainty, missing-data sensitivity, and questions to discuss with an oncology team. It should not tell a patient which treatment to take.
+OncoTwin should be presented as an **exploratory research and decision-support simulation**, not as a diagnosis tool or a replacement for clinical judgment. Alongside plausible response trajectories, uncertainty, and missing-data sensitivity, it may surface and rank candidate treatment options as **exploratory suggestions** — always shown with uncertainty and never as guaranteed outcomes.
+
+Any recommendation-style output must carry a clear, standard disclaimer stating that the prediction is exploratory, uncertain, not guaranteed, and not a substitute for professional medical advice, and that all treatment decisions should be discussed with a qualified oncology team.

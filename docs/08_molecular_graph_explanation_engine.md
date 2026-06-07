@@ -90,7 +90,7 @@ type MolecularProfile = {
 
 ## First implementation: rules + embeddings
 
-Start simple. Use curated rules to produce parameter modifiers and explanations.
+Start simple. Use curated rules to produce parameter modifiers and explanations. These same rules seed the **biology-informed residual prior** the parameter amortizer learns against (family E in `06_ai_personalization_parameter_amortizer.md`): they set the center of each parameter's prior, and the amortizer learns only the patient-specific deviation.
 
 Example rules:
 

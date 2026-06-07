@@ -141,7 +141,7 @@ Runs reaction-diffusion treatment-response simulations for an ensemble of parame
 
 ### Bayesian update service
 
-Updates posterior weights using new observations, resamples particles, and computes uncertainty summaries.
+Computes the posterior by batch importance sampling from the amortizer prior over all observations to date, escalating to a tempered SMC sampler when the effective sample size is low, and produces uncertainty summaries (see `07`).
 
 ### Molecular graph service
 
@@ -223,7 +223,7 @@ Model services:
   PyTorch + MONAI
   SimpleITK / ANTsPy
   NumPy / SciPy
-  pyABC or custom particle filter
+  pyABC / particles or a custom importance-sampling + SMC-sampler updater
 
 Storage:
   PostgreSQL for structured metadata
@@ -279,11 +279,12 @@ This is essential because the app makes scientific claims and must be auditable.
 
 The system should enforce safety at the backend and frontend levels:
 
-- Never display a treatment as "recommended."
+- Present treatment rankings or suggestions only as **exploratory, model-based options** — never as guaranteed, definitive, or certain.
+- Attach the standard not-guaranteed / not-medical-advice disclaimer to any recommendation-style output.
 - Label scenario results as research simulations.
-- Show uncertainty whenever outcomes are shown.
+- Show uncertainty whenever outcomes or rankings are shown.
 - Show missing-data warnings.
 - Show data-quality warnings for low-confidence segmentation or out-of-distribution inputs.
-- Provide “questions to ask your oncology team,” not “instructions to follow.”
-- Keep model outputs separate from clinical advice.
+- Frame outputs as decision-support for discussion with an oncology team, not as instructions to follow.
+- Keep model outputs clearly distinguished from clinical advice.
 

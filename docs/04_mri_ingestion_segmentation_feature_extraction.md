@@ -218,6 +218,21 @@ These features become mechanistic proxies:
 | Irregular boundary | higher invasion/diffusion prior |
 | Early shrinkage | higher drug sensitivity posterior |
 
+## DCE kinetic maps and the delivery term
+
+The enhancement features above also have a *voxel-wise* form that the simulator consumes directly. From the multi-phase DCE series, compute per-voxel kinetic maps:
+
+```text
+wash-in slope     early enhancement rate
+peak enhancement  maximum signal increase
+washout           late-phase decline, if phases allow
+normalized AUC    area under the DCE time course, normalized to the tumor maximum
+```
+
+The **normalized-AUC map provides the simulator's `delivery(x)` term** (see `05_mechanistic_tumor_simulator.md`): voxels that enhance more are treated as receiving more drug. This follows the mechanistic-model literature and is a **deterministic computation — no training required**. The same maps can be passed as extra input channels to the parameter amortizer's image encoder (family D in `06_ai_personalization_parameter_amortizer.md`).
+
+Caveat — temporal resolution. Public breast DCE is sampled at ~60–120 s with ~3–12 phases. That is enough for semi-quantitative curve shape (wash-in / plateau / washout) and AUC, but **not** for full pharmacokinetic (Tofts-style) rate constants. Treat `delivery(x)` as a semi-quantitative perfusion/delivery proxy, and normalize across cohorts because phase counts and timing vary.
+
 ## Initial tumor-cell density map
 
 The mechanistic simulator needs `N(x,0)`, an initial tumor-cell density field. A simple first version:
@@ -330,5 +345,5 @@ The tumor segmentation is uncertain. The simulation will use wider uncertainty b
 3. Compute tumor volume and basic features.
 4. Add confidence/QC flags.
 5. Add longitudinal registration.
-6. Add DCE enhancement features.
+6. Add DCE enhancement features and per-voxel kinetic maps (normalized-AUC delivery term).
 7. Add ADC/DWI cellularity proxy if available.

@@ -88,6 +88,7 @@ current plan simulation
 hypothetical research scenarios
 missing-biomarker scenarios
 measurement-update scenarios
+treatment-comparison scenarios (exploratory option ranking)
 toxicity-sensitive scenarios
 ```
 
@@ -99,6 +100,7 @@ Generates:
 one-page summary
 observed measurements
 simulated trajectories
+exploratory option ranking (if a treatment-comparison scenario was run)
 uncertainty drivers
 questions to discuss with care team
 safety disclaimer
@@ -366,6 +368,7 @@ MolecularGraphPanel
 ParameterSummaryPanel
 TwinUpdateTimeline
 ScenarioComparisonTable
+TreatmentRankingPanel
 ToxicityBurdenPanel
 CareTeamQuestionsCard
 SafetyDisclaimerBanner
@@ -416,27 +419,27 @@ which parameters moved
 whether uncertainty increased or decreased
 ```
 
-## Safety filter tests
+## Safety / disclaimer tests
 
-Add automated tests that fail if generated explanations contain language like:
+The safety model is **lightweight disclaimers**, not a strict language filter. Recommendation and ranking outputs are permitted; the tests enforce that they are properly framed rather than blocking the language outright.
+
+Add automated tests that fail if:
 
 ```text
-You should take...
-You should stop...
-Best treatment for you...
-Guaranteed response...
-Will cure...
-Doctor should...
+A recommendation or ranking output is rendered without the standard disclaimer.
+A recommendation or ranking output is rendered without an accompanying uncertainty band/score.
+Any output claims a guaranteed, definite, or curative outcome
+  (e.g. "will cure", "guaranteed response", "this schedule will work").
 ```
 
-Allowed language:
+Expected framing for recommendation/ranking outputs:
 
 ```text
 In this research simulation...
-The model estimates...
+The model estimates... / The model ranks...
+This is exploratory and not guaranteed...
 Uncertainty remains...
 Discuss with an oncology team...
-This is not a treatment recommendation...
 ```
 
 ## Development milestones
@@ -552,4 +555,4 @@ version history
 
 The app should feel powerful, but it must remain honest:
 
-> OncoTwin simulates plausible response trajectories under explicit assumptions. It does not determine the correct treatment.
+> OncoTwin simulates plausible response trajectories under explicit assumptions and can rank candidate treatments as exploratory, uncertain options. It does not determine the definitive correct treatment, and every suggestion is explicitly not guaranteed and meant for discussion with a qualified oncology team.

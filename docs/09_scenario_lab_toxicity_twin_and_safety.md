@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The Twin Scenario Lab is the main user-facing simulation feature. It allows the current posterior twin to be run under safe, clearly labeled research scenarios.
+The Twin Scenario Lab is the main user-facing simulation feature. It allows the current posterior twin to be run under clearly labeled research scenarios.
 
-The Scenario Lab should not recommend treatment. It should show model-based tradeoffs and uncertainty.
+The Scenario Lab can surface **exploratory, model-based treatment suggestions and rankings** in addition to tradeoffs and uncertainty. Every such output is exploratory and not guaranteed, and must carry the standard disclaimer (see *Safety language*) and explicit uncertainty.
 
 ## Scenario types
 
@@ -46,7 +46,16 @@ If an early MRI showed strong shrinkage, how would the twin update?
 If it showed weak shrinkage, how would the twin update?
 ```
 
-This is a powerful educational simulation and avoids recommending treatment.
+This is a powerful educational simulation of how new evidence reshapes the twin.
+
+### Treatment-comparison scenario
+
+```text
+Across several clinically plausible candidate schedules, how do the model's
+predicted response, residual-risk, and toxicity tradeoffs compare and rank?
+```
+
+This produces an **exploratory ranking** of candidate options. It is decision-support, not a directive: every option is shown with uncertainty bands and the standard not-guaranteed disclaimer, and the ranking may change as new data arrive.
 
 ### Toxicity-sensitive scenario
 
@@ -54,7 +63,7 @@ This is a powerful educational simulation and avoids recommending treatment.
 How does the model's tradeoff change when patient-reported burden is high?
 ```
 
-This should be framed as discussion support, not treatment guidance.
+This should be framed as exploratory decision-support, with uncertainty made explicit.
 
 ## Scenario object schema
 
@@ -65,9 +74,12 @@ type ScenarioRequest = {
     | "timing_template"
     | "missing_biomarker"
     | "measurement_update"
+    | "treatment_comparison"
     | "toxicity_sensitive";
   assumptions: Record<string, unknown>;
   treatmentSchedule?: TreatmentSchedule;
+  // For treatment_comparison: the candidate options to rank.
+  candidateSchedules?: TreatmentSchedule[];
   safetyLabelRequired: true;
 };
 ```
@@ -128,9 +140,27 @@ type ScenarioResult = {
     summary: string;
   };
   toxicity?: ToxicitySummary;
+  // Present for treatment_comparison: an exploratory, not-guaranteed ranking.
+  rankedOptions?: RankedOption[];
   uncertaintyDrivers: string[];
   explanation: string;
   careTeamQuestions: string[];
+  // Standard not-guaranteed / not-medical-advice disclaimer; always required
+  // on outputs that include rankedOptions.
+  disclaimer: string;
+};
+
+type RankedOption = {
+  scheduleId: string;
+  scheduleName: string;
+  rank: number;
+  predictedResponse: { median: number; lower80: number; upper80: number };
+  predictedToxicity?: "low" | "moderate" | "high";
+  tradeoffScore: number;
+  uncertainty: "low" | "moderate" | "high";
+  // Exploratory rationale, e.g. "lower median residual burden but wider
+  // uncertainty than option B."
+  note: string;
 };
 ```
 
@@ -206,46 +236,47 @@ Patient priorities → change how tradeoffs are displayed, not the biological mo
 
 ## Utility function for research display
 
-A research scenario can display a tradeoff score:
+A research scenario can display a tradeoff score and use it to rank candidate options:
 
 ```math
 U(r) = w_1 E[response] - w_2 E[toxicity] - w_3 uncertainty
 ```
 
-But the UI must avoid presenting this as an optimization recommendation.
+The UI may present this as an **exploratory ranking** of candidate options, as long as the uncertainty and the standard disclaimer are shown alongside it.
 
-Better wording:
+Suggested wording:
 
 ```text
-This research score summarizes the model's simulated tradeoff between tumor response, symptom burden, and uncertainty. It is not a treatment recommendation.
+This exploratory score summarizes the model's simulated tradeoff between tumor response, symptom burden, and uncertainty, and is used to rank the candidate options below. The ranking is exploratory and not guaranteed; discuss any treatment decision with a qualified oncology team.
 ```
 
 ## Safety language
 
-Every scenario page should include:
+The safety model is **lightweight disclaimers**, not a strict language filter. Recommendation-style and ranking outputs are allowed, provided every page that shows them carries the standard disclaimer:
 
 ```text
-Research simulation only. This is not medical advice and not a treatment recommendation. Discuss treatment decisions with a qualified oncology team.
+Exploratory research simulation. Predictions and rankings are uncertain and not guaranteed, and this is not a substitute for professional medical advice. Discuss all treatment decisions with a qualified oncology team.
 ```
 
-## Prohibited outputs
+## Output guidance
 
-The app should not say:
+The app **may** suggest, compare, and rank candidate treatment options, as long as each such output is exploratory, shown with uncertainty, and accompanied by the disclaimer above.
+
+The one hard rule is to avoid **false certainty** — do not claim a guaranteed, definite, or curative outcome. For example, avoid:
 
 ```text
-You should switch treatments.
-You should delay treatment.
-This treatment is best for you.
 This schedule will work.
 Your cancer will respond.
+This treatment is guaranteed to cure you.
 ```
 
-Allowed outputs:
+Acceptable exploratory outputs:
 
 ```text
-In this model simulation, this scenario produced a lower median residual tumor burden across the current posterior ensemble.
-Uncertainty remains high because only baseline imaging is available.
-This result should be discussed with an oncology team and should not be used to change treatment.
+In this model simulation, Option A ranked highest, producing a lower median residual tumor burden than Option B across the current posterior ensemble — though its uncertainty band is wider.
+Based on the model, Option A looks the most promising of the candidates considered, but this is exploratory and not guaranteed.
+Uncertainty remains high because only baseline imaging is available, so this ranking may change after a follow-up scan.
+Discuss these options with a qualified oncology team before making any decision.
 ```
 
 ## Scenario UI sections
@@ -294,6 +325,15 @@ what data would reduce uncertainty
 Questions to ask your oncology team based on this simulation
 ```
 
+### 7. Treatment-option ranking (comparison scenarios only)
+
+```text
+exploratory ranking of candidate options
+predicted response and toxicity per option, with uncertainty
+tradeoff score and rationale per option
+"exploratory / not guaranteed" disclaimer shown inline
+```
+
 ## Implementation milestones
 
 1. Current-plan simulation.
@@ -305,4 +345,5 @@ Questions to ask your oncology team based on this simulation
 7. Treatment-delay coupling.
 8. Tradeoff visualization.
 9. Care-team summary generation.
-10. Safety filter and prohibited-output tests.
+10. Treatment-comparison ranking view.
+11. Disclaimer enforcement on recommendation/ranking outputs.
