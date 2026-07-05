@@ -1,0 +1,914 @@
+{
+  "case_id": "demo_longitudinal_measurement_001",
+  "fit_days": [
+    0.0,
+    42.0,
+    84.0
+  ],
+  "generated_noise_fraction": 0.08,
+  "heldout_day": 126.0,
+  "insights": [
+    "Particle reweighting improved median held-out prediction versus the prior ensemble.",
+    "Effective sample size stayed below 5% of particles, so posterior narrowing remains fragile.",
+    "The best median held-out method was exponential, so mechanistic fitting should be compared against simple baselines before product claims.",
+    "The lowest median posterior held-out error came from the full variant."
+  ],
+  "n_runs": 9,
+  "records": [
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 2,
+        "prior_dominated": 6,
+        "weakly_constrained": 1
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline",
+        "resistant_fraction"
+      ],
+      "effective_sample_size": 21.63073908229804,
+      "effective_sample_size_fraction": 0.02403415453588671,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.155505545780982,
+          "absolute_error_to_true_ml": 1.2198904196828024,
+          "prediction_ml": 2.6578463022078993
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.295727250614766,
+          "absolute_error_to_true_ml": 5.3601121245165855,
+          "prediction_ml": 6.798068007041683
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 4.222562239090912,
+          "absolute_error_to_true_ml": 4.286947112992733,
+          "prediction_ml": 5.72490299551783
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.5023407564269173,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.6625062489656712,
+          "absolute_error_to_true_ml": 1.7268911228674917,
+          "prediction_ml": 3.1648470053925886
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.379359896071103,
+          "absolute_error_to_true_ml": 13.443744769972923,
+          "prediction_ml": 14.88170065249802
+        }
+      },
+      "heldout_observed_volume_ml": 1.5023407564269173,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 900,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11884127895971873,
+        "drug_sensitivity.taxane": 0.06716112730672998,
+        "growth_rate": 0.00383343004173801,
+        "resistant_fraction": 0.07107689992039126,
+        "resistant_sensitivity_scale": 0.16361352711154495
+      },
+      "posterior_rmse_fit_ml": 0.46718098249453427,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.716188889139984,
+      "rmse_improvement_fraction": 0.9601251749254763,
+      "seed": 101,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 29.846422546965957,
+      "effective_sample_size_fraction": 0.03316269171885106,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.2836474210759354,
+          "absolute_error_to_true_ml": 1.309823279441732,
+          "prediction_ml": 2.747779161966829
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.185192732945309,
+          "absolute_error_to_true_ml": 5.211368591311105,
+          "prediction_ml": 6.649324473836202
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 2.701185776915432,
+          "absolute_error_to_true_ml": 2.7273616352812287,
+          "prediction_ml": 4.165317517806326
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.4641317408908934,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.717833481606238,
+          "absolute_error_to_true_ml": 1.7440093399720344,
+          "prediction_ml": 3.1819652224971313
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 12.960174146314163,
+          "absolute_error_to_true_ml": 12.98635000467996,
+          "prediction_ml": 14.424305887205056
+        }
+      },
+      "heldout_observed_volume_ml": 1.4641317408908934,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 900,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11756267035207356,
+        "drug_sensitivity.taxane": 0.08184731958268364,
+        "growth_rate": 0.003336459471515953,
+        "resistant_fraction": 0.08661005758798876,
+        "resistant_sensitivity_scale": 0.12861065593871143
+      },
+      "posterior_rmse_fit_ml": 0.41324542619585164,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.179665977305543,
+      "rmse_improvement_fraction": 0.9630359773686682,
+      "seed": 202,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 23.40474838744831,
+      "effective_sample_size_fraction": 0.026005275986053678,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.0753080695249668,
+          "absolute_error_to_true_ml": 1.0005849326931158,
+          "prediction_ml": 2.4385408152182126
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.117331886304792,
+          "absolute_error_to_true_ml": 5.042608749472941,
+          "prediction_ml": 6.480564631998038
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 3.3381993601902398,
+          "absolute_error_to_true_ml": 3.2634762233583885,
+          "prediction_ml": 4.701432105883486
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.3632327456932458,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 2.3870049229419186,
+          "absolute_error_to_true_ml": 2.3122817861100673,
+          "prediction_ml": 3.7502376686351644
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.39486325854778,
+          "absolute_error_to_true_ml": 13.320140121715928,
+          "prediction_ml": 14.758096004241025
+        }
+      },
+      "heldout_observed_volume_ml": 1.3632327456932458,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 900,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.1183842711863825,
+        "drug_sensitivity.taxane": 0.05820829040837401,
+        "growth_rate": 0.003907644508670162,
+        "resistant_fraction": 0.0663728032894056,
+        "resistant_sensitivity_scale": 0.12311820780115366
+      },
+      "posterior_rmse_fit_ml": 1.0203542262733052,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 12.12606600870786,
+      "rmse_improvement_fraction": 0.9158544720488427,
+      "seed": 303,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 54.14387062932672,
+      "effective_sample_size_fraction": 0.02707193531466336,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.155505545780982,
+          "absolute_error_to_true_ml": 1.2198904196828024,
+          "prediction_ml": 2.6578463022078993
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.295727250614766,
+          "absolute_error_to_true_ml": 5.3601121245165855,
+          "prediction_ml": 6.798068007041683
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 4.222562239090912,
+          "absolute_error_to_true_ml": 4.286947112992733,
+          "prediction_ml": 5.72490299551783
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.5023407564269173,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.7481263407103196,
+          "absolute_error_to_true_ml": 1.81251121461214,
+          "prediction_ml": 3.250467097137237
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.19853825978616,
+          "absolute_error_to_true_ml": 13.26292313368798,
+          "prediction_ml": 14.700879016213078
+        }
+      },
+      "heldout_observed_volume_ml": 1.5023407564269173,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 2000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11849388880346609,
+        "drug_sensitivity.taxane": 0.07041611870518624,
+        "growth_rate": 0.003886107805763758,
+        "resistant_fraction": 0.06901466370085763,
+        "resistant_sensitivity_scale": 0.1575064472037457
+      },
+      "posterior_rmse_fit_ml": 0.4805027026049467,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.751370579961128,
+      "rmse_improvement_fraction": 0.9591109224804537,
+      "seed": 101,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 72.5238938283419,
+      "effective_sample_size_fraction": 0.03626194691417095,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.2836474210759354,
+          "absolute_error_to_true_ml": 1.309823279441732,
+          "prediction_ml": 2.747779161966829
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.185192732945309,
+          "absolute_error_to_true_ml": 5.211368591311105,
+          "prediction_ml": 6.649324473836202
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 2.701185776915432,
+          "absolute_error_to_true_ml": 2.7273616352812287,
+          "prediction_ml": 4.165317517806326
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.4641317408908934,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 2.004542285797018,
+          "absolute_error_to_true_ml": 2.0307181441628144,
+          "prediction_ml": 3.4686740266879115
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.029619294786093,
+          "absolute_error_to_true_ml": 13.05579515315189,
+          "prediction_ml": 14.493751035676986
+        }
+      },
+      "heldout_observed_volume_ml": 1.4641317408908934,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 2000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11704625609588296,
+        "drug_sensitivity.taxane": 0.07504864079670148,
+        "growth_rate": 0.0031890015497515775,
+        "resistant_fraction": 0.08635547233312797,
+        "resistant_sensitivity_scale": 0.13058725707383867
+      },
+      "posterior_rmse_fit_ml": 0.4141875268390079,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.235700355920555,
+      "rmse_improvement_fraction": 0.9631364744770222,
+      "seed": 202,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 50.94199752078519,
+      "effective_sample_size_fraction": 0.025470998760392598,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.0753080695249668,
+          "absolute_error_to_true_ml": 1.0005849326931158,
+          "prediction_ml": 2.4385408152182126
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.117331886304792,
+          "absolute_error_to_true_ml": 5.042608749472941,
+          "prediction_ml": 6.480564631998038
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 3.3381993601902398,
+          "absolute_error_to_true_ml": 3.2634762233583885,
+          "prediction_ml": 4.701432105883486
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.3632327456932458,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.9219478409443171,
+          "absolute_error_to_true_ml": 1.847224704112466,
+          "prediction_ml": 3.285180586637563
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.462007911225191,
+          "absolute_error_to_true_ml": 13.38728477439334,
+          "prediction_ml": 14.825240656918437
+        }
+      },
+      "heldout_observed_volume_ml": 1.3632327456932458,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 2000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11772274156330542,
+        "drug_sensitivity.taxane": 0.06976881031657284,
+        "growth_rate": 0.0035521313165414363,
+        "resistant_fraction": 0.06754900632768387,
+        "resistant_sensitivity_scale": 0.1274534452267656
+      },
+      "posterior_rmse_fit_ml": 1.0139866256310042,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 12.148330222721535,
+      "rmse_improvement_fraction": 0.9165328397367317,
+      "seed": 303,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 116.25095608247724,
+      "effective_sample_size_fraction": 0.02325019121649545,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.155505545780982,
+          "absolute_error_to_true_ml": 1.2198904196828024,
+          "prediction_ml": 2.6578463022078993
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.295727250614766,
+          "absolute_error_to_true_ml": 5.3601121245165855,
+          "prediction_ml": 6.798068007041683
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 4.222562239090912,
+          "absolute_error_to_true_ml": 4.286947112992733,
+          "prediction_ml": 5.72490299551783
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.5023407564269173,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.6756768018975707,
+          "absolute_error_to_true_ml": 1.7400616757993912,
+          "prediction_ml": 3.178017558324488
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.274527226232308,
+          "absolute_error_to_true_ml": 13.338912100134129,
+          "prediction_ml": 14.776867982659226
+        }
+      },
+      "heldout_observed_volume_ml": 1.5023407564269173,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 5000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11897869286777829,
+        "drug_sensitivity.taxane": 0.07218438246660788,
+        "growth_rate": 0.003887446557122593,
+        "resistant_fraction": 0.07215081055861622,
+        "resistant_sensitivity_scale": 0.15768960626224984
+      },
+      "posterior_rmse_fit_ml": 0.4815499523599611,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.971425028795208,
+      "rmse_improvement_fraction": 0.9597750517418207,
+      "seed": 101,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 174.5759873684217,
+      "effective_sample_size_fraction": 0.03491519747368434,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.2836474210759354,
+          "absolute_error_to_true_ml": 1.309823279441732,
+          "prediction_ml": 2.747779161966829
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.185192732945309,
+          "absolute_error_to_true_ml": 5.211368591311105,
+          "prediction_ml": 6.649324473836202
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 2.701185776915432,
+          "absolute_error_to_true_ml": 2.7273616352812287,
+          "prediction_ml": 4.165317517806326
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.4641317408908934,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.9187392126605836,
+          "absolute_error_to_true_ml": 1.94491507102638,
+          "prediction_ml": 3.382870953551477
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.058567530879941,
+          "absolute_error_to_true_ml": 13.084743389245737,
+          "prediction_ml": 14.522699271770835
+        }
+      },
+      "heldout_observed_volume_ml": 1.4641317408908934,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 5000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11628338818481632,
+        "drug_sensitivity.taxane": 0.0736513028848585,
+        "growth_rate": 0.003134401229153372,
+        "resistant_fraction": 0.08554918783410115,
+        "resistant_sensitivity_scale": 0.13876774054283653
+      },
+      "posterior_rmse_fit_ml": 0.40922866443495326,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 11.384226057223115,
+      "rmse_improvement_fraction": 0.9640530096312252,
+      "seed": 202,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    },
+    {
+      "assumed_noise_fraction": 0.12,
+      "classification_counts": {
+        "constrained": 1,
+        "prior_dominated": 6,
+        "weakly_constrained": 2
+      },
+      "constrained_parameters": [
+        "drug_sensitivity.anthracycline"
+      ],
+      "effective_sample_size": 134.63412733693858,
+      "effective_sample_size_fraction": 0.026926825467387717,
+      "fit_days": [
+        0.0,
+        42.0,
+        84.0
+      ],
+      "generated_noise_fraction": 0.08,
+      "heldout_day": 126.0,
+      "heldout_errors": {
+        "exponential": {
+          "absolute_error_to_observed_ml": 1.0753080695249668,
+          "absolute_error_to_true_ml": 1.0005849326931158,
+          "prediction_ml": 2.4385408152182126
+        },
+        "last_observation": {
+          "absolute_error_to_observed_ml": 5.117331886304792,
+          "absolute_error_to_true_ml": 5.042608749472941,
+          "prediction_ml": 6.480564631998038
+        },
+        "last_slope": {
+          "absolute_error_to_observed_ml": 3.3381993601902398,
+          "absolute_error_to_true_ml": 3.2634762233583885,
+          "prediction_ml": 4.701432105883486
+        },
+        "linear": {
+          "absolute_error_to_observed_ml": 1.3632327456932458,
+          "absolute_error_to_true_ml": 1.4379558825250969,
+          "prediction_ml": 0.0
+        },
+        "posterior_particle_mean": {
+          "absolute_error_to_observed_ml": 1.8580104258888652,
+          "absolute_error_to_true_ml": 1.7832872890570142,
+          "prediction_ml": 3.221243171582111
+        },
+        "prior_particle_mean": {
+          "absolute_error_to_observed_ml": 13.327115224481417,
+          "absolute_error_to_true_ml": 13.252392087649566,
+          "prediction_ml": 14.690347970174663
+        }
+      },
+      "heldout_observed_volume_ml": 1.3632327456932458,
+      "heldout_true_volume_ml": 1.4379558825250969,
+      "particle_count": 5000,
+      "posterior_parameter_means": {
+        "drug_sensitivity.anthracycline": 0.11823246417074638,
+        "drug_sensitivity.taxane": 0.07024320660410237,
+        "growth_rate": 0.0035717996020217424,
+        "resistant_fraction": 0.06806808562801557,
+        "resistant_sensitivity_scale": 0.13992221895232498
+      },
+      "posterior_rmse_fit_ml": 1.003368554798638,
+      "prior_dominated_parameters": [
+        "carrying_capacity_ml",
+        "drug_sensitivity.endocrine_agent",
+        "drug_sensitivity.her2_directed_agent",
+        "drug_sensitivity.taxane",
+        "observation_noise_fraction",
+        "resistant_sensitivity_scale"
+      ],
+      "prior_rmse_fit_ml": 12.129054402940167,
+      "rmse_improvement_fraction": 0.9172756159329771,
+      "seed": 303,
+      "similar_trajectory_pair_count": 20,
+      "variant": "full",
+      "warnings": [
+        "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+        "Synthetic fitting is a particle-reweighting sanity check, not clinical calibration."
+      ],
+      "weakly_constrained_parameters": [
+        "growth_rate",
+        "resistant_fraction"
+      ]
+    }
+  ],
+  "summaries": {
+    "by_assumed_noise": [
+      {
+        "assumed_noise_fraction": 0.12,
+        "median_ess": 54.14387062932672,
+        "median_ess_fraction": 0.026926825467387717,
+        "median_fit_posterior_rmse_ml": 0.4805027026049467,
+        "median_fit_prior_rmse_ml": 11.751370579961128,
+        "median_posterior_heldout_true_error_ml": 1.81251121461214,
+        "median_prior_heldout_true_error_ml": 13.26292313368798,
+        "median_rmse_improvement_fraction": 0.9597750517418207,
+        "n_runs": 9
+      }
+    ],
+    "by_particle_count": [
+      {
+        "median_ess": 54.14387062932672,
+        "median_ess_fraction": 0.02707193531466336,
+        "median_fit_posterior_rmse_ml": 0.4805027026049467,
+        "median_fit_prior_rmse_ml": 11.751370579961128,
+        "median_posterior_heldout_true_error_ml": 1.847224704112466,
+        "median_prior_heldout_true_error_ml": 13.26292313368798,
+        "median_rmse_improvement_fraction": 0.9591109224804537,
+        "n_runs": 3,
+        "particle_count": 2000
+      },
+      {
+        "median_ess": 134.63412733693858,
+        "median_ess_fraction": 0.026926825467387717,
+        "median_fit_posterior_rmse_ml": 0.4815499523599611,
+        "median_fit_prior_rmse_ml": 11.971425028795208,
+        "median_posterior_heldout_true_error_ml": 1.7832872890570142,
+        "median_prior_heldout_true_error_ml": 13.252392087649566,
+        "median_rmse_improvement_fraction": 0.9597750517418207,
+        "n_runs": 3,
+        "particle_count": 5000
+      },
+      {
+        "median_ess": 23.40474838744831,
+        "median_ess_fraction": 0.026005275986053678,
+        "median_fit_posterior_rmse_ml": 0.46718098249453427,
+        "median_fit_prior_rmse_ml": 11.716188889139984,
+        "median_posterior_heldout_true_error_ml": 1.7440093399720344,
+        "median_prior_heldout_true_error_ml": 13.320140121715928,
+        "median_rmse_improvement_fraction": 0.9601251749254763,
+        "n_runs": 3,
+        "particle_count": 900
+      }
+    ],
+    "by_variant": [
+      {
+        "median_ess": 54.14387062932672,
+        "median_ess_fraction": 0.026926825467387717,
+        "median_fit_posterior_rmse_ml": 0.4805027026049467,
+        "median_fit_prior_rmse_ml": 11.751370579961128,
+        "median_posterior_heldout_true_error_ml": 1.81251121461214,
+        "median_prior_heldout_true_error_ml": 13.26292313368798,
+        "median_rmse_improvement_fraction": 0.9597750517418207,
+        "n_runs": 9,
+        "variant": "full"
+      }
+    ],
+    "heldout_baseline_comparison": {
+      "exponential": {
+        "mean_absolute_error_to_true_ml": 1.1767662106058834,
+        "median_absolute_error_to_true_ml": 1.2198904196828024,
+        "win_count": 9
+      },
+      "last_observation": {
+        "mean_absolute_error_to_true_ml": 5.2046964884335445,
+        "median_absolute_error_to_true_ml": 5.211368591311105,
+        "win_count": 0
+      },
+      "last_slope": {
+        "mean_absolute_error_to_true_ml": 3.42592832387745,
+        "median_absolute_error_to_true_ml": 3.2634762233583885,
+        "win_count": 0
+      },
+      "linear": {
+        "mean_absolute_error_to_true_ml": 1.4379558825250969,
+        "median_absolute_error_to_true_ml": 1.4379558825250969,
+        "win_count": 0
+      },
+      "posterior_particle_mean": {
+        "mean_absolute_error_to_true_ml": 1.8824333719688664,
+        "median_absolute_error_to_true_ml": 1.81251121461214,
+        "win_count": 0
+      },
+      "prior_particle_mean": {
+        "mean_absolute_error_to_true_ml": 13.23692061495905,
+        "median_absolute_error_to_true_ml": 13.26292313368798,
+        "win_count": 0
+      }
+    },
+    "parameter_stability": {
+      "full": {
+        "drug_sensitivity.anthracycline": {
+          "max": 0.11897869286777829,
+          "mean": 0.11794951690935224,
+          "min": 0.11628338818481632,
+          "relative_stddev": 0.007471407005307303,
+          "stddev": 0.0008812488469091465
+        },
+        "drug_sensitivity.taxane": {
+          "max": 0.08184731958268364,
+          "mean": 0.07094768878575744,
+          "min": 0.05820829040837401,
+          "relative_stddev": 0.08959652162364451,
+          "stddev": 0.006356666132440718
+        },
+        "growth_rate": {
+          "max": 0.003907644508670162,
+          "mean": 0.0035887135646976223,
+          "min": 0.003134401229153372,
+          "relative_stddev": 0.08648937321294307,
+          "stddev": 0.000310385586851484
+        },
+        "resistant_fraction": {
+          "max": 0.08661005758798876,
+          "mean": 0.07474966524224311,
+          "min": 0.0663728032894056,
+          "relative_stddev": 0.11698967372667977,
+          "stddev": 0.008744938947868557
+        },
+        "resistant_sensitivity_scale": {
+          "max": 0.16361352711154495,
+          "mean": 0.14080767845701903,
+          "min": 0.12311820780115366,
+          "relative_stddev": 0.10751143262308441,
+          "stddev": 0.015138435235244736
+        }
+      }
+    }
+  },
+  "truth_case": "synthetic high-response parameter fixture",
+  "warnings": [
+    "Recovery sweep uses synthetic/demo observations, not clinical evidence.",
+    "Held-out comparisons are a feasibility signal only; real/manual data are still required."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schedule_id": "demo_endocrine_schedule",
+  "regimen_name": "Demo endocrine therapy schedule",
+  "schedule_type": "coarse_continuous_demo",
+  "total_duration_days": 168,
+  "events": [
+    {
+      "drug": "endocrine_agent",
+      "day": 0,
+      "relative_dose": 1.0,
+      "label": "Therapy start"
+    },
+    {
+      "drug": "endocrine_agent",
+      "day": 28,
+      "relative_dose": 1.0,
+      "label": "Sustained exposure marker"
+    },
+    {
+      "drug": "endocrine_agent",
+      "day": 56,
+      "relative_dose": 1.0,
+      "label": "Sustained exposure marker"
+    },
+    {
+      "drug": "endocrine_agent",
+      "day": 84,
+      "relative_dose": 1.0,
+      "label": "Sustained exposure marker"
+    },
+    {
+      "drug": "endocrine_agent",
+      "day": 112,
+      "relative_dose": 1.0,
+      "label": "Sustained exposure marker"
+    },
+    {
+      "drug": "endocrine_agent",
+      "day": 140,
+      "relative_dose": 1.0,
+      "label": "Sustained exposure marker"
+    }
+  ],
+  "notes": [
+    "Coarse demo schedule for early exposure and volume-only simulator experiments.",
+    "Not a clinical dosing template."
+  ]
+}

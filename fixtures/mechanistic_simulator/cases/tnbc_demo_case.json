@@ -1,0 +1,37 @@
+{
+  "case_id": "demo_tnbc_001",
+  "display_name": "Demo TNBC chemotherapy case",
+  "subtype": "Triple-negative breast cancer",
+  "pathology": {
+    "er_status": "negative",
+    "pr_status": "negative",
+    "her2_status": "negative",
+    "grade": "high_demo",
+    "ki67": "high_demo"
+  },
+  "baseline_measurement": {
+    "case_id": "demo_tnbc_001",
+    "day": 0,
+    "tumor_volume_ml": 28.0,
+    "longest_diameter_cm": 4.0,
+    "source": "demo",
+    "confidence": "demo"
+  },
+  "treatment_schedule": {
+    "schedule_id": "demo_chemotherapy_schedule",
+    "path": "fixtures/mechanistic_simulator/schedules/chemotherapy_schedule.json"
+  },
+  "expected_qualitative_behavior": {
+    "behavior_id": "resistant_residual_burden",
+    "description": "Volume may fall early, then approach a residual burden when resistant fraction is nontrivial."
+  },
+  "intended_use": [
+    "demo fixture",
+    "volume-only simulator sanity checks",
+    "resistant-disease qualitative behavior"
+  ],
+  "safety_notes": [
+    "Synthetic demo data only.",
+    "Not a clinical prediction or treatment recommendation."
+  ]
+}

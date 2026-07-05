@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/tumor_measurement.schema.json",
+  "title": "Tumor measurement",
+  "type": "object",
+  "required": ["case_id", "day", "source", "confidence"],
+  "anyOf": [
+    {
+      "required": ["tumor_volume_ml"]
+    },
+    {
+      "required": ["longest_diameter_cm"]
+    }
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timepoint_id": {
+      "type": "string"
+    },
+    "day": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tumor_volume_ml": {
+      "type": "number",
+      "minimum": 0
+    },
+    "longest_diameter_cm": {
+      "type": "number",
+      "minimum": 0
+    },
+    "source": {
+      "enum": ["manual", "metadata", "mask_derived", "synthetic", "demo"]
+    },
+    "confidence": {
+      "type": "string"
+    }
+  }
+}

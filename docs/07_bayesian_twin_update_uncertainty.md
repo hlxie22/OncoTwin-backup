@@ -129,6 +129,8 @@ but it changes future simulated exposure and outcomes
 
 Symptoms should primarily update the person-burden/toxicity twin, not the tumor-response parameters, unless the symptom implies treatment interruption or dose change.
 
+The patient-facing LLM co-pilot uses these symptom observations differently from the Bayesian tumor update. It can select daily check-in questions, explain symptom trends, generate care-team questions, and draft visit summaries from structured logs and deterministic trend flags. It must not treat symptoms as evidence that the tumor is responding or progressing.
+
 ## Update algorithm
 
 The update is **batch importance sampling from the amortizer prior**, not a sequential particle filter.

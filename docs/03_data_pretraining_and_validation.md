@@ -215,16 +215,25 @@ confidence calibration
 
 Train an MRI encoder using baseline imaging, tumor masks, and outcomes.
 
-Tasks:
+Use only response-adjacent auxiliary tasks. The purpose is to improve the
+baseline representation before parameter amortization, not to build a separate
+black-box response predictor.
+
+Top auxiliary tasks:
 
 ```text
-pCR classification
-residual tumor volume prediction
-subtype prediction as auxiliary task
-functional tumor volume regression if available
+1. Early tumor-volume / functional-tumor-volume change:
+     log(V_T1 / V_T0), log(V_T2 / V_T0), and response slope
+2. pCR / residual disease outcome:
+     endpoint head for cases without full trajectories
+3. ADC / DWI cellularity change:
+     baseline-to-follow-up cellularity proxy where ACRIN-6698-style DWI exists
 ```
 
-The goal is to learn a useful latent representation, not to replace the simulator.
+Do not add broad auxiliary tasks just because labels exist. Subtype/pathology
+labels still inform the biology prior, but they are not part of the first
+auxiliary-response stack unless ablation shows they improve held-out trajectory
+likelihood or calibration.
 
 ### Stage D: mechanistic calibration
 
@@ -276,10 +285,12 @@ Training strategy (full detail in `06_ai_personalization_parameter_amortizer.md`
 
 ```text
 self-supervised encoder pretraining on all unlabeled DCE-MRI
+response-adjacent auxiliary pretraining on early volume/FTV change,
+  pCR/residual outcome, and ADC/DWI cellularity change when available
 synthetic pretraining on simulated dynamics, then fine-tune on real cases
 end-to-end fine-tuning through the differentiable simulator
 biology-informed residual priors, modality dropout, hierarchical pooling
-gated on sim-to-real and posterior-coverage checks
+gated on sim-to-real, auxiliary-ablation, and posterior-coverage checks
 ```
 
 ### Stage F: end-to-end simulation-aware fine-tuning
@@ -288,12 +299,17 @@ Train the AI amortizer and simulator together, where possible, using a combined 
 
 ```text
 volume trajectory loss
+early volume / functional tumor volume change loss
+ADC / DWI cellularity change loss when available
 spatial residual-risk loss
 pCR / residual outcome loss
 parameter regularization
 uncertainty calibration loss
 molecular consistency loss
 ```
+
+Only include losses for labels that exist for a case. Missing labels should mask
+the corresponding loss term, not remove the case from training.
 
 ## Data splits
 
@@ -358,7 +374,8 @@ do learned priors beat a generic population prior on a held-out cohort?
 
 ```text
 Does the explanation match the model drivers?
-Does the UI avoid treatment recommendations?
+Does the UI avoid unsafe treatment recommendations?
+Do patient-facing LLM outputs stay within approved suggestion and question templates?
 Do users understand uncertainty?
 Do safety labels appear wherever needed?
 ```
@@ -371,7 +388,7 @@ Do safety labels appear wherever needed?
 - MRI acquisition protocols and timepoint definitions vary by cohort.
 - Treatment regimen details may be incomplete or simplified in public datasets.
 - pCR labels are endpoints and do not always describe spatial residual disease.
-- Patient-reported toxicity data have no good public match and will likely require app-native collection; the toxicity twin should be treated as a later-phase feature.
+- Patient-reported toxicity data have no good public match and will likely require app-native collection. The patient-facing LLM co-pilot should be treated as the first app-native collection loop, with the toxicity/person-burden twin built on top of those structured logs.
 - Public cohorts may not represent all populations equally.
 
 ## Source references

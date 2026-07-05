@@ -1,0 +1,26 @@
+{
+  "growth_law": "logistic",
+  "growth_rate": 0.007,
+  "carrying_capacity_ml": 260.0,
+  "drug_sensitivity": {
+    "anthracycline": 0.025,
+    "taxane": 0.022,
+    "endocrine_agent": 0.011,
+    "her2_directed_agent": 0.035
+  },
+  "drug_ec50": {
+    "anthracycline": 0.5,
+    "taxane": 0.5,
+    "endocrine_agent": 0.7,
+    "her2_directed_agent": 0.5
+  },
+  "drug_decay": {
+    "anthracycline": 0.25,
+    "taxane": 0.2,
+    "endocrine_agent": 0.06,
+    "her2_directed_agent": 0.16
+  },
+  "resistant_fraction": 0.18,
+  "resistant_sensitivity_scale": 0.08,
+  "observation_noise_fraction": 0.12
+}

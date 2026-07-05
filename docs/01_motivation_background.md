@@ -14,7 +14,8 @@ OncoTwin combines the strengths of both approaches:
 - A mechanistic model handles tumor growth, invasion, and treatment-induced cell death.
 - Multimodal AI estimates patient-specific parameter distributions from MRI, pathology, molecular data, and patient context.
 - Bayesian updating revises the twin as new MRI, tumor measurements, biomarkers, or symptom data arrive.
-- The app displays uncertainty, explanations, residual-risk maps, and research scenario comparisons.
+- An LLM-powered patient co-pilot turns structured symptom logs, treatment context, and care-team instructions into adaptive daily check-ins, daily impact cards, and doctor-ready questions.
+- The app displays uncertainty, explanations, residual-risk maps, daily planning support, and research scenario comparisons.
 
 ## Clinical and research context
 
@@ -28,6 +29,7 @@ A digital twin system is especially useful when it can answer questions like:
 - How does the tumor's spatial response pattern change after early-treatment imaging?
 - Which biological mechanisms appear to be influencing the simulation?
 - How does patient-reported tolerance change the interpretation of research scenarios?
+- What should the patient track today, and what should they ask the oncology team?
 
 ## Relationship to the 2025 MRI-based digital-twin paper
 
@@ -40,7 +42,7 @@ OncoTwin should start from the same general mechanistic family: a reaction-diffu
 | Tumor model | MRI-calibrated biology-based tumor dynamics | Reaction-diffusion tumor simulator with AI-personalized priors |
 | Data | ARTEMIS trial cohort | Public I-SPY2, BreastDCEDL, MAMA-MIA, I-SPY1, and molecular datasets |
 | Personalization | Calibration from patient MRI timepoints | Baseline MRI + pathology + molecular graph + Bayesian updates |
-| Outputs | pCR prediction and schedule simulations | Response trajectories, uncertainty, residual-risk maps, mechanism explanations, patient-facing scenario lab |
+| Outputs | pCR prediction and schedule simulations | Response trajectories, uncertainty, residual-risk maps, mechanism explanations, LLM-powered daily patient support, patient-facing scenario lab |
 | Safety/product | Research study | Exploratory research/decision-support app that can rank candidate options, gated behind explicit uncertainty and not-guaranteed disclaimers |
 
 ## Why not just train a pCR classifier?
@@ -71,7 +73,7 @@ The app should be framed carefully:
 
 OncoTwin is best described as:
 
-> A multimodal mechanistic-AI breast-cancer digital twin that combines MRI-derived tumor geometry, pathology biomarkers, molecular graph attention, Bayesian parameter updating, and patient-reported tolerance tracking to simulate personalized treatment-response trajectories with uncertainty.
+> A multimodal mechanistic-AI breast-cancer digital twin that combines MRI-derived tumor geometry, pathology biomarkers, molecular graph attention, Bayesian parameter updating, patient-reported tolerance tracking, and an LLM-powered daily co-pilot to simulate personalized treatment-response trajectories with uncertainty and support care-team conversations.
 
 ## Key references
 

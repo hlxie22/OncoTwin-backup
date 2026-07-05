@@ -1,0 +1,49 @@
+{
+  "stress_tests": [
+    {
+      "message": "missing drug_decay parameter for scheduled drug unknown_demo_drug.",
+      "name": "unknown_drug_category",
+      "status": "failed_validation"
+    },
+    {
+      "message": "growth_rate must be between 0 and 0.1 per day.",
+      "name": "very_high_growth",
+      "status": "failed_validation"
+    },
+    {
+      "name": "very_high_kill",
+      "status": "completed",
+      "warnings": [
+        "High drug_sensitivity.anthracycline used; trajectory should be treated as stress-test output.",
+        "High drug_sensitivity.taxane used; trajectory should be treated as stress-test output."
+      ]
+    },
+    {
+      "name": "very_high_resistant_fraction",
+      "status": "completed",
+      "warnings": [
+        "High resistant_fraction used; residual-burden behavior should be treated as stress-test output."
+      ]
+    },
+    {
+      "name": "very_low_carrying_capacity",
+      "status": "completed",
+      "warnings": [
+        "Initial volume exceeds carrying capacity; logistic growth will shrink it.",
+        "Volume exceeded carrying capacity by an implausible margin."
+      ]
+    },
+    {
+      "name": "large_dt",
+      "status": "completed",
+      "warnings": [
+        "Large dt_days used; compare against a smaller step before trusting shape."
+      ]
+    },
+    {
+      "message": "missing drug_decay parameter for scheduled drug taxane.",
+      "name": "missing_drug_decay",
+      "status": "failed_validation"
+    }
+  ]
+}

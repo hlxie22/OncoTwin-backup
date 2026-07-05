@@ -1,0 +1,68 @@
+{
+  "prior_id": "generic_volume_prior_v0",
+  "description": "Bounded demo prior for the volume-only mechanistic simulator. Synthetic and not clinically validated.",
+  "fixed": {
+    "growth_law": "logistic",
+    "drug_ec50": {
+      "anthracycline": 0.5,
+      "taxane": 0.5,
+      "endocrine_agent": 0.7,
+      "her2_directed_agent": 0.5
+    },
+    "drug_decay": {
+      "anthracycline": 0.25,
+      "taxane": 0.2,
+      "endocrine_agent": 0.06,
+      "her2_directed_agent": 0.16
+    }
+  },
+  "distributions": {
+    "growth_rate": {
+      "type": "uniform",
+      "min": 0.001,
+      "max": 0.014
+    },
+    "carrying_capacity_ml": {
+      "type": "uniform",
+      "min": 120.0,
+      "max": 500.0
+    },
+    "resistant_fraction": {
+      "type": "uniform",
+      "min": 0.02,
+      "max": 0.35
+    },
+    "resistant_sensitivity_scale": {
+      "type": "uniform",
+      "min": 0.02,
+      "max": 0.25
+    },
+    "observation_noise_fraction": {
+      "type": "uniform",
+      "min": 0.06,
+      "max": 0.18
+    },
+    "drug_sensitivity": {
+      "anthracycline": {
+        "type": "uniform",
+        "min": 0.015,
+        "max": 0.13
+      },
+      "taxane": {
+        "type": "uniform",
+        "min": 0.015,
+        "max": 0.13
+      },
+      "endocrine_agent": {
+        "type": "uniform",
+        "min": 0.003,
+        "max": 0.04
+      },
+      "her2_directed_agent": {
+        "type": "uniform",
+        "min": 0.02,
+        "max": 0.15
+      }
+    }
+  }
+}

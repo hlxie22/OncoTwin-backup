@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="460" viewBox="0 0 820 460">
+  <rect width="820" height="460" fill="#ffffff"/>
+  <text x="70" y="28" font-family="Arial, sans-serif" font-size="18" fill="#17202a">Demo TNBC chemotherapy case - v0 ensemble</text>
+  <line x1="70" y1="402" x2="790" y2="402" stroke="#5d6d7e"/>
+  <line x1="70" y1="44" x2="70" y2="402" stroke="#5d6d7e"/>
+  <text x="430.0" y="444" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#17202a">Day</text>
+  <text x="16" y="223.0" transform="rotate(-90 16,223.0)" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#17202a">Tumor volume (mL)</text>
+  <polygon points="70.0,133.6 100.0,138.9 130.0,130.8 160.0,133.4 190.0,128.1 220.0,130.4 250.0,123.2 280.0,127.2 310.0,117.3 340.0,104.9 370.0,84.2 400.0,66.2 430.0,44.0 460.0,61.2 490.0,97.0 520.0,120.8 550.0,136.7 580.0,153.1 610.0,153.1 640.0,148.5 670.0,148.4 700.0,142.6 730.0,145.2 760.0,140.8 790.0,129.3 790.0,377.9 760.0,377.4 730.0,376.3 700.0,374.6 670.0,371.3 640.0,367.3 610.0,363.2 580.0,358.6 550.0,352.2 520.0,345.2 490.0,332.6 460.0,321.6 430.0,307.8 400.0,310.1 370.0,313.9 340.0,316.0 310.0,318.2 280.0,316.4 250.0,296.5 220.0,290.4 190.0,259.9 160.0,251.5 130.0,208.6 100.0,197.9 70.0,133.6" fill="#9ecae1" opacity="0.45"/>
+  <polyline points="70.0,133.6 100.0,169.8 130.0,171.0 160.0,199.5 190.0,201.2 220.0,224.6 250.0,225.0 280.0,241.2 310.0,241.5 340.0,235.8 370.0,228.6 400.0,219.4 430.0,207.9 460.0,229.3 490.0,244.9 520.0,258.7 550.0,271.9 580.0,280.9 610.0,289.5 640.0,294.4 670.0,298.1 700.0,302.0 730.0,307.0 760.0,309.8 790.0,311.1" fill="none" stroke="#0b4f6c" stroke-width="3"/>
+  <text x="790" y="62" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#17202a">Band: model-estimated 80% interval</text>
+  <text x="790" y="80" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#17202a">Line: median exploratory simulation</text>
+</svg>

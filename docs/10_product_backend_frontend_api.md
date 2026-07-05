@@ -92,13 +92,29 @@ treatment-comparison scenarios (exploratory option ranking)
 toxicity-sensitive scenarios
 ```
 
-### 7. Doctor / Research Summary
+### 7. Daily Impact Co-Pilot
+
+Shows:
+
+```text
+adaptive daily check-in
+daily impact card
+LLM-generated suggestions from approved templates
+symptom and adherence pattern explanations
+care-team questions saved from daily logs
+patient-safe scenario planning prompts
+```
+
+The Daily Impact Co-Pilot uses an LLM API over structured logs, deterministic trend flags, subtype/treatment context, and care-team instructions. It should not use a separate time-series AI model in the MVP.
+
+### 8. Doctor / Research Summary
 
 Generates:
 
 ```text
 one-page summary
 observed measurements
+daily symptom and adherence patterns
 simulated trajectories
 exploratory option ranking (if a treatment-comparison scenario was run)
 uncertainty drivers
@@ -121,6 +137,9 @@ mechanistic_solver_service
 bayesian_update_service
 scenario_lab_service
 toxicity_twin_service
+daily_copilot_service
+structured_trend_service
+llm_orchestration_service
 explanation_service
 summary_service
 ```
@@ -231,6 +250,8 @@ CREATE TABLE patient_reported_outcomes (
   id UUID PRIMARY KEY,
   case_id UUID REFERENCES cases(id),
   date DATE,
+  treatment_day INTEGER,
+  treatment_phase TEXT,
   fatigue INTEGER,
   nausea INTEGER,
   neuropathy INTEGER,
@@ -238,7 +259,83 @@ CREATE TABLE patient_reported_outcomes (
   sleep_quality INTEGER,
   appetite INTEGER,
   activity_level INTEGER,
+  medication_taken BOOLEAN,
+  hot_flashes INTEGER,
+  skin_irritation INTEGER,
+  mouth_sores INTEGER,
+  shortness_of_breath TEXT,
+  swelling BOOLEAN,
+  temperature NUMERIC,
+  free_text_symptoms TEXT,
+  source_check_in_id UUID,
   notes TEXT,
+  created_at TIMESTAMP NOT NULL
+);
+```
+
+### care_team_instructions
+
+```sql
+CREATE TABLE care_team_instructions (
+  id UUID PRIMARY KEY,
+  case_id UUID REFERENCES cases(id),
+  instruction_type TEXT NOT NULL,
+  instruction_text TEXT NOT NULL,
+  threshold_value NUMERIC,
+  threshold_unit TEXT,
+  source TEXT,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+```
+
+### daily_check_ins
+
+```sql
+CREATE TABLE daily_check_ins (
+  id UUID PRIMARY KEY,
+  case_id UUID REFERENCES cases(id),
+  date DATE NOT NULL,
+  status TEXT NOT NULL,
+  selected_items JSONB NOT NULL,
+  selection_reason JSONB,
+  llm_trace_id TEXT,
+  completed_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL
+);
+```
+
+### daily_impact_cards
+
+```sql
+CREATE TABLE daily_impact_cards (
+  id UUID PRIMARY KEY,
+  case_id UUID REFERENCES cases(id),
+  date DATE NOT NULL,
+  focus_areas TEXT[],
+  trend_summary TEXT,
+  suggested_actions JSONB,
+  care_team_questions JSONB,
+  safety_notes JSONB,
+  source_observation_ids UUID[],
+  llm_trace_id TEXT,
+  created_at TIMESTAMP NOT NULL
+);
+```
+
+### llm_interactions
+
+```sql
+CREATE TABLE llm_interactions (
+  id UUID PRIMARY KEY,
+  case_id UUID REFERENCES cases(id),
+  task_type TEXT NOT NULL,
+  model_name TEXT,
+  model_version TEXT,
+  input_snapshot_uri TEXT,
+  output_snapshot_uri TEXT,
+  safety_check_result JSONB,
   created_at TIMESTAMP NOT NULL
 );
 ```
@@ -305,6 +402,36 @@ POST /cases/{case_id}/twin/update-observation
 POST /cases/{case_id}/scenario-lab/run
 ```
 
+### Plan daily check-in
+
+```text
+POST /cases/{case_id}/daily-check-in/plan
+```
+
+### Submit daily check-in responses
+
+```text
+POST /cases/{case_id}/daily-check-in/responses
+```
+
+### Get today's daily impact card
+
+```text
+GET /cases/{case_id}/daily-impact/today
+```
+
+### Get daily impact trends
+
+```text
+GET /cases/{case_id}/daily-impact/trends
+```
+
+### Generate patient-safe planning scenario
+
+```text
+POST /cases/{case_id}/scenario-lab/patient-planning
+```
+
 ### Get explanation
 
 ```text
@@ -329,6 +456,9 @@ parameter amortization
 large ensemble simulation
 Bayesian update
 scenario lab run
+daily check-in planning
+daily impact card generation
+LLM trend explanation
 summary generation with rendered figures
 ```
 
@@ -370,6 +500,11 @@ TwinUpdateTimeline
 ScenarioComparisonTable
 TreatmentRankingPanel
 ToxicityBurdenPanel
+DailyCheckInPanel
+DailyImpactCard
+SymptomTrendSummary
+MedicationAdherenceTracker
+CareTeamInstructionVault
 CareTeamQuestionsCard
 SafetyDisclaimerBanner
 ```
@@ -419,6 +554,32 @@ which parameters moved
 whether uncertainty increased or decreased
 ```
 
+### Daily impact card
+
+Show:
+
+```text
+today's focus areas
+selected check-in items and why they were selected
+short trend summary
+suggestions from approved action templates
+questions saved for the care team
+safety notes tied to care-team instructions
+```
+
+### Symptom trend summary
+
+Show:
+
+```text
+new symptoms
+worsening symptoms
+high-severity symptoms
+patterns around treatment dates
+medication adherence gaps if tracked
+data gaps that limit interpretation
+```
+
 ## Safety / disclaimer tests
 
 The safety model is **lightweight disclaimers**, not a strict language filter. Recommendation and ranking outputs are permitted; the tests enforce that they are properly framed rather than blocking the language outright.
@@ -428,6 +589,9 @@ Add automated tests that fail if:
 ```text
 A recommendation or ranking output is rendered without the standard disclaimer.
 A recommendation or ranking output is rendered without an accompanying uncertainty band/score.
+An LLM daily suggestion invents a clinic-specific threshold or medication change.
+An LLM output claims symptoms prove tumor response or progression.
+An LLM output recommends starting, stopping, or changing cancer treatment.
 Any output claims a guaranteed, definite, or curative outcome
   (e.g. "will cure", "guaranteed response", "this schedule will work").
 ```
@@ -440,6 +604,15 @@ The model estimates... / The model ranks...
 This is exploratory and not guaranteed...
 Uncertainty remains...
 Discuss with an oncology team...
+```
+
+Expected framing for patient-facing daily outputs:
+
+```text
+Based on your recent logs...
+This may be worth mentioning to your oncology team...
+Follow the instructions from your care team...
+This app does not determine whether a symptom is dangerous or caused by treatment.
 ```
 
 ## Development milestones
@@ -514,22 +687,36 @@ measurement-update scenario
 safe scenario comparison
 ```
 
-### Milestone 9: toxicity/person-burden twin
+### Milestone 9: patient-facing LLM co-pilot
 
 ```text
-symptom tracker
-toxicity-burden score
-trend explanation
-scenario coupling
+approved check-in item library
+care-team instruction vault
+deterministic trend flags
+LLM daily check-in selection
+LLM daily impact card
+LLM doctor-ready symptom summary
+patient-safe scenario planning
+LLM safety tests and audit logging
 ```
 
-### Milestone 10: validation and safety report
+### Milestone 10: toxicity/person-burden twin
+
+```text
+toxicity-burden score
+person-burden summary
+treatment-delay coupling
+scenario interpretation from patient-reported burden
+```
+
+### Milestone 11: validation and safety report
 
 ```text
 segmentation validation
 trajectory validation
 uncertainty calibration
 safety-language audit
+LLM output safety evaluation
 model card
 limitations page
 ```
@@ -549,6 +736,17 @@ known failure modes
 input requirements
 uncertainty behavior
 version history
+```
+
+LLM-assisted patient-facing features should also document:
+
+```text
+allowed input sources
+allowed output types
+prompt/template versions
+post-processing safety checks
+known unsafe output classes
+human-review requirements if deployed clinically
 ```
 
 ## Final product principle

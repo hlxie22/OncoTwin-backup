@@ -1,0 +1,37 @@
+{
+  "case_id": "demo_her2_positive_001",
+  "display_name": "Demo HER2-positive directed-therapy case",
+  "subtype": "HER2-positive",
+  "pathology": {
+    "er_status": "negative_demo",
+    "pr_status": "negative_demo",
+    "her2_status": "positive",
+    "grade": "high_demo",
+    "ki67": "high_demo"
+  },
+  "baseline_measurement": {
+    "case_id": "demo_her2_positive_001",
+    "day": 0,
+    "tumor_volume_ml": 22.0,
+    "longest_diameter_cm": 3.5,
+    "source": "demo",
+    "confidence": "demo"
+  },
+  "treatment_schedule": {
+    "schedule_id": "demo_her2_directed_schedule",
+    "path": "fixtures/mechanistic_simulator/schedules/her2_directed_schedule.json"
+  },
+  "expected_qualitative_behavior": {
+    "behavior_id": "strong_responder",
+    "description": "Volume should generally decrease steadily when treatment sensitivity is high and resistant fraction is low."
+  },
+  "intended_use": [
+    "demo fixture",
+    "volume-only simulator sanity checks",
+    "strong-response qualitative behavior"
+  ],
+  "safety_notes": [
+    "Synthetic demo data only.",
+    "Not a clinical prediction or treatment recommendation."
+  ]
+}

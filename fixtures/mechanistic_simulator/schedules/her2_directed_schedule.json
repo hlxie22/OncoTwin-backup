@@ -1,0 +1,84 @@
+{
+  "schedule_id": "demo_her2_directed_schedule",
+  "regimen_name": "Demo HER2-directed therapy schedule",
+  "schedule_type": "coarse_neoadjuvant_demo",
+  "total_duration_days": 168,
+  "events": [
+    {
+      "drug": "her2_directed_agent",
+      "day": 0,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 1"
+    },
+    {
+      "drug": "taxane",
+      "day": 0,
+      "relative_dose": 1.0,
+      "label": "Taxane cycle 1"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 21,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 2"
+    },
+    {
+      "drug": "taxane",
+      "day": 21,
+      "relative_dose": 1.0,
+      "label": "Taxane cycle 2"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 42,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 3"
+    },
+    {
+      "drug": "taxane",
+      "day": 42,
+      "relative_dose": 1.0,
+      "label": "Taxane cycle 3"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 63,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 4"
+    },
+    {
+      "drug": "taxane",
+      "day": 63,
+      "relative_dose": 1.0,
+      "label": "Taxane cycle 4"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 84,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 5"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 105,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 6"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 126,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 7"
+    },
+    {
+      "drug": "her2_directed_agent",
+      "day": 147,
+      "relative_dose": 1.0,
+      "label": "HER2-directed cycle 8"
+    }
+  ],
+  "notes": [
+    "Coarse demo schedule for early exposure and volume-only simulator experiments.",
+    "Drug labels are abstract mechanism categories, not clinical prescribing instructions."
+  ]
+}

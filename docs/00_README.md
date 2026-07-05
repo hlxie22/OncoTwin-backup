@@ -31,10 +31,16 @@ The core idea is not to build a black-box response predictor. The system is desi
    Molecular graph attention layer, pathway representation, missing biomarker handling, parameter modifiers, and explainability design.
 
 9. [`09_scenario_lab_toxicity_twin_and_safety.md`](09_scenario_lab_toxicity_twin_and_safety.md)  
-   Twin Scenario Lab, schedule simulation, toxicity/person-burden model, patient-facing explanations, and safety constraints.
+   Twin Scenario Lab, schedule simulation, toxicity/person-burden model, patient-facing planning scenarios, and safety constraints.
 
 10. [`10_product_backend_frontend_api.md`](10_product_backend_frontend_api.md)  
     Product and engineering implementation details: backend services, database schema, API endpoints, frontend screens, job queue, and milestones.
+
+11. [`11_high_level_app_overview.md`](11_high_level_app_overview.md)
+    Plain-language overview of the proposed app, patient/research workflows, outputs, and safety stance.
+
+12. [`12_patient_facing_llm_copilot.md`](12_patient_facing_llm_copilot.md)
+    Patient-facing LLM co-pilot design: adaptive daily check-ins, daily impact cards, symptom trend interpretation, doctor-ready summaries, and patient-safe scenario planning.
 
 ## Suggested build order
 
@@ -44,8 +50,9 @@ The core idea is not to build a black-box response predictor. The system is desi
 4. Train the **AI parameter amortizer** using fitted patient parameters from public longitudinal data.
 5. Add the **molecular graph explanation layer**.
 6. Build the **Twin Scenario Lab** and safe patient-facing UI.
-7. Add the **toxicity/person-burden twin**.
-8. Wrap the system with clinical-safety language and model-validation reports.
+7. Add the **LLM-powered patient daily co-pilot** for adaptive check-ins, daily suggestions, care-team questions, and visit summaries.
+8. Add the **toxicity/person-burden twin** and connect it to patient-facing scenario planning.
+9. Wrap the system with clinical-safety language and model-validation reports.
 
 ## Key safety stance
 

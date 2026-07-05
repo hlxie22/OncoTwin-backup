@@ -1,0 +1,385 @@
+{
+  "case_id": "demo_tnbc_001",
+  "initial_volume_ml": 28.0,
+  "simulation_version": "volume_ode_v0",
+  "times": [
+    0.0,
+    7.0,
+    14.0,
+    21.0,
+    28.0,
+    35.0,
+    42.0,
+    49.0,
+    56.0,
+    63.0,
+    70.0,
+    77.0,
+    84.0,
+    91.0,
+    98.0,
+    105.0,
+    112.0,
+    119.0,
+    126.0,
+    133.0,
+    140.0,
+    147.0,
+    154.0,
+    161.0,
+    168.0
+  ],
+  "trajectory": [
+    {
+      "day": 0.0,
+      "growth_component": 0.19987692307692306,
+      "kill_component": 1.23312,
+      "predicted_longest_diameter_cm": 3.767498918725543,
+      "resistant_volume_ml": 7.840000000000001,
+      "sensitive_volume_ml": 20.16,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.0,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 28.0,
+      "warnings": []
+    },
+    {
+      "day": 7.0,
+      "growth_component": 0.17320825266491807,
+      "kill_component": 0.3741435242628942,
+      "predicted_longest_diameter_cm": 3.570645404972085,
+      "resistant_volume_ml": 8.123971489919466,
+      "sensitive_volume_ml": 15.71232572805544,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.17377394345044514,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 23.836297217974906,
+      "warnings": []
+    },
+    {
+      "day": 14.0,
+      "growth_component": 0.17169313038391737,
+      "kill_component": 0.9404533295305461,
+      "predicted_longest_diameter_cm": 3.559040265149321,
+      "resistant_volume_ml": 8.509014391605948,
+      "sensitive_volume_ml": 15.095622633672798,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.0301973834223186,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 23.60463702527875,
+      "warnings": []
+    },
+    {
+      "day": 21.0,
+      "growth_component": 0.15137070754261608,
+      "kill_component": 0.28861646430537474,
+      "predicted_longest_diameter_cm": 3.39808369533505,
+      "resistant_volume_ml": 8.822413339226005,
+      "sensitive_volume_ml": 11.722335508236881,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.17902146184962653,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 20.544748847462884,
+      "warnings": []
+    },
+    {
+      "day": 28.0,
+      "growth_component": 0.1510027389854139,
+      "kill_component": 0.7095328046135526,
+      "predicted_longest_diameter_cm": 3.3950698819691563,
+      "resistant_volume_ml": 9.245804686568926,
+      "sensitive_volume_ml": 11.244328255827314,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.031109265387873,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 20.49013294239624,
+      "warnings": []
+    },
+    {
+      "day": 35.0,
+      "growth_component": 0.1362821566787644,
+      "kill_component": 0.2187990955659293,
+      "predicted_longest_diameter_cm": 3.271136087316078,
+      "resistant_volume_ml": 9.591644990237008,
+      "sensitive_volume_ml": 8.735484947513058,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.17917992317474227,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 18.327129937750065,
+      "warnings": []
+    },
+    {
+      "day": 42.0,
+      "growth_component": 0.13705046851167976,
+      "kill_component": 0.5385411888953212,
+      "predicted_longest_diameter_cm": 3.2777775266476845,
+      "resistant_volume_ml": 10.056468253475655,
+      "sensitive_volume_ml": 8.382518066249782,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.0311368018372227,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 18.438986319725437,
+      "warnings": []
+    },
+    {
+      "day": 49.0,
+      "growth_component": 0.12676642830525617,
+      "kill_component": 0.1670725065750771,
+      "predicted_longest_diameter_cm": 3.187119489384875,
+      "resistant_volume_ml": 10.436371229145667,
+      "sensitive_volume_ml": 6.514563847347889,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.1791847082921344,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 16.950935076493558,
+      "warnings": []
+    },
+    {
+      "day": 56.0,
+      "growth_component": 0.12848490433357226,
+      "kill_component": 0.03587984532985076,
+      "predicted_longest_diameter_cm": 3.2025431881881223,
+      "resistant_volume_ml": 10.945159472184912,
+      "sensitive_volume_ml": 6.253064791974381,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.03113763336594187,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 17.198224264159293,
+      "warnings": []
+    },
+    {
+      "day": 63.0,
+      "growth_component": 0.133921168404368,
+      "kill_component": 0.006783477831520302,
+      "predicted_longest_diameter_cm": 3.250598689264263,
+      "resistant_volume_ml": 11.519906574233882,
+      "sensitive_volume_ml": 6.464192648876232,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.005410909339713876,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 17.984099223110114,
+      "warnings": []
+    },
+    {
+      "day": 70.0,
+      "growth_component": 0.1403302659104786,
+      "kill_component": 0.0012488056436631891,
+      "predicted_longest_diameter_cm": 3.3059043454330834,
+      "resistant_volume_ml": 12.13198418207803,
+      "sensitive_volume_ml": 6.7857654000021626,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.0009402750536149244,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 18.91774958208019,
+      "warnings": []
+    },
+    {
+      "day": 77.0,
+      "growth_component": 0.14713380231965342,
+      "kill_component": 0.00022876142765430125,
+      "predicted_longest_diameter_cm": 3.363144897552111,
+      "resistant_volume_ml": 12.775718733164934,
+      "sensitive_volume_ml": 7.141805710499287,
+      "total_exposure_by_drug": {
+        "anthracycline": 0.00016339530399474414,
+        "taxane": 0.0
+      },
+      "tumor_volume_ml": 19.91752444366422,
+      "warnings": []
+    },
+    {
+      "day": 84.0,
+      "growth_component": 0.15422638571003716,
+      "kill_component": 0.4095969086843789,
+      "predicted_longest_diameter_cm": 3.421343826813377,
+      "resistant_volume_ml": 13.450982413477362,
+      "sensitive_volume_ml": 7.518551823857051,
+      "total_exposure_by_drug": {
+        "anthracycline": 2.839384631645096e-05,
+        "taxane": 1.0
+      },
+      "tumor_volume_ml": 20.969534237334415,
+      "warnings": []
+    },
+    {
+      "day": 91.0,
+      "growth_component": 0.14782213314987921,
+      "kill_component": 0.36099521774744575,
+      "predicted_longest_diameter_cm": 3.3688568494495716,
+      "resistant_volume_ml": 13.97416747422199,
+      "sensitive_volume_ml": 6.045012958778394,
+      "total_exposure_by_drug": {
+        "anthracycline": 4.934110644135578e-06,
+        "taxane": 1.2465969639416064
+      },
+      "tumor_volume_ml": 20.019180433000383,
+      "warnings": []
+    },
+    {
+      "day": 98.0,
+      "growth_component": 0.14244089153919745,
+      "kill_component": 0.29576004801883593,
+      "predicted_longest_diameter_cm": 3.3238175454028305,
+      "resistant_volume_ml": 14.50038100456281,
+      "sensitive_volume_ml": 4.726558078190333,
+      "total_exposure_by_drug": {
+        "anthracycline": 8.574198640522554e-07,
+        "taxane": 1.3074070265668243
+      },
+      "tumor_volume_ml": 19.22693908275314,
+      "warnings": []
+    },
+    {
+      "day": 105.0,
+      "growth_component": 0.138964362216201,
+      "kill_component": 0.24088988669360512,
+      "predicted_longest_diameter_cm": 3.294234308267511,
+      "resistant_volume_ml": 15.044047892537602,
+      "sensitive_volume_ml": 3.674065764834887,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.48997230969105e-07,
+        "taxane": 1.3224026033873022
+      },
+      "tumor_volume_ml": 18.718113657372488,
+      "warnings": []
+    },
+    {
+      "day": 112.0,
+      "growth_component": 0.13719708117000332,
+      "kill_component": 0.1978420120928345,
+      "predicted_longest_diameter_cm": 3.279042576172293,
+      "resistant_volume_ml": 15.608258277387135,
+      "sensitive_volume_ml": 2.8520857164421627,
+      "total_exposure_by_drug": {
+        "anthracycline": 2.589183638869816e-08,
+        "taxane": 1.326100467103785
+      },
+      "tumor_volume_ml": 18.460343993829298,
+      "warnings": []
+    },
+    {
+      "day": 119.0,
+      "growth_component": 0.13683199579164063,
+      "kill_component": 0.16467661428136338,
+      "predicted_longest_diameter_cm": 3.2758910677325837,
+      "resistant_volume_ml": 16.193868234102748,
+      "sensitive_volume_ml": 2.213299842105299,
+      "total_exposure_by_drug": {
+        "anthracycline": 4.499326512437811e-09,
+        "taxane": 1.3270123490693395
+      },
+      "tumor_volume_ml": 18.40716807620805,
+      "warnings": []
+    },
+    {
+      "day": 126.0,
+      "growth_component": 0.13759738497972418,
+      "kill_component": 0.1393246940132103,
+      "predicted_longest_diameter_cm": 3.2824928732082275,
+      "resistant_volume_ml": 16.801255836527325,
+      "sensitive_volume_ml": 1.717422911170663,
+      "total_exposure_by_drug": {
+        "anthracycline": 7.818657109374566e-10,
+        "taxane": 1.3272372163935184
+      },
+      "tumor_volume_ml": 18.518678747697987,
+      "warnings": []
+    },
+    {
+      "day": 133.0,
+      "growth_component": 0.13927367099265658,
+      "kill_component": 0.12007456042330555,
+      "predicted_longest_diameter_cm": 3.296882389971657,
+      "resistant_volume_ml": 17.430726850229963,
+      "sensitive_volume_ml": 1.3325629649634156,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.3586788783828768e-10,
+        "taxane": 1.3272926679929506
+      },
+      "tumor_volume_ml": 18.763289815193378,
+      "warnings": []
+    },
+    {
+      "day": 140.0,
+      "growth_component": 0.14168753480443544,
+      "kill_component": 0.10557853293626793,
+      "predicted_longest_diameter_cm": 3.3174401591614573,
+      "resistant_volume_ml": 18.082606339742398,
+      "sensitive_volume_ml": 1.0338731585353946,
+      "total_exposure_by_drug": {
+        "anthracycline": 2.3610298657942025e-11,
+        "taxane": 1.3273063421890163
+      },
+      "tumor_volume_ml": 19.116479498277794,
+      "warnings": []
+    },
+    {
+      "day": 147.0,
+      "growth_component": 0.1447032417737379,
+      "kill_component": 0.09478768778460486,
+      "predicted_longest_diameter_cm": 3.342861229380253,
+      "resistant_volume_ml": 18.757253757764122,
+      "sensitive_volume_ml": 0.8020624234840193,
+      "total_exposure_by_drug": {
+        "anthracycline": 4.1028547038333374e-12,
+        "taxane": 1.3273097142042505
+      },
+      "tumor_volume_ml": 19.559316181248143,
+      "warnings": []
+    },
+    {
+      "day": 154.0,
+      "growth_component": 0.1482148543688064,
+      "kill_component": 0.08688780888003511,
+      "predicted_longest_diameter_cm": 3.372109453218999,
+      "resistant_volume_ml": 19.45506003446008,
+      "sensitive_volume_ml": 0.6221614662052543,
+      "total_exposure_by_drug": {
+        "anthracycline": 7.129692412893272e-13,
+        "taxane": 1.3273105457329695
+      },
+      "tumor_volume_ml": 20.077221500665335,
+      "warnings": []
+    },
+    {
+      "day": 161.0,
+      "growth_component": 0.15213983349391086,
+      "kill_component": 0.08124722455528846,
+      "predicted_longest_diameter_cm": 3.404370784815723,
+      "resistant_volume_ml": 20.176441170089465,
+      "sensitive_volume_ml": 0.48255366054190746,
+      "total_exposure_by_drug": {
+        "anthracycline": 1.2389547661771832e-13,
+        "taxane": 1.327310750785427
+      },
+      "tumor_volume_ml": 20.65899483063137,
+      "warnings": []
+    },
+    {
+      "day": 168.0,
+      "growth_component": 0.15641391444167177,
+      "kill_component": 0.04214415481079754,
+      "predicted_longest_diameter_cm": 3.439010554254668,
+      "resistant_volume_ml": 20.921831784255858,
+      "sensitive_volume_ml": 0.3742226542068283,
+      "total_exposure_by_drug": {
+        "anthracycline": 2.152980554753333e-14,
+        "taxane": 0.32731080135074053
+      },
+      "tumor_volume_ml": 21.296054438462686,
+      "warnings": []
+    }
+  ],
+  "warnings": []
+}

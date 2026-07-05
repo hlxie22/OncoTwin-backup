@@ -1,0 +1,37 @@
+{
+  "case_id": "demo_hr_positive_her2_negative_001",
+  "display_name": "Demo HR-positive / HER2-negative endocrine case",
+  "subtype": "HR-positive / HER2-negative",
+  "pathology": {
+    "er_status": "positive",
+    "pr_status": "positive",
+    "her2_status": "negative",
+    "grade": "intermediate_demo",
+    "ki67": "moderate_demo"
+  },
+  "baseline_measurement": {
+    "case_id": "demo_hr_positive_her2_negative_001",
+    "day": 0,
+    "tumor_volume_ml": 12.5,
+    "longest_diameter_cm": 2.8,
+    "source": "demo",
+    "confidence": "demo"
+  },
+  "treatment_schedule": {
+    "schedule_id": "demo_endocrine_schedule",
+    "path": "fixtures/mechanistic_simulator/schedules/endocrine_schedule.json"
+  },
+  "expected_qualitative_behavior": {
+    "behavior_id": "weak_responder_plateau",
+    "description": "Volume may decrease slowly or plateau under low effective treatment sensitivity; uncertainty should remain broad without follow-up measurements."
+  },
+  "intended_use": [
+    "demo fixture",
+    "volume-only simulator sanity checks",
+    "weak-response qualitative behavior"
+  ],
+  "safety_notes": [
+    "Synthetic demo data only.",
+    "Not a clinical prediction or treatment recommendation."
+  ]
+}

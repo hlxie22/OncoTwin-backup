@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -eq 0 ]; then
+  echo "Usage:"
+  echo "  scripts/gpt-bug \"npm test\""
+  echo "  scripts/gpt-bug \"npm run typecheck\""
+  echo "  scripts/gpt-bug \"pytest tests/test_checkout.py\""
+  exit 1
+fi
+
+CMD="$*"
+STAMP="$(date +%Y%m%d-%H%M%S)"
+OUT_ROOT="${GPT_BUG_OUT_ROOT:-/tmp}"
+DIR="$OUT_ROOT/gpt-bug-$STAMP"
+
+LOG="$DIR/command-output.log"
+REPO="$DIR/repomix.xml"
+PROMPT="$DIR/chatgpt-prompt.md"
+
+mkdir -p "$DIR"
+
+echo "Running command:"
+echo "  $CMD"
+echo
+
+set +e
+bash -lc "$CMD" 2>&1 | tee "$LOG"
+STATUS=${PIPESTATUS[0]}
+set -e
+
+echo
+echo "Command exit status: $STATUS"
+echo
+
+echo "Generating full Repomix repository context..."
+echo
+
+npx --yes repomix@latest \
+  --style xml \
+  --output "$REPO"
+
+CURRENT_BRANCH="$(git branch --show-current 2>/dev/null || true)"
+GIT_STATUS="$(git status --short 2>/dev/null || true)"
+
+{
+  echo "# ChatGPT Bug Fix Request"
+  echo
+  echo "You are helping me fix a bug in this repository."
+  echo
+  echo "The repository context below is a full, current, uncompressed Repomix dump."
+  echo "The command output below is the failing command I want you to diagnose."
+  echo
+  echo "## Your Task"
+  echo
+  echo "Determine the root cause of the failure and provide the smallest safe code fix."
+  echo
+  echo "## Required Response Format"
+  echo
+  echo "Return exactly this structure:"
+  echo
+  echo "1. A brief diagnosis in 3-6 sentences."
+  echo "2. One terminal-pasteable shell block that:"
+  echo "   - writes a unified diff to /tmp/chatgpt.patch"
+  echo "   - runs git apply --check /tmp/chatgpt.patch"
+  echo "   - applies the patch only if the check passes"
+  echo "3. The exact command I should run afterward."
+  echo
+  echo "Important rules:"
+  echo "- Make the minimal semantic fix."
+  echo "- Do not refactor unrelated code."
+  echo "- Do not reformat unrelated code."
+  echo "- Do not change public APIs unless the bug requires it."
+  echo "- Do not modify lockfiles, generated files, or snapshots unless clearly necessary."
+  echo "- The shell block should be directly pasteable into my terminal."
+  echo "- The patch must use paths relative to the repository root."
+  echo
+  echo "The shell block should look like this pattern:"
+  echo
+  echo '```bash'
+  echo "cat > /tmp/chatgpt.patch <<'PATCH'"
+  echo "diff --git a/path/to/file b/path/to/file"
+  echo "--- a/path/to/file"
+  echo "+++ b/path/to/file"
+  echo "@@ ..."
+  echo "PATCH"
+  echo
+  echo "git apply --check /tmp/chatgpt.patch && git apply /tmp/chatgpt.patch"
+  echo '```'
+  echo
+  echo "## Command I Ran"
+  echo
+  echo '```bash'
+  echo "$CMD"
+  echo '```'
+  echo
+  echo "## Exit Status"
+  echo
+  echo '```text'
+  echo "$STATUS"
+  echo '```'
+  echo
+  echo "## Git Branch"
+  echo
+  echo '```text'
+  echo "${CURRENT_BRANCH:-unknown}"
+  echo '```'
+  echo
+  echo "## Git Status"
+  echo
+  echo '```text'
+  if [ -n "$GIT_STATUS" ]; then
+    echo "$GIT_STATUS"
+  else
+    echo "clean"
+  fi
+  echo '```'
+  echo
+  echo "## Command Output"
+  echo
+  echo '```text'
+  cat "$LOG"
+  echo '```'
+  echo
+  echo "## Full Current Repository Context"
+  echo
+  echo '```xml'
+  cat "$REPO"
+  echo '```'
+} > "$PROMPT"
+
+echo
+echo "Generated files:"
+echo "  Prompt:         $PROMPT"
+echo "  Command output: $LOG"
+echo "  Repomix repo:   $REPO"
+echo
+
+echo "Next step:"
+echo "  Paste or upload this file to ChatGPT:"
+echo "  $PROMPT"
+echo
+
+if command -v pbcopy >/dev/null 2>&1; then
+  pbcopy < "$PROMPT"
+  echo "Copied prompt to clipboard with pbcopy."
+elif command -v xclip >/dev/null 2>&1; then
+  xclip -selection clipboard < "$PROMPT"
+  echo "Copied prompt to clipboard with xclip."
+elif command -v wl-copy >/dev/null 2>&1; then
+  wl-copy < "$PROMPT"
+  echo "Copied prompt to clipboard with wl-copy."
+else
+  echo "Clipboard tool not found, so copy/upload the prompt file manually."
+fi
+
+exit "$STATUS"

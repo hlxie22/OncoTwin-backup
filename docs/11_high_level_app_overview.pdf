@@ -1,0 +1,507 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R] /Count 7 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Length 5702 >>
+stream
+q 0.000 0.480 0.550 rg 58.00 696.00 4.00 42.00 re f Q
+0.020 0.270 0.310 rg BT /F2 25.00 Tf 74.00 724.00 Td (High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 10.50 Tf 74.00 701.00 Td (Beginner-friendly overview of functions, methods, and intended impact) Tj ET
+q 0.000 0.480 0.550 RG 1.10 w 58.00 674.00 m 554.00 674.00 l S Q
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 639.00 Td (Plain-language summary) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 626.00 m 554.00 626.00 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 614.00 Td (OncoTwin is a proposed breast-cancer research app that creates a patient-specific "digital twin" of a) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 599.80 Td (tumor. A digital twin is a computer model that represents a real-world thing closely enough that) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 585.60 Td (researchers can run simulations on it. In this project, the real-world thing is a breast tumor during) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 571.40 Td (neoadjuvant treatment, meaning treatment given before surgery.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 552.20 Td (The app is not meant to diagnose cancer, guarantee outcomes, or replace an oncology team. Its intended) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 538.00 Td (role is to help researchers, clinicians, and eventually patients explore questions such as:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 514.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 518.80 Td (How might this tumor change over time under treatment?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 498.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 502.80 Td (Which parts of the prediction are uncertain?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 482.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 486.80 Td (What new information would make the prediction more reliable?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 466.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 470.80 Td (Which imaging, pathology, or molecular features are influencing the model?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 450.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 454.80 Td (How do different research scenarios compare when tumor response, uncertainty, and treatment) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 441.00 Td (burden are considered together?) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 422.00 Td (The main idea is to combine two types of modeling:) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 402.80 Td (1.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 402.80 Td (Mechanistic modeling, which uses equations inspired by biology to simulate tumor growth, spread, and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 389.00 Td (treatment response.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 373.00 Td (2.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 373.00 Td (Artificial intelligence, which helps personalize those equations from MRI scans, pathology results,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 359.20 Td (molecular markers, and patient context.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 340.20 Td (This combination is important. A simple AI model might only say, "This case has a 68% chance of) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 326.00 Td (responding." OncoTwin is designed to say something richer: "Here are many plausible tumor-response) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 311.80 Td (paths, here is why the model believes them, here is what remains uncertain, and here is what kind of new) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 297.60 Td (data would reduce that uncertainty.") Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 265.40 Td (The problem the app is trying to address) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 252.40 m 554.00 252.40 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 240.40 Td (Cancer treatment decisions are complex because every patient and every tumor is different. Even when) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 226.20 Td (two people have the same cancer subtype, their tumors may grow differently, respond to drugs) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 212.00 Td (differently, show different MRI patterns, and cause different treatment burdens.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 192.80 Td (Many prediction tools are static. They take a snapshot of the patient at one time and produce a risk) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 178.60 Td (score or response probability. That can be useful, but it does not fully capture the changing nature of) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 164.40 Td (treatment. During neoadjuvant therapy, the tumor can be observed over time through MRI and clinical) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 150.20 Td (measurements. A useful digital twin should therefore update itself as new evidence arrives.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 131.00 Td (OncoTwin is designed around that dynamic view. It starts with what is known at baseline, builds an initial) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 116.80 Td (model of the tumor, simulates possible futures, and then revises those futures as follow-up MRI scans,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 102.60 Td (tumor measurements, biomarker results, treatment changes, or symptom reports become available.) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 1) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 6177 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 709.00 Td (What the app does) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 696.00 m 554.00 696.00 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 684.00 Td (At a high level, the app has seven major functions.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 656.80 Td (1. Build a patient case) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 642.80 Td (The app begins by creating a case. A case can include:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 619.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 623.60 Td (MRI scans or manually entered tumor measurements.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 603.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 607.60 Td (Pathology details such as ER status, PR status, HER2 status, tumor grade, Ki-67, and node status.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 587.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 591.60 Td (Molecular markers such as BRCA1, BRCA2, HRD, TP53, PIK3CA, ESR1, or ERBB2 when available.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 571.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 575.60 Td (Treatment context, such as the current regimen, dose events, timing, delays, or modifications.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 555.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 559.60 Td (Patient context and optional symptom information.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 540.60 Td (The app is designed to handle different levels of data. If only a tumor diameter is available, it can build a) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 526.40 Td (very rough model. If a baseline MRI is available, it can build a spatial tumor model. If multiple MRI) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 512.20 Td (timepoints are available, it can perform stronger updating because it can compare the simulated tumor) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 498.00 Td (against observed tumor change over time.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 470.80 Td (2. Turn MRI scans into useful tumor information) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 456.80 Td (MRI scans are not directly usable by the simulator. They must first be processed into measurements and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 442.60 Td (maps. The imaging pipeline is responsible for:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 419.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 423.40 Td (Accepting DICOM or NIfTI MRI data.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 403.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 407.40 Td (Standardizing image orientation, spacing, and intensity.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 387.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 391.40 Td (Identifying dynamic contrast-enhanced MRI phases.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 371.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 375.40 Td (Segmenting the tumor, meaning drawing a 3D boundary around it.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 355.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 359.40 Td (Measuring tumor volume and longest diameter.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 339.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 343.40 Td (Computing imaging features such as enhancement, shape, heterogeneity, and possible low-enhancement) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 329.60 Td (regions.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 309.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 313.60 Td (Producing quality-control warnings when the image or segmentation may be unreliable.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 294.60 Td (This step matters because the simulator needs a starting tumor geometry. In simple terms, the app first) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 280.40 Td (asks, "Where is the tumor, how large is it, and what does it look like on imaging?") Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 253.20 Td (3. Estimate patient-specific model settings) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 239.20 Td (The tumor simulator has parameters that control how the simulated tumor behaves. These include things) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 225.00 Td (like:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 201.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 205.80 Td (How quickly tumor cells proliferate.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 185.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 189.80 Td (How much the tumor spreads or invades nearby tissue.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 169.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 173.80 Td (How sensitive the tumor may be to different drug categories.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 153.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 157.80 Td (How drug exposure changes over time.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 137.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 141.80 Td (How much local MRI enhancement may act as a rough proxy for drug delivery.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 121.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 125.80 Td (How much resistant tumor-cell population may remain.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 106.80 Td (The app uses an AI personalization layer to estimate a distribution over these parameters. A distribution) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 92.60 Td (means the app does not pretend there is one exact answer. Instead, it represents a range of plausible) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 78.40 Td (settings.) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 2) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 6154 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 722.00 Td (This is one of the app's central design choices: the AI does not replace the tumor simulator. The AI) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 707.80 Td (estimates the simulator's patient-specific inputs.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 688.60 Td (That keeps the system more interpretable. Instead of producing only a black-box response score, the app) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 674.40 Td (can explain which biological assumptions are driving the simulated result.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 647.20 Td (4. Simulate tumor response over time) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 633.20 Td (The mechanistic simulator is the scientific core of the app. It is based on a reaction-diffusion style tumor) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 619.00 Td (model. In beginner terms, the simulator tries to represent three broad processes:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 595.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 599.80 Td (Growth: tumor cells can multiply.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 579.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 583.80 Td (Spread or invasion: tumor cells can move into nearby tissue.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 563.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 567.80 Td (Treatment effect: drugs can kill or suppress tumor cells, depending on exposure and sensitivity.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 548.80 Td (The simulator can run at different levels of detail:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 525.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 529.60 Td (A volume-only model when only tumor size is known.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 509.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 513.60 Td (A regional model when the tumor can be divided into meaningful regions, such as enhancing core and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 499.80 Td (boundary.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 479.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 483.80 Td (A voxelwise spatial model when MRI data are good enough to simulate the tumor across a 3D grid.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 464.80 Td (The app does not simulate just one future. It samples many plausible parameter sets and simulates an) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 450.60 Td (ensemble of possible tumor futures. The result is a range of trajectories rather than a single line. This is) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 436.40 Td (how the app can show uncertainty bands around tumor-volume predictions.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 409.20 Td (5. Update the twin when new data arrive) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 395.20 Td (The app becomes more useful when it updates. A first simulation is based on baseline information, but) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 381.00 Td (follow-up data can confirm, weaken, or change the model's assumptions.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 361.80 Td (For example:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 338.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 342.60 Td (If an early-treatment MRI shows stronger shrinkage than expected, the app may shift weight toward) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 328.80 Td (simulated twins with higher drug sensitivity.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 308.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 312.80 Td (If the tumor shrinks less than expected, the app may shift weight toward lower sensitivity, resistant) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 299.00 Td (disease, or uncertainty about the measurement.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 279.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 283.00 Td (If BRCA or HRD status becomes available, the molecular assumptions may narrow or shift.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 263.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 267.00 Td (If treatment is delayed or modified, the future drug-exposure schedule changes.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 247.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 251.00 Td (If symptoms become severe, the tumor biology does not automatically change, but scenario) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 237.20 Td (interpretation may change because treatment burden matters.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 218.20 Td (The update method is Bayesian in spirit. That means the app starts with a prior belief about plausible) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 204.00 Td (tumor behavior, compares simulated predictions to new observations, and then gives more weight to the) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 189.80 Td (simulations that better match the evidence.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 170.60 Td (In plain language: the twin learns from new measurements by keeping the simulated versions that fit the) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 156.40 Td (evidence better and downweighting the ones that fit poorly.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 129.20 Td (6. Explain why the model behaves the way it does) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 115.20 Td (OncoTwin is intended to be explainable. It should not simply show a graph and expect users to trust it.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 96.00 Td (The explanation system is designed to identify major drivers such as:) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 3) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 6059 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+q 0.000 0.480 0.550 rg 60.00 718.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 722.00 Td (Imaging features, such as tumor volume, enhancement pattern, or irregular boundary.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 702.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 706.00 Td (Pathology features, such as subtype, grade, Ki-67, or hormone receptor status.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 686.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 690.00 Td (Molecular features, such as BRCA/HRD status or HER2-related signals.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 670.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 674.00 Td (Missing data, such as unknown biomarkers.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 654.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 658.00 Td (Data-quality issues, such as low segmentation confidence.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 638.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 642.00 Td (Model uncertainty, such as wide disagreement across simulated twins.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 623.00 Td (The molecular graph explanation engine adds a mechanism-aware layer. It represents genes, pathways,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 608.80 Td (drug mechanisms, and phenotypes as connected concepts. For an early version, this can be rule-based. For) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 594.60 Td (a later version, it can become a graph attention model trained on molecular and clinical datasets.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 575.40 Td (The goal is not to overclaim that one mutation determines the outcome. The goal is to say, carefully, that) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 561.20 Td (certain biomarkers change the model's assumptions about pathways such as DNA repair, HER2 signaling,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 547.00 Td (estrogen receptor signaling, proliferation, immune response, or drug resistance.) Tj ET
+0.020 0.270 0.310 rg BT /F2 12.50 Tf 58.00 519.80 Td (7. Run safe research scenarios) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 505.80 Td (The Twin Scenario Lab is the app's interactive exploration area. It lets users run clearly labeled research) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 491.60 Td (simulations such as:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 468.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 472.40 Td (What does the current twin predict under the current treatment context?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 452.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 456.40 Td (How would the model change if an early MRI showed strong or weak shrinkage?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 436.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 440.40 Td (How would uncertainty change if a missing biomarker were positive, negative, or still unknown?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 420.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 424.40 Td (How do several clinically plausible candidate schedules compare in the model?) Tj ET
+q 0.000 0.480 0.550 rg 60.00 404.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 408.40 Td (How does high symptom burden change the interpretation of tradeoffs?) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 389.40 Td (The Scenario Lab may compare and rank candidate options, but only as exploratory model outputs. Any) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 375.20 Td (ranking must be shown with uncertainty and a clear disclaimer. The app must not say that a treatment) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 361.00 Td (will work, will cure a patient, or should be followed as medical advice.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 328.80 Td (How the methods fit together) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 315.80 m 554.00 315.80 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 303.80 Td (The app can be understood as a pipeline.) Tj ET
+q 0.955 0.965 0.972 rg 58.00 87.60 496.00 200.00 re f Q
+q 0.720 0.780 0.800 RG 0.6 w 58.00 87.60 496.00 200.00 re S Q
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 270.80 Td (Patient data) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 259.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 247.80 Td (MRI processing and tumor segmentation) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 236.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 224.80 Td (Imaging, pathology, molecular, treatment, and context features) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 213.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 201.80 Td (AI personalization layer estimates plausible simulator parameters) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 190.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 178.80 Td (Mechanistic tumor simulator creates many possible response paths) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 167.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 155.80 Td (Bayesian update gives more weight to simulations that match new evidence) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 144.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 132.80 Td (Scenario Lab compares research scenarios) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 121.30 Td (  v) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 109.80 Td (Explanations, uncertainty summaries, residual-risk maps, and care-team discussion) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 98.30 Td (  summaries) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 4) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 6808 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 722.00 Td (Each part has a distinct role:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 698.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 702.80 Td (MRI processing answers, "What does the tumor look like now?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 682.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 686.80 Td (AI personalization answers, "Which simulator settings seem plausible for this case?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 666.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 670.80 Td (Mechanistic simulation answers, "What could happen over time under these assumptions?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 650.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 654.80 Td (Bayesian updating answers, "Which simulated futures still fit the evidence?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 634.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 638.80 Td (Molecular explanation answers, "Which biological pathways may be affecting the assumptions?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 618.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 622.80 Td (Scenario Lab answers, "How do model-based possibilities compare under clearly labeled hypothetical) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 609.00 Td (conditions?") Tj ET
+q 0.000 0.480 0.550 rg 60.00 589.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 593.00 Td (Safety and uncertainty design answers, "How do we avoid making the output sound more certain than) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 579.20 Td (it is?") Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 547.20 Td (Main user experience) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 534.20 m 554.00 534.20 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 522.20 Td (A typical user flow would look like this:) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 503.00 Td (1.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 503.00 Td (Create a case by entering basic case details and selecting research, demo, or user-entered mode.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 487.00 Td (2.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 487.00 Td (Add clinical context such as pathology, molecular markers, treatment plan, and available symptoms.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 471.00 Td (3.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 471.00 Td (Upload MRI data or enter tumor measurements depending on what is available.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 455.00 Td (4.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 455.00 Td (Review the virtual tumor state, including tumor size, segmentation confidence, imaging features, and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 441.20 Td (missing-data warnings.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 425.20 Td (5.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 425.20 Td (Initialize the twin, which creates an ensemble of possible patient-specific tumor models.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 409.20 Td (6.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 409.20 Td (View simulated response, including a median trajectory, uncertainty bands, and possible residual-risk) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 395.40 Td (maps.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 379.40 Td (7.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 379.40 Td (Add new observations such as a follow-up MRI, updated biomarker, or treatment delay.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 363.40 Td (8.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 363.40 Td (Review how the twin changed and why some simulated futures became more or less likely.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 347.40 Td (9.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 347.40 Td (Run research scenarios in the Scenario Lab.) Tj ET
+0.020 0.270 0.310 rg BT /F2 10.40 Tf 58.00 331.40 Td (10.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 331.40 Td (Generate a doctor or research summary that lists observations, uncertainty drivers, exploratory) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 86.00 317.60 Td (comparisons, and questions to discuss with a qualified oncology team.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 285.60 Td (Important outputs) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 272.60 m 554.00 272.60 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 260.60 Td (The app is designed to produce several kinds of output:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 237.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 241.40 Td (Tumor trajectory chart: projected tumor volume over time, with observed measurements overlaid.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 221.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 225.40 Td (Uncertainty bands: visual ranges showing that the model has more than one plausible answer.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 205.40 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 209.40 Td (Residual-risk map: a spatial visualization of where simulated residual disease may be more likely, when) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 195.60 Td (MRI data support it.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 175.60 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 179.60 Td (Parameter summary: a research-facing view of the assumptions controlling growth, invasion, drug) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 165.80 Td (sensitivity, and related biology.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 145.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 149.80 Td (Explanation panel: plain-language reasons the model behaved as it did.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 129.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 133.80 Td (Missing-data ranking: a list of additional measurements that may reduce uncertainty.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 113.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 117.80 Td (Scenario comparison: exploratory comparison of current and hypothetical research scenarios.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 97.80 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 101.80 Td (Toxicity or person-burden summary: a separate view of symptom trends and treatment burden.) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 5) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Length 5588 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+q 0.000 0.480 0.550 rg 60.00 718.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 722.00 Td (Care-team summary: a concise report intended to support discussion, not replace professional) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 708.20 Td (judgment.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 676.20 Td (Why uncertainty is central) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 663.20 m 554.00 663.20 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 651.20 Td (OncoTwin is built around uncertainty because the available data will often be incomplete. A baseline MRI,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 637.00 Td (pathology report, and a few biomarkers cannot fully determine tumor biology. Even follow-up) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 622.80 Td (measurements have noise. Segmentations can be imperfect. Public datasets may not represent every) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 608.60 Td (patient group equally. Molecular markers may be missing. Treatments may change in real life.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 589.40 Td (Because of that, the app should avoid fake confidence. It should show:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 566.20 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 570.20 Td (Uncertainty from limited data.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 550.20 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 554.20 Td (Uncertainty from image quality or segmentation confidence.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 534.20 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 538.20 Td (Uncertainty from missing biomarkers.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 518.20 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 522.20 Td (Uncertainty from model assumptions.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 502.20 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 506.20 Td (Uncertainty from disagreement across simulated twins.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 487.20 Td (This design makes the app more honest and more useful. A high-uncertainty output tells the user not only) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 473.00 Td (that the model is unsure, but also why it is unsure and what information might help.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 440.80 Td (Intended impact) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 427.80 m 554.00 427.80 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 415.80 Td (The intended impact of OncoTwin is to make breast-cancer treatment-response modeling more dynamic,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 401.60 Td (transparent, and useful for research and decision support.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 382.40 Td (For researchers, the app could provide a structured environment for testing digital-twin methods,) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 368.20 Td (comparing mechanistic and AI components, studying uncertainty, and validating response simulations) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 354.00 Td (against public datasets.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 334.80 Td (For clinicians, a future validated version could help organize complex information into a clearer picture:) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 320.60 Td (what has been observed, what the model thinks is plausible, what remains uncertain, and which questions) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 306.40 Td (may be useful to discuss.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 287.20 Td (For patients, a carefully designed version could make the treatment journey more understandable by) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 273.00 Td (showing that predictions are not certainties, explaining why more data can matter, and supporting better) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 258.80 Td (conversations with the care team.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 239.60 Td (For app development, the project creates a practical blueprint for combining medical imaging, mechanistic) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 225.40 Td (simulation, AI personalization, Bayesian updating, molecular explanation, scenario comparison, and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 211.20 Td (safety-focused user interfaces.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 192.00 Td (The intended impact is not to automate treatment decisions. The intended impact is to provide an) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 177.80 Td (exploratory simulation system that makes tumor response, uncertainty, and evidence easier to reason) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 163.60 Td (about.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 131.40 Td (Safety stance) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 118.40 m 554.00 118.40 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 106.40 Td (OncoTwin must be presented as an exploratory research and decision-support simulation. It should not be) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 92.20 Td (presented as:) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 6) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 17 0 R >>
+endobj
+19 0 obj
+<< /Length 5202 >>
+stream
+0.020 0.270 0.310 rg BT /F2 9.50 Tf 58.00 756.00 Td (OncoTwin) Tj ET
+0.340 0.380 0.420 rg BT /F1 9.50 Tf 113.00 756.00 Td (High-Level App Overview) Tj ET
+q 0.720 0.780 0.800 RG 0.60 w 58.00 745.00 m 554.00 745.00 l S Q
+q 0.000 0.480 0.550 rg 60.00 718.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 722.00 Td (A diagnostic tool.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 702.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 706.00 Td (A guaranteed prediction engine.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 686.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 690.00 Td (A treatment-prescribing system.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 670.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 674.00 Td (A replacement for clinical judgment.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 654.00 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 658.00 Td (A substitute for professional medical advice.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 639.00 Td (Any output that compares, suggests, or ranks treatment-related options must include a disclaimer) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 624.80 Td (similar to:) Tj ET
+q 0.955 0.965 0.972 rg 58.00 558.10 496.00 50.50 re f Q
+q 0.720 0.780 0.800 RG 0.6 w 58.00 558.10 496.00 50.50 re S Q
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 591.80 Td (Exploratory research simulation. Predictions and rankings are uncertain and not) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 580.30 Td (  guaranteed, and this is not a substitute for professional medical advice. Discuss all) Tj ET
+0.100 0.120 0.140 rg BT /F4 8.80 Tf 68.00 568.80 Td (  treatment decisions with a qualified oncology team.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 548.10 Td (The hard rule is to avoid false certainty. The app may say that one option ranked higher in a model) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 533.90 Td (simulation under specific assumptions. It must not say that an option will work, will cure disease, or) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 519.70 Td (should be followed without professional review.) Tj ET
+0.080 0.220 0.420 rg BT /F2 16.00 Tf 58.00 487.50 Td (Current documentation status) Tj ET
+q 0.720 0.780 0.800 RG 0.55 w 58.00 474.50 m 554.00 474.50 l S Q
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 462.50 Td (The repository currently describes a proposed system design and implementation plan. The documents) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 448.30 Td (define the app concept, architecture, data strategy, modeling approach, safety stance, and product) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 434.10 Td (surfaces. They should be read as a blueprint for building and validating OncoTwin, not as evidence that a) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 419.90 Td (clinically validated product already exists.) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.50 Tf 58.00 400.70 Td (For deeper detail, see:) Tj ET
+q 0.000 0.480 0.550 rg 60.00 377.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 381.50 Td (01_motivation_background.md for the scientific motivation and clinical framing.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 361.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 365.50 Td (02_overall_system_architecture.md for the full architecture and data flow.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 345.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 349.50 Td (03_data_pretraining_and_validation.md for datasets, training stages, and validation.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 329.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 333.50 Td (04_mri_ingestion_segmentation_feature_extraction.md for MRI processing.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 313.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 317.50 Td (05_mechanistic_tumor_simulator.md for the tumor simulation model.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 297.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 301.50 Td (06_ai_personalization_parameter_amortizer.md for AI-based parameter personalization.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 281.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 285.50 Td (07_bayesian_twin_update_uncertainty.md for updating and uncertainty.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 265.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 269.50 Td (08_molecular_graph_explanation_engine.md for biomarker and pathway explanations.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 249.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 253.50 Td (09_scenario_lab_toxicity_twin_and_safety.md for scenario simulation, toxicity, and safety.) Tj ET
+q 0.000 0.480 0.550 rg 60.00 233.50 4.00 4.00 re f Q
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 237.50 Td (10_product_backend_frontend_api.md for product surfaces, backend services, frontend screens, and) Tj ET
+0.100 0.120 0.140 rg BT /F1 10.40 Tf 78.00 223.70 Td (APIs.) Tj ET
+q 0.720 0.780 0.800 RG 0.50 w 58.00 44.00 m 554.00 44.00 l S Q
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 58.00 30.00 Td (OncoTwin High-Level App Overview) Tj ET
+0.340 0.380 0.420 rg BT /F1 8.50 Tf 528.84 30.00 Td (Page 7) Tj ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 19 0 R >>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000163 00000 n 
+0000000260 00000 n 
+0000000362 00000 n 
+0000000467 00000 n 
+0000000562 00000 n 
+0000006316 00000 n 
+0000006472 00000 n 
+0000012701 00000 n 
+0000012858 00000 n 
+0000019065 00000 n 
+0000019223 00000 n 
+0000025335 00000 n 
+0000025493 00000 n 
+0000032354 00000 n 
+0000032512 00000 n 
+0000038153 00000 n 
+0000038311 00000 n 
+0000043566 00000 n 
+trailer
+<< /Size 21 /Root 1 0 R >>
+startxref
+43724
+%%EOF

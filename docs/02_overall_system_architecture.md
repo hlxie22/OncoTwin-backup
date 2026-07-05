@@ -5,7 +5,7 @@
 OncoTwin has two major loops:
 
 1. **Offline training loop**: public datasets are used to train segmentation, imaging encoders, parameter-amortization networks, molecular graph models, uncertainty calibration, and validation reports.
-2. **Online app loop**: a user or researcher creates a case, the system initializes a patient-specific twin, simulates response, updates the twin as new observations arrive, and displays scenario results with uncertainty and explanations.
+2. **Online app loop**: a user or researcher creates a case, the system initializes a patient-specific twin, simulates response, updates the twin as new observations arrive, and displays scenario results with uncertainty, explanations, daily patient check-ins, and care-team summaries.
 
 The most important architecture rule is:
 
@@ -31,6 +31,8 @@ Mechanistic tumor simulator
 Bayesian update / posterior ensemble
         ↓
 Scenario Lab + uncertainty + explanations
+        ↓
+LLM patient co-pilot for check-ins, daily impact cards, and summaries
         ↓
 Patient-facing and research-facing outputs
 ```
@@ -115,6 +117,7 @@ The online app loop starts when a case is created.
 9. Display uncertainty, residual-risk heatmap, and explanations.
 10. Update the twin when new data arrive.
 11. Run safe research scenarios in Twin Scenario Lab.
+12. Use the patient-facing LLM co-pilot to select daily check-ins, interpret symptom patterns, generate daily impact cards, and prepare care-team questions.
 ```
 
 ## Main services
@@ -151,6 +154,14 @@ Builds patient-specific molecular pathway graphs and produces mechanism embeddin
 
 Runs simulations under research scenario templates such as current regimen, delayed measurement, alternative timing templates, missing-biomarker assumptions, or toxicity-sensitive scenarios.
 
+### Daily co-pilot service
+
+Builds patient-facing daily support from structured data. It selects short check-ins, generates daily impact cards, drafts care-team questions, and prepares visit summaries. For the MVP, it uses deterministic trend calculations over app logs plus an LLM API for interpretation and language. It should not train a separate time-series AI model.
+
+### LLM orchestration service
+
+Packages approved context for LLM calls, including subtype/treatment context, care-team instructions, symptom logs, deterministic trend flags, allowed suggestion templates, safety rules, and source references. It records prompt/input versions, output versions, model identifiers, and post-processing safety checks for auditability.
+
 ### Explanation service
 
 Turns model outputs into patient-facing and researcher-facing explanations, including safety labels.
@@ -167,11 +178,48 @@ type OncoTwinCase = {
   molecular: MolecularProfile;
   treatment: TreatmentPlan;
   patientContext: PatientContext;
+  patientReportedOutcomes: PatientReportedOutcome[];
+  dailyImpactCards: DailyImpactCard[];
 
   twinState?: TwinState;
   posterior?: TwinPosterior;
   scenarioRuns: ScenarioRun[];
   auditLog: AuditEvent[];
+};
+```
+
+```typescript
+type PatientReportedOutcome = {
+  date: string;
+  treatmentDay?: number;
+  treatmentPhase?: string;
+  fatigue?: number;
+  nausea?: number;
+  neuropathy?: number;
+  pain?: number;
+  sleepQuality?: number;
+  appetite?: number;
+  activityLevel?: number;
+  medicationTaken?: boolean;
+  hotFlashes?: number;
+  skinIrritation?: number;
+  mouthSores?: number;
+  shortnessOfBreath?: "none" | "mild" | "worsening";
+  swelling?: boolean;
+  temperature?: number;
+  notes?: string;
+};
+
+type DailyImpactCard = {
+  date: string;
+  focusAreas: string[];
+  checkInItemIds: string[];
+  trendSummary: string;
+  suggestedActions: string[];
+  careTeamQuestions: string[];
+  safetyNotes: string[];
+  sourceObservationIds: string[];
+  llmTraceId: string;
 };
 ```
 
@@ -225,6 +273,12 @@ Model services:
   NumPy / SciPy
   pyABC / particles or a custom importance-sampling + SMC-sampler updater
 
+LLM services:
+  external or hosted LLM API for daily check-in selection, impact cards,
+  trend explanations, patient-safe scenario planning, and visit summaries
+  deterministic trend calculation before LLM interpretation
+  post-processing safety checks and audit logging
+
 Storage:
   PostgreSQL for structured metadata
   S3-compatible object storage for MRI volumes, masks, particles, and result arrays
@@ -253,6 +307,10 @@ POST /cases/{case_id}/twin/initialize
 POST /cases/{case_id}/twin/simulate
 POST /cases/{case_id}/twin/update-observation
 POST /cases/{case_id}/scenario-lab/run
+POST /cases/{case_id}/daily-check-in/plan
+POST /cases/{case_id}/daily-check-in/responses
+GET  /cases/{case_id}/daily-impact/today
+GET  /cases/{case_id}/daily-impact/trends
 GET  /cases/{case_id}/uncertainty
 GET  /cases/{case_id}/explanation
 GET  /cases/{case_id}/summary/doctor
@@ -287,4 +345,5 @@ The system should enforce safety at the backend and frontend levels:
 - Show data-quality warnings for low-confidence segmentation or out-of-distribution inputs.
 - Frame outputs as decision-support for discussion with an oncology team, not as instructions to follow.
 - Keep model outputs clearly distinguished from clinical advice.
-
+- Keep LLM-generated daily suggestions within approved action templates and care-team instructions.
+- Block LLM outputs that diagnose a symptom, infer tumor response from symptoms, invent urgent-call thresholds, or recommend treatment changes.

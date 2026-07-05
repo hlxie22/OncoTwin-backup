@@ -1,0 +1,108 @@
+{
+  "schedule_id": "demo_chemotherapy_schedule",
+  "regimen_name": "Demo chemotherapy schedule",
+  "schedule_type": "coarse_neoadjuvant_demo",
+  "total_duration_days": 168,
+  "events": [
+    {
+      "drug": "anthracycline",
+      "day": 0,
+      "relative_dose": 1.0,
+      "label": "Anthracycline cycle 1"
+    },
+    {
+      "drug": "anthracycline",
+      "day": 14,
+      "relative_dose": 1.0,
+      "label": "Anthracycline cycle 2"
+    },
+    {
+      "drug": "anthracycline",
+      "day": 28,
+      "relative_dose": 1.0,
+      "label": "Anthracycline cycle 3"
+    },
+    {
+      "drug": "anthracycline",
+      "day": 42,
+      "relative_dose": 1.0,
+      "label": "Anthracycline cycle 4"
+    },
+    {
+      "drug": "taxane",
+      "day": 84,
+      "relative_dose": 1.0,
+      "label": "Taxane start"
+    },
+    {
+      "drug": "taxane",
+      "day": 91,
+      "relative_dose": 1.0,
+      "label": "Taxane week 2"
+    },
+    {
+      "drug": "taxane",
+      "day": 98,
+      "relative_dose": 1.0,
+      "label": "Taxane week 3"
+    },
+    {
+      "drug": "taxane",
+      "day": 105,
+      "relative_dose": 1.0,
+      "label": "Taxane week 4"
+    },
+    {
+      "drug": "taxane",
+      "day": 112,
+      "relative_dose": 1.0,
+      "label": "Taxane week 5"
+    },
+    {
+      "drug": "taxane",
+      "day": 119,
+      "relative_dose": 1.0,
+      "label": "Taxane week 6"
+    },
+    {
+      "drug": "taxane",
+      "day": 126,
+      "relative_dose": 1.0,
+      "label": "Taxane week 7"
+    },
+    {
+      "drug": "taxane",
+      "day": 133,
+      "relative_dose": 1.0,
+      "label": "Taxane week 8"
+    },
+    {
+      "drug": "taxane",
+      "day": 140,
+      "relative_dose": 1.0,
+      "label": "Taxane week 9"
+    },
+    {
+      "drug": "taxane",
+      "day": 147,
+      "relative_dose": 1.0,
+      "label": "Taxane week 10"
+    },
+    {
+      "drug": "taxane",
+      "day": 154,
+      "relative_dose": 1.0,
+      "label": "Taxane week 11"
+    },
+    {
+      "drug": "taxane",
+      "day": 161,
+      "relative_dose": 1.0,
+      "label": "Taxane week 12"
+    }
+  ],
+  "notes": [
+    "Coarse demo schedule for early exposure and volume-only simulator experiments.",
+    "Drug labels are abstract mechanism categories, not clinical prescribing instructions."
+  ]
+}

@@ -46,6 +46,46 @@ Use when only tumor diameter or volume is available.
 V(t) = tumor volume over time
 ```
 
+Current implementation status as of July 5, 2026:
+
+```text
+experiments/mechanistic_simulator/
+```
+
+Volume-only simulator v0 has passed synthetic feasibility checks for exposure,
+single trajectories, ensemble uncertainty, synthetic reweighting, stress guards,
+and safety-language scanning. It supports demo/manual tumor-volume trajectories,
+ensemble uncertainty, and Bayesian-update-ready particle outputs.
+
+Important limitation: the latest identifiability run found no strongly
+constrained parameters. Active treatment sensitivities, growth rate, and
+resistant fraction were only weakly constrained, while carrying capacity, unused
+drug sensitivities, observation noise, and resistant sensitivity scale remained
+prior-dominated. This implementation should remain an exploratory research
+simulation, not a clinical prediction engine.
+
+Follow-up recovery sweep:
+
+```text
+experiments/mechanistic_simulator/outputs/v0_recovery_sweep_report.md
+experiments/mechanistic_simulator/outputs/v0_large_particle_check_report.md
+```
+
+The sweep fit synthetic observations at days 0, 42, and 84, then predicted a
+held-out day 126 measurement. It varied random seed, particle count, assumed
+observation noise, and reduced-parameter variants. The posterior particle mean
+beat the generic prior ensemble, but a simple exponential baseline had lower
+median held-out error in the main sweep. Raising full-model particle count to
+5000 increased absolute effective sample size but did not improve ESS fraction,
+which stayed near 2.7%.
+
+Takeaway: the v0 simulator can encode useful mechanistic assumptions and produce
+Bayesian-update-ready particles, but trajectory fit alone is not enough evidence
+for personalized biology. The next modeling step should reduce the free
+parameter set, keep held-out baseline comparisons in the evaluation loop, and
+avoid parameter-level claims until real or manually curated longitudinal data
+support them.
+
 ### Version 2: regional model
 
 Divide the tumor into regions, such as enhancing core, low-enhancement region, and invasive boundary.

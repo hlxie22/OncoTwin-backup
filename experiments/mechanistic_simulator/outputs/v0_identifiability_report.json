@@ -1,0 +1,210 @@
+{
+  "case_id": "demo_longitudinal_measurement_001",
+  "constrained_parameters": [],
+  "effective_sample_size": 2.6310576722981995,
+  "parameter_reports": {
+    "carrying_capacity_ml": {
+      "classification": "prior-dominated",
+      "posterior_width_80": 191.3231676939347,
+      "prior_width_80": 316.5105793693052,
+      "reason": "",
+      "width_ratio": 0.6044763750872871
+    },
+    "drug_sensitivity.anthracycline": {
+      "classification": "weakly constrained",
+      "posterior_width_80": 0.0160286269661528,
+      "prior_width_80": 0.0915852154330733,
+      "reason": "low effective sample size prevents a strong constrained call",
+      "width_ratio": 0.1750132583120456
+    },
+    "drug_sensitivity.endocrine_agent": {
+      "classification": "prior-dominated",
+      "posterior_width_80": 0.013137183147710736,
+      "prior_width_80": 0.029325473014624903,
+      "reason": "drug is not present in the treatment schedule",
+      "width_ratio": 0.4479785591577361
+    },
+    "drug_sensitivity.her2_directed_agent": {
+      "classification": "prior-dominated",
+      "posterior_width_80": 0.057297508598720945,
+      "prior_width_80": 0.10272227462710723,
+      "reason": "drug is not present in the treatment schedule",
+      "width_ratio": 0.5577904968198668
+    },
+    "drug_sensitivity.taxane": {
+      "classification": "weakly constrained",
+      "posterior_width_80": 0.019983242329954035,
+      "prior_width_80": 0.0886901022379189,
+      "reason": "low effective sample size prevents a strong constrained call",
+      "width_ratio": 0.2253153601779289
+    },
+    "growth_rate": {
+      "classification": "weakly constrained",
+      "posterior_width_80": 0.0035814048716126864,
+      "prior_width_80": 0.010320845878990341,
+      "reason": "low effective sample size prevents a strong constrained call",
+      "width_ratio": 0.34700691334837036
+    },
+    "observation_noise_fraction": {
+      "classification": "prior-dominated",
+      "posterior_width_80": 0.05552820617745299,
+      "prior_width_80": 0.09450780468377636,
+      "reason": "",
+      "width_ratio": 0.5875515399310214
+    },
+    "resistant_fraction": {
+      "classification": "weakly constrained",
+      "posterior_width_80": 0.04507989431351361,
+      "prior_width_80": 0.2617153443016085,
+      "reason": "low effective sample size prevents a strong constrained call",
+      "width_ratio": 0.17224780776155874
+    },
+    "resistant_sensitivity_scale": {
+      "classification": "prior-dominated",
+      "posterior_width_80": 0.10086119768946472,
+      "prior_width_80": 0.18170801690896082,
+      "reason": "",
+      "width_ratio": 0.555072909854044
+    }
+  },
+  "prior_dominated_parameters": [
+    "carrying_capacity_ml",
+    "drug_sensitivity.endocrine_agent",
+    "drug_sensitivity.her2_directed_agent",
+    "observation_noise_fraction",
+    "resistant_sensitivity_scale"
+  ],
+  "recommendation": "Reduce free parameters, fix weak parameters to curated priors, or show trajectory-level uncertainty without parameter-level certainty.",
+  "similar_trajectory_pairs": [
+    {
+      "parameter_gap_fraction": 0.33488627455412845,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000015",
+      "trajectory_normalized_rmse": 0.05543598948822907
+    },
+    {
+      "parameter_gap_fraction": 0.2703904620604867,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000149",
+      "trajectory_normalized_rmse": 0.06961527250111738
+    },
+    {
+      "parameter_gap_fraction": 0.3783893656110821,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000164",
+      "trajectory_normalized_rmse": 0.07384491254025485
+    },
+    {
+      "parameter_gap_fraction": 0.30168136676675905,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000166",
+      "trajectory_normalized_rmse": 0.07965013548923003
+    },
+    {
+      "parameter_gap_fraction": 0.26223440972900197,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000201",
+      "trajectory_normalized_rmse": 0.05932137210293791
+    },
+    {
+      "parameter_gap_fraction": 0.28954461954875776,
+      "particle_id_a": "p000002",
+      "particle_id_b": "p000248",
+      "trajectory_normalized_rmse": 0.05654960024613307
+    },
+    {
+      "parameter_gap_fraction": 0.3663744130313252,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000103",
+      "trajectory_normalized_rmse": 0.043672684095784765
+    },
+    {
+      "parameter_gap_fraction": 0.3806497616754494,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000105",
+      "trajectory_normalized_rmse": 0.03105907924020147
+    },
+    {
+      "parameter_gap_fraction": 0.33158558852348885,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000107",
+      "trajectory_normalized_rmse": 0.07436370223543308
+    },
+    {
+      "parameter_gap_fraction": 0.30835672862648567,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000108",
+      "trajectory_normalized_rmse": 0.06356089117854886
+    },
+    {
+      "parameter_gap_fraction": 0.3201868473640557,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000173",
+      "trajectory_normalized_rmse": 0.05809655648953344
+    },
+    {
+      "parameter_gap_fraction": 0.30209557721975916,
+      "particle_id_a": "p000003",
+      "particle_id_b": "p000222",
+      "trajectory_normalized_rmse": 0.049850741333292974
+    },
+    {
+      "parameter_gap_fraction": 0.25093183745327974,
+      "particle_id_a": "p000004",
+      "particle_id_b": "p000065",
+      "trajectory_normalized_rmse": 0.03361170358037705
+    },
+    {
+      "parameter_gap_fraction": 0.2825628610343566,
+      "particle_id_a": "p000004",
+      "particle_id_b": "p000112",
+      "trajectory_normalized_rmse": 0.03886554317084745
+    },
+    {
+      "parameter_gap_fraction": 0.3559695548222589,
+      "particle_id_a": "p000004",
+      "particle_id_b": "p000139",
+      "trajectory_normalized_rmse": 0.05626415394010387
+    },
+    {
+      "parameter_gap_fraction": 0.2947995330567361,
+      "particle_id_a": "p000004",
+      "particle_id_b": "p000158",
+      "trajectory_normalized_rmse": 0.07866203756117889
+    },
+    {
+      "parameter_gap_fraction": 0.3261742846057139,
+      "particle_id_a": "p000005",
+      "particle_id_b": "p000111",
+      "trajectory_normalized_rmse": 0.07216293481160486
+    },
+    {
+      "parameter_gap_fraction": 0.28172815420654546,
+      "particle_id_a": "p000006",
+      "particle_id_b": "p000013",
+      "trajectory_normalized_rmse": 0.0725427520010434
+    },
+    {
+      "parameter_gap_fraction": 0.4027005870299208,
+      "particle_id_a": "p000006",
+      "particle_id_b": "p000032",
+      "trajectory_normalized_rmse": 0.07693372724145772
+    },
+    {
+      "parameter_gap_fraction": 0.26372594907407926,
+      "particle_id_a": "p000006",
+      "particle_id_b": "p000058",
+      "trajectory_normalized_rmse": 0.07174719268086575
+    }
+  ],
+  "warnings": [
+    "Identifiability report is based on synthetic/demo particle behavior, not clinical evidence.",
+    "Low effective sample size; narrow posterior intervals may reflect too few surviving particles."
+  ],
+  "weakly_constrained_parameters": [
+    "drug_sensitivity.anthracycline",
+    "drug_sensitivity.taxane",
+    "growth_rate",
+    "resistant_fraction"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/simulation_output.schema.json",
+  "title": "Volume simulator output",
+  "type": "object",
+  "required": [
+    "simulation_version",
+    "times",
+    "median_volume_ml",
+    "interval_80_volume_ml",
+    "interval_95_volume_ml",
+    "n_particles",
+    "particle_trajectories",
+    "warnings",
+    "driver_summary"
+  ],
+  "properties": {
+    "simulation_version": {
+      "const": "volume_ode_v0"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "times": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "median_volume_ml": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "interval_80_volume_ml": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "interval_95_volume_ml": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "n_particles": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "particle_trajectories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "particle_id",
+          "parameters",
+          "times",
+          "predicted_volume_ml",
+          "predicted_longest_diameter_cm",
+          "warnings"
+        ]
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "driver_summary": {
+      "type": "object"
+    }
+  }
+}

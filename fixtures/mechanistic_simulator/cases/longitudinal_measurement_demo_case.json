@@ -1,0 +1,75 @@
+{
+  "case_id": "demo_longitudinal_measurement_001",
+  "display_name": "Demo longitudinal tumor-measurement case",
+  "subtype": "TNBC-style synthetic longitudinal response",
+  "pathology": {
+    "er_status": "negative_demo",
+    "pr_status": "negative_demo",
+    "her2_status": "negative_demo",
+    "grade": "high_demo",
+    "ki67": "high_demo"
+  },
+  "baseline_measurement": {
+    "case_id": "demo_longitudinal_measurement_001",
+    "day": 0,
+    "tumor_volume_ml": 30.0,
+    "longest_diameter_cm": 4.1,
+    "source": "synthetic",
+    "confidence": "demo"
+  },
+  "measurements": [
+    {
+      "timepoint_id": "T0",
+      "case_id": "demo_longitudinal_measurement_001",
+      "day": 0,
+      "tumor_volume_ml": 30.0,
+      "longest_diameter_cm": 4.1,
+      "source": "synthetic",
+      "confidence": "demo"
+    },
+    {
+      "timepoint_id": "T1",
+      "case_id": "demo_longitudinal_measurement_001",
+      "day": 42,
+      "tumor_volume_ml": 18.0,
+      "longest_diameter_cm": 3.4,
+      "source": "synthetic",
+      "confidence": "demo"
+    },
+    {
+      "timepoint_id": "T2",
+      "case_id": "demo_longitudinal_measurement_001",
+      "day": 84,
+      "tumor_volume_ml": 10.5,
+      "longest_diameter_cm": 2.7,
+      "source": "synthetic",
+      "confidence": "demo"
+    },
+    {
+      "timepoint_id": "T3",
+      "case_id": "demo_longitudinal_measurement_001",
+      "day": 126,
+      "tumor_volume_ml": 7.5,
+      "longest_diameter_cm": 2.3,
+      "source": "synthetic",
+      "confidence": "demo"
+    }
+  ],
+  "treatment_schedule": {
+    "schedule_id": "demo_chemotherapy_schedule",
+    "path": "fixtures/mechanistic_simulator/schedules/chemotherapy_schedule.json"
+  },
+  "expected_qualitative_behavior": {
+    "behavior_id": "observed_strong_response",
+    "description": "Synthetic T0/T1/T2/T3 measurements decrease over time and can be used later for update and recovery harnesses."
+  },
+  "intended_use": [
+    "demo fixture",
+    "longitudinal measurement loading",
+    "future Bayesian-update and synthetic-recovery checks"
+  ],
+  "safety_notes": [
+    "Synthetic demo data only.",
+    "Measurement values are hand-authored fixture values, not simulator outputs."
+  ]
+}

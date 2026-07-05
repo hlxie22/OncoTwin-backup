@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/mechanistic_params.schema.json",
+  "title": "Mechanistic parameters",
+  "type": "object",
+  "required": [
+    "growth_law",
+    "growth_rate",
+    "carrying_capacity_ml",
+    "drug_sensitivity",
+    "drug_ec50",
+    "drug_decay",
+    "resistant_fraction",
+    "resistant_sensitivity_scale",
+    "observation_noise_fraction"
+  ],
+  "properties": {
+    "particle_id": {
+      "type": "string"
+    },
+    "growth_law": {
+      "const": "logistic"
+    },
+    "growth_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 0.1
+    },
+    "carrying_capacity_ml": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "drug_sensitivity": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "drug_ec50": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      }
+    },
+    "drug_decay": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      }
+    },
+    "resistant_fraction": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "resistant_sensitivity_scale": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "observation_noise_fraction": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

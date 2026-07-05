@@ -363,9 +363,64 @@ modality dropout: train so the net works with any subset of modalities,
   (Duke = imaging+genomics; I-SPY = longitudinal; TCGA = molecular)
 hierarchical/partial pooling: population prior + per-patient deviation;
   thin-data patients shrink toward the population
-multi-task auxiliary heads (pCR, subtype, residual volume) using the
-  label-rich BreastDCEDL cohort to regularize the shared encoder
+targeted auxiliary heads (below) using label-rich cohorts to regularize the
+  shared encoder without pretending they are direct parameter labels
 ```
+
+### G. Targeted auxiliary response signals (use only the top three)
+
+Auxiliary signals are worth adding, but only if they are close to the
+baseline-to-response problem. Do **not** add a grab bag of weak tasks just
+because labels are available; every auxiliary head increases leakage risk,
+cohort-harmonization burden, and loss-weight tuning.
+
+Use these three signals first:
+
+| Priority | Signal | Why it helps | How to add it |
+|---|---|---|---|
+| 1 | Early tumor-volume / functional-tumor-volume change | Closest proxy for the trajectory the twin must predict | Add heads for `log(V_T1 / V_T0)`, `log(V_T2 / V_T0)`, and response slope when T1/T2/FTV are available |
+| 2 | pCR / residual disease outcome | Direct neoadjuvant response endpoint; available in more cases than full trajectories | Add an endpoint head from the shared baseline embedding; use it to regularize response sensitivity, not as a one-parameter target |
+| 3 | ADC / DWI cellularity change | Most aligned with the simulator state variable `N(x,t)` because ADC reflects cellularity better than enhancement volume alone | Add heads for baseline-to-follow-up ADC/cellularity change where ACRIN-6698-style DWI exists |
+
+Recommended training graph:
+
+```text
+shared baseline encoder
+  → parameter distribution head             deployed output
+  → early-volume / FTV-change head          high auxiliary weight
+  → pCR / residual-disease head             medium-high auxiliary weight
+  → ADC / cellularity-change head           medium weight when available
+```
+
+The auxiliary heads should shape the shared representation and constrain the
+learned residual, but they must **not** directly override the mechanistic
+parameter prior. The parameter head remains:
+
+```math
+\theta = prior(subtype, biomarkers, treatment) + \Delta_{learned}
+```
+
+where `Δ_learned` is small, regularized toward zero, and learned only in
+identifiable directions. If an auxiliary task improves its own metric but does
+not improve held-out trajectory likelihood, trajectory coverage, or early-update
+accuracy over the biology-prior-only baseline, downweight or remove it.
+
+Composite real-data fine-tuning loss:
+
+```math
+L =
+  L_{trajectory}
+  + \lambda_{vol} L_{\Delta V / FTV}
+  + \lambda_{pCR} L_{pCR / residual}
+  + \lambda_{ADC} L_{\Delta ADC}
+  + L_{calibration}
+  + L_{regularization}
+```
+
+Only include a term for cases where that label exists. Use patient-level and
+site-level splits across all auxiliary tasks, and de-duplicate overlapping
+cohorts such as I-SPY, BreastDCEDL, MAMA-MIA-derived releases, and Duke before
+claiming held-out generalization.
 
 ## Recommended training curriculum
 
@@ -376,12 +431,13 @@ The families above compose into one end-to-end recipe:
 1. Pretrain encoders self-supervised on all imaging/molecular data          (D)
 2. Build an SBI estimator; turn the longitudinal cohort into
    uncertainty-aware parameter targets (use the LOCATION as target)         (A)
-3. Pretrain the amortizer on unlimited synthetic dynamics                   (C)
-4. Fine-tune end-to-end through the differentiable simulator on
+3. Pretrain the shared encoder with the top-three auxiliary response heads   (G)
+4. Pretrain the amortizer on unlimited synthetic dynamics                    (C)
+5. Fine-tune end-to-end through the differentiable simulator on
    real trajectories; re-learn predictive spread for baseline-only input    (B)
-5. Apply biology-informed priors, modality dropout, and pooling
-   throughout                                                            (E, F)
-6. Gate on sim-to-real and calibration checks (below)
+6. Apply biology-informed priors, modality dropout, pooling, and
+   auxiliary-task missingness throughout                                  (E, F, G)
+7. Gate on sim-to-real, auxiliary-ablation, and calibration checks (below)
 ```
 
 ## Sim-to-real risk and required checks
@@ -395,6 +451,8 @@ discriminator / two-sample test between synthetic and real trajectories;
   if separable, fix p(θ) or the noise model first
 held-out-cohort validation (I-SPY1 or a held-out site): do the learned
   priors improve real trajectory prediction over a generic population prior?
+auxiliary-ablation validation: does each auxiliary head improve held-out
+  trajectory likelihood / coverage, not only its own endpoint metric?
 posterior coverage / simulation-based calibration: do the credible
   intervals contain the truth at the nominal rate?
 conformal prediction wrapper on the DEPLOYED parameter/trajectory
@@ -556,7 +614,8 @@ Response:
 6. Add molecular graph encoder.
 7. Move the distribution head to a joint output (full-covariance → mixture → flow) with log-space, bounded, β-NLL training.
 8. Build the SBI amortized-calibration estimator for posterior targets; use the location as target (family A).
-9. Pretrain on synthetic dynamics, then fine-tune end-to-end on real trajectories, re-learning predictive spread for baseline-only input (families C, B).
-10. Add biology-informed residual priors with architectural monotonicity (family E).
-11. Add the OOD density model and the Value-of-Information ranking for missing data.
-12. Add uncertainty calibration, a conformal-prediction wrapper, and sim-to-real / coverage checks.
+9. Add the top-three auxiliary response heads: early volume/FTV change, pCR/residual outcome, and ADC/DWI cellularity change where available (family G).
+10. Pretrain on synthetic dynamics, then fine-tune end-to-end on real trajectories, re-learning predictive spread for baseline-only input (families C, B).
+11. Add biology-informed residual priors with architectural monotonicity (family E).
+12. Add the OOD density model and the Value-of-Information ranking for missing data.
+13. Add uncertainty calibration, a conformal-prediction wrapper, sim-to-real checks, and auxiliary-head ablations.
