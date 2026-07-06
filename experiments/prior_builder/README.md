@@ -5,22 +5,21 @@ This directory contains the V1 layered-prior implementation.
 Implemented modules:
 
 ```text
+parameter_contract.py        Layer 0 learnable vs fixed parameter rules
+bounds.py                    Layer 1 biologic bounds and observation-noise policy
 transforms.py                transformed parameter-space utilities
+population_prior.py          Layer 2 TNBC chemotherapy population prior
+pathology_biomarker_rules.py Layer 3 pathology/biomarker shifts and missingness rules
+mri_feature_rules.py         Layer 4 MRI feature/QC rules and observation noise
+adapter_to_volume_ode.py     V1 prior samples to current volume ODE parameters
 ```
 
 Planned modules:
 
 ```text
-parameter_contract.py        learnable vs fixed parameter rules
-bounds.py                    biologic/numeric bounds and warnings
-population_prior.py          subtype/treatment population priors
-pathology_rules.py           pathology shifts and uncertainty rules
-biomarker_rules.py           biomarker shifts and missingness rules
-mri_feature_rules.py         MRI feature and QC prior rules
 ai_residual.py               disabled no-op residual first, learned residual later
 assemble_prior.py            layer composition and traceable prior object
 sample_prior.py              correlated particle sampling
-adapter_to_volume_ode.py     V1 prior samples to current volume ODE parameters
 smc_update.py                Bayesian-style particle reweighting and ESS policy
 calibration_metrics.py       coverage, interval width, and log-likelihood helpers
 ```

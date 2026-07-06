@@ -1,0 +1,33 @@
+data/raw/
+data/processed/
+*.tcia
+*.nii
+*.nii.gz
+*.dcm
+*.nrrd
+*.mha
+
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environments
+.venv/
+venv/
+env/
+
+# Logs and generated reports
+logs/
+evals/reports/
+
+# Generated repo context / repomix outputs
+repomix-output.xml
+repomix.txt

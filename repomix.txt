@@ -1,1 +1,0 @@
-scripts/gpt-change "Help me implement the next v1 prior-stack task" -- --ignore "experiments/v0/**,tests/mechanistic_simulator/**,docs/11_high_level_app_overview.pdf,.devcontainer/**,scripts/gpt-bug,scripts/gpt-change"

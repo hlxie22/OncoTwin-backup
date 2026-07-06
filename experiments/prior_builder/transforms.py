@@ -12,12 +12,7 @@ import random
 from statistics import NormalDist
 from typing import Callable, Dict, List, Mapping, Optional, Sequence
 
-
-LEARNABLE_PARAMETER_NAMES = (
-    "growth_rate_per_day",
-    "active_treatment_sensitivity",
-    "resistant_fraction",
-)
+from .parameter_contract import LEARNABLE_PARAMETER_NAMES
 
 TRANSFORMED_PARAMETER_NAMES = (
     "log_growth_rate_per_day",

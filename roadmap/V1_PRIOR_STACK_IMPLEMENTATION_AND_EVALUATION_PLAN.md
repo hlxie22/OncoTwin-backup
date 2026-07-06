@@ -1,57 +1,114 @@
 # V1 Prior Stack Implementation and Evaluation Plan
 
-## Purpose
+Status: V1-A implementation and evaluation plan  
+Scope: prior-builder layers, real-data evaluation, uncertainty calibration, and MRI-feature integration  
+Primary goal: prove that the V1 prior stack can be evaluated on real longitudinal breast-cancer treatment-response data before building heavier posterior, scenario, or imaging-training infrastructure.
 
-This document defines the first serious V1 implementation path for OncoTwin's mechanistic simulation work.
+---
 
-V1 is not the full spatial MRI, CNN, molecular-graph, and patient-facing product. V1 is the first evidence-gated implementation that should prove whether a transparent layered prior plus Bayesian updating can produce useful, calibrated, explainable tumor-response simulations.
+## 1. Executive Summary
 
-The core V1 question is:
+V1 should be implemented as a **table-first prior-stack evaluation system**.
 
-```text
-Did the digital twin become more useful after seeing patient-specific evidence?
-```
+The first V1 milestone is not full MRI model training and not full raw DICOM ingestion. The first milestone is a real patient-level cohort table that allows the existing prior-builder layers to be evaluated against held-out tumor-volume observations.
 
-V1 should answer:
+The V1 system should:
 
-```text
-Can patient-specific evidence improve forecasts?
-Does the posterior improve as follow-up measurements arrive?
-Are uncertainty intervals calibrated?
-Does the model know when it is likely to be wrong?
-Do explanations respect identifiability?
-Can scenario comparisons be useful without becoming treatment-prescriptive?
-Where does the model fail, and does it warn users honestly?
-```
+1. Resolve a parameter contract for a patient and treatment context.
+2. Apply parameter bounds and observation-noise policy.
+3. Build a population prior.
+4. Apply pathology and biomarker prior shifts.
+5. Apply MRI-feature and QC rules.
+6. Convert prior samples into simulator-compatible parameters.
+7. Evaluate predictions, uncertainty, and layer deltas on real longitudinal data.
 
-## V1-A scope
+The MRI portion should be integrated through cached features, not through direct raw-image reads during every eval. The recommended V1 imaging approach is to use a pretrained tumor segmenter, specifically **MAMA-MIA pretrained nnU-Net**, and then reduce images into feature tables used by Layer 4.
 
-Start narrow:
+Full raw I-SPY2 DICOM download and full raw DICOM preprocessing are not required for V1 success.
 
-```text
-Disease context: TNBC
-Treatment context: A/C-T style neoadjuvant chemotherapy
-Simulator mode: volume-only
-Prior mode: layered, transparent, non-AI first
-Update mode: Bayesian-style particle reweighting
-Primary outputs: trajectory forecast, uncertainty bands, posterior health, explanation, failure-mode report
-```
+---
 
-Inputs:
+## 2. Current V1 Design Principles
+
+### 2.1 Table-first evaluation
+
+V1 evals should consume patient-level JSONL/CSV tables with real longitudinal measurements.
+
+Raw MRI images are optional inputs to a separate feature-extraction lane. The prior-stack evals should read only:
 
 ```text
-case metadata
-baseline tumor volume or diameter
-subtype / ER / PR / HER2
-grade
-Ki-67 if available
-BRCA / HRD if available
-MRI-derived volume / FTV / QC if available
-A/C-T chemotherapy schedule
-follow-up tumor measurements when available
+data/processed/v1_prior_stack/*.jsonl
+data/curated/features/*.jsonl
 ```
 
-Personalized simulator parameters:
+The evals should not repeatedly read raw DICOM or NIfTI files.
+
+### 2.2 Fail closed
+
+V1 should fail closed when data is missing, synthetic, out of scope, or too low quality.
+
+Examples:
+
+```text
+synthetic/demo/fixture rows rejected by default
+missing baseline or final volume excluded with reason
+out-of-scope tumor subtype excluded from V1-A performance claims
+low-quality MRI features widen uncertainty or become report-only
+missing posterior/scenario/explanation runtimes marked unavailable, not passed
+```
+
+### 2.3 Separate data readiness from runtime readiness
+
+The V1 plan should distinguish:
+
+```text
+real-data cohort readiness
+MRI-feature readiness
+posterior-update runtime readiness
+scenario-lab runtime readiness
+explanation runtime readiness
+```
+
+A missing runtime should not block real-data prior-layer evaluation.
+
+### 2.4 Use pretrained imaging models first
+
+Do not train a new breast MRI segmentation model during V1.
+
+Use MAMA-MIA pretrained nnU-Net as the first segmentation adapter. Treat it as an external inference dependency that produces tumor masks and cached MRI features. Future versions may compare against other pretrained breast MRI segmenters or fine-tune models, but that is not a V1 requirement.
+
+---
+
+## 3. Existing Prior-Builder Layer Stack
+
+The V1 prior-builder stack is organized as follows.
+
+### Layer 0: Parameter contract
+
+Module:
+
+```text
+experiments/prior_builder/parameter_contract.py
+```
+
+Responsibilities:
+
+```text
+define learnable simulator parameters
+define treatment/subtype scope
+resolve whether a patient is in V1-A scope
+provide conservative fallback for unsupported contexts
+```
+
+V1-A intended scope:
+
+```text
+TNBC or resolvable TNBC-like receptor profile
+neoadjuvant chemotherapy
+A/C-T-like treatment context when available
+```
+
+Primary learnable parameters:
 
 ```text
 growth_rate_per_day
@@ -59,1161 +116,1296 @@ active_treatment_sensitivity
 resistant_fraction
 ```
 
-Fixed or non-AI-derived parameters:
+### Layer 1: Bounds and observation-noise policy
+
+Module:
 
 ```text
-carrying_capacity_ml
-drug_decay
-drug_ec50
-resistant_sensitivity_scale
-observation_noise_fraction
-inactive drug sensitivities
+experiments/prior_builder/bounds.py
 ```
 
-Observation noise should come from measurement source and QC, not from AI personalization.
-
-## Out of scope for V1-A
-
-Delay these until the V1 prior stack and evaluation suite are stable:
+Responsibilities:
 
 ```text
-3D spatial reaction-diffusion simulation
-CNN image encoder residuals
-learned molecular graph attention
-multi-regimen optimization
-patient-facing treatment ranking
-symptom-driven tumor-biology updates
+define hard and soft bounds for transformed parameters
+define observation-noise policy
+apply conservative behavior when quality or scope is uncertain
 ```
 
-Symptoms may affect person-burden summaries and care-team questions, but they must not update tumor-response biology directly.
+### Layer 2: Population prior
 
-## V1 architecture
-
-Represent the learnable prior in transformed parameter space:
+Module:
 
 ```text
-z = [
-  log(growth_rate_per_day),
-  log(active_treatment_sensitivity),
-  logit(resistant_fraction)
-]
+experiments/prior_builder/population_prior.py
 ```
 
-Assemble the prior in explicit layers:
+Responsibilities:
 
 ```text
-patient_prior =
-    Layer 0 parameter contract
-  + Layer 1 biologic/numeric bounds
-  + Layer 2 subtype/treatment population prior
-  + Layer 3 pathology and biomarker shifts
-  + Layer 4 MRI feature and QC shifts
-  + Layer 5 conservative AI residual, initially disabled
+sample prior distributions from population-level assumptions
+produce prior predictive samples before patient-specific pathology/MRI shifts
+support prior predictive evaluation on held-out tumor-volume observations
 ```
 
-Then update with observations:
+### Layer 3: Pathology and biomarker rules
+
+Module:
 
 ```text
-posterior proportional_to patient_prior * likelihood(observed follow-up data | simulation)
+experiments/prior_builder/pathology_biomarker_rules.py
 ```
 
-Every prior object should expose its composition:
-
-```json
-{
-  "prior_version": "oncotwin_prior_v1",
-  "base_group": "tnbc_chemo",
-  "learnable_parameters": [
-    "growth_rate_per_day",
-    "active_treatment_sensitivity",
-    "resistant_fraction"
-  ],
-  "fixed_parameters": [
-    "carrying_capacity_ml",
-    "drug_decay",
-    "drug_ec50",
-    "resistant_sensitivity_scale",
-    "observation_noise_fraction"
-  ],
-  "layer_contributions": {
-    "parameter_contract": [],
-    "bounds": [],
-    "population_prior": {},
-    "pathology_biomarker_rules": [],
-    "mri_feature_rules": [],
-    "ai_residual": {}
-  },
-  "warnings": [],
-  "uncertainty_drivers": []
-}
-```
-
-## Implementation plan
-
-### Phase 0: Freeze the V0 baseline
-
-Before changing simulator behavior, snapshot the existing V0 harness.
-
-Capture:
+Responsibilities:
 
 ```text
-current generic-prior ensemble
-current synthetic recovery report
-current identifiability report
-current recovery sweep
-current large-particle check
-current simple baseline comparisons
+shift transformed-space priors using pathology and biomarker fields
+handle receptor status, grade, Ki-67, BRCA/HRD, and related fields
+avoid claiming precision when biomarkers are missing
 ```
 
-Required tests:
+### Layer 4: MRI feature and QC rules
+
+Module:
 
 ```text
-existing unit tests pass
-existing integration tests pass
-fixed-seed V0 outputs are reproducible
-baseline reports can be regenerated
+experiments/prior_builder/mri_feature_rules.py
 ```
 
-Evaluation outputs:
+Responsibilities:
 
 ```text
-V0 held-out volume error
-V0 uncertainty coverage
-V0 posterior ESS summary
-V0 identifiability summary
-no-change / linear / exponential baseline leaderboard
+use MRI-derived features as weak evidence
+widen uncertainty for poor QC or conflicting features
+mark report-only behavior when MRI quality is insufficient
+avoid overconfident parameter shifts from noisy segmentations
 ```
 
-Gate:
+Layer 4 should consume cached features only. It should not call the image segmenter or open MRI files during prior-stack evaluation.
+
+### Adapter: simulator conversion
+
+Module:
 
 ```text
-V0 remains reproducible and can be used as a regression baseline.
-Simple baselines are visible in every V1 comparison report.
+experiments/prior_builder/adapter_to_volume_ode.py
 ```
 
-Watch out for:
+Responsibilities:
 
 ```text
-Treating V0 as a product architecture.
-Hiding simple baselines because they are inconveniently strong.
+convert V1 prior samples to simulator parameters
+enforce simulator-compatible parameter naming and bounds
+support prior predictive forecasting on longitudinal tumor-volume data
 ```
 
-### Phase 1: Add transformed-space prior utilities
+---
 
-Implement:
+## 4. V1 Data Readiness Levels
+
+V1 should explicitly track data readiness levels.
+
+| Level | Name | Required for V1? | Description |
+| --- | --- | --- | --- |
+| D0 | Metadata inventory | Yes | Known datasets, local paths, licenses, columns, source provenance |
+| D1 | Real longitudinal cohort table | Yes | Patient-level rows with baseline and held-out tumor volume |
+| D2 | Curated MRI feature table | Recommended | Tumor volume, enhancement, QC, and segmentation-derived features |
+| D3 | Raw MRI subset | Optional | Small DICOM/NIfTI subset for ingestion and segmentation testing |
+| D4 | Full raw MRI archive | No for V1 | Multi-TB reproducibility path; defer unless needed |
+
+V1 success should require D1. D2 is recommended for MRI-layer evaluation. D3 is useful for integration tests. D4 is not a V1 blocker.
+
+---
+
+## 5. Dataset Policy
+
+### 5.1 I-SPY2
+
+I-SPY2 is the primary target for real longitudinal neoadjuvant breast cancer response evaluation.
+
+Use I-SPY2 in this order:
 
 ```text
-transforms.py
+1. Processed clinical, outcome, volume, and FTV metadata
+2. BreastDCEDL_ISPY2 curated NIfTI/metadata, where useful
+3. Small raw I-SPY2 subset for raw-ingestion testing
+4. Full raw I-SPY2 only for later reproducibility work
 ```
 
-Functions:
+Do not require full raw I-SPY2 DICOM for V1.
+
+Known source links:
 
 ```text
-to_transformed(params)
-from_transformed(z)
-safe_log
-safe_logit
-safe_sigmoid
-median_interval_to_normal
-validate_covariance
-sample_correlated_transformed_prior
+TCIA I-SPY2:
+https://www.cancerimagingarchive.net/collection/ispy2/
+
+IDC I-SPY2:
+https://portal.imaging.datacommons.cancer.gov/collections/ispy2/
 ```
 
-Required tests:
+Notes:
 
 ```text
-round-trip transform tests
-near-zero resistant-fraction tests
-near-one resistant-fraction tests
-invalid covariance tests
-positive-semidefinite covariance tests
-sample quantile sanity tests
-fixed-seed reproducibility tests
+TCIA describes I-SPY2 as a public DCE-MRI breast-cancer collection.
+IDC warns that full I-SPY2 image download can exceed 1 TB.
+A local NBIA query may return millions of DICOM instances if all MR series are requested.
 ```
 
-Evaluation outputs:
+### 5.2 BreastDCEDL / BreastDCEDL_ISPY2
+
+BreastDCEDL and BreastDCEDL_ISPY2 should be preferred over full raw DICOM where possible because they provide curated, deep-learning-ready NIfTI volumes and harmonized metadata.
+
+Use BreastDCEDL_ISPY2 for:
 
 ```text
-sampled median vs configured median
-sampled 80% interval vs configured 80% interval
-bound-hit frequency
+curated I-SPY2 imaging baseline
+NIfTI ingestion tests
+tumor-volume and pCR metadata alignment
+future image-model benchmarking
+pretraining or pCR baseline comparisons
 ```
 
-Gate:
+Known source links:
 
 ```text
-Sampling behaves predictably in transformed space.
-Normal sampling does not require frequent silent clipping.
+TCIA BreastDCEDL_ISPY2:
+https://www.cancerimagingarchive.net/analysis-result/breastdcedl_ispy2/
+
+BreastDCEDL GitHub:
+https://github.com/naomifridman/BreastDCEDL
 ```
 
-Watch out for:
+### 5.3 MAMA-MIA
+
+MAMA-MIA should be the default V1 segmentation integration target.
+
+Use MAMA-MIA for:
 
 ```text
-Samples repeatedly hitting hard bounds.
-Unstable logit behavior near 0 or 1.
-Overly narrow transformed-space variance.
+pretrained breast tumor segmentation
+tumor-mask generation
+tumor-volume extraction
+segmentation QC
+feature-generation pipeline validation
+future segmentation benchmarking
 ```
 
-### Phase 2: Layer 0 parameter contract
-
-Implement context-specific learnable parameter sets.
-
-For V1-A:
+Known source link:
 
 ```text
-TNBC + chemotherapy:
-  learnable:
-    growth_rate_per_day
-    active_treatment_sensitivity
-    resistant_fraction
-
-  fixed:
-    carrying_capacity_ml
-    drug_decay
-    drug_ec50
-    resistant_sensitivity_scale
-    observation_noise_fraction
-    inactive drug sensitivities
+MAMA-MIA GitHub:
+https://github.com/LidiaGarrucho/MAMA-MIA
 ```
 
-Required tests:
+Policy:
 
 ```text
-TNBC chemo activates only growth/sensitivity/resistance
-inactive drug sensitivities cannot be personalized
-unknown regimen falls back to conservative generic behavior
-out-of-scope regimen emits warning
-fixed parameters remain fixed after sampling
+Do not train a segmentation model from scratch during V1.
+Use pretrained MAMA-MIA nnU-Net inference first.
+Cache masks and features.
+Spot-check masks manually before using MRI features in performance claims.
 ```
 
-Evaluation outputs:
+### 5.4 QIN Breast DCE-MRI
+
+Use QIN Breast DCE-MRI as an external sanity-check dataset if storage allows.
+
+Use cases:
 
 ```text
-parameter-count report
-prior-dominated parameter report
-out-of-scope case warning report
+longitudinal response sanity check
+calibration check outside I-SPY2 conventions
+MRI preprocessing integration test
 ```
 
-Gate:
+### 5.5 RIDER Breast MRI
+
+Use RIDER Breast MRI as a small measurement-noise and test-retest style dataset.
+
+Use cases:
 
 ```text
-The model cannot accidentally personalize parameters outside the V1 contract.
+observation-noise calibration
+repeatability checks
+MRI feature stability checks
 ```
 
-Watch out for:
+RIDER should not be the primary treatment-response cohort.
+
+### 5.6 Full raw DICOM policy
+
+Full raw DICOM archives are optional and deferred.
+
+Default policy:
 
 ```text
-Parameter creep.
-Trying to learn anthracycline, taxane, carrying capacity, observation noise, and resistant sensitivity scale all at once.
+Do not require full raw I-SPY2 or full raw Duke for V1.
+Use curated metadata and curated NIfTI where possible.
+Use raw DICOM subsets only when testing raw-ingestion code.
 ```
 
-### Phase 3: Layer 1 bounds and observation noise
+---
 
-Initial volume-ODE bounds:
+## 6. Recommended Storage and Compute Policy
+
+### 6.1 Storage modes
+
+| Mode | Expected contents | Approximate scale |
+| --- | --- | --- |
+| Table-only V1 | cohort JSONL, reports, summaries | <5 GB |
+| Curated eval plus QIN/RIDER | metadata, smaller DICOM/NIfTI, features | 20-150 GB |
+| Practical MRI V1/V2 | BreastDCEDL_ISPY2, MAMA-MIA weights, masks, features | 150-500 GB |
+| Serious imaging development | multiple curated datasets, masks, checkpoints | 500 GB-1.5 TB |
+| Full raw reproducibility | raw I-SPY2/Duke plus processed copies | multi-TB |
+
+### 6.2 Guidance for 2x L40 GPUs and 150 GB disk
+
+Two L40 GPUs are sufficient for practical MAMA-MIA inference, moderate fine-tuning, feature extraction workflows, and future deep response-model experiments.
+
+The limiting resource is disk, not GPU.
+
+With approximately 150 GB disk:
 
 ```text
-growth_rate_per_day:
-  normal: 0.0005-0.020
-  warning_high: >0.030
-  hard_stop: >0.100
-
-active_treatment_sensitivity:
-  normal: 0.015-0.200
-  warning_high: >0.300
-  hard_stop: >0.500
-
-resistant_fraction:
-  normal: 0.00-0.65
-  warning_high: >0.75
-  hard_stop: >0.90
+keep cohort tables
+keep MAMA-MIA weights
+keep RIDER
+keep QIN if final size fits
+use BreastDCEDL_ISPY2 or a subset, not multiple full curated datasets
+avoid full raw I-SPY2
+avoid full raw Duke
+delete intermediate nnU-Net preprocessing caches after feature extraction
+store only final masks, features, summaries, and reports when possible
 ```
 
-Observation noise policy:
+Recommended minimum for comfortable MRI development:
 
 ```text
-high-QC MRI volume:       0.08 log-scale noise
-medium-QC MRI volume:     0.12
-low-QC MRI volume:        0.20
-manual volume:            0.25
-diameter-derived volume:  0.35
+500 GB SSD minimum workable
+1-2 TB SSD recommended
+3-6+ TB only for full raw archive reproducibility work
 ```
 
-Required tests:
+Known source link:
 
 ```text
-normal values pass without warning
-warning values pass with warning
-hard-stop values fail loudly
-negative growth/sensitivity fails
-low-QC MRI increases observation noise
-diameter-derived volume uses larger noise than MRI volume
+NVIDIA L40 datasheet:
+https://images.nvidia.com/content/Solutions/data-center/vgpu-L40-datasheet.pdf
 ```
 
-Evaluation outputs:
+---
+
+## 7. Data Directory Standard
+
+Use this layout:
 
 ```text
-large sampling stress test
-trajectory stability report
-bound-warning frequency
-hard-stop frequency
-measurement-noise sensitivity report
+data/
+  raw/
+    tcia/
+    mamamia/
+    breastdcedl/
+  curated/
+    manifests/
+    cohorts/
+    images_nifti/
+    nnunet_inputs/
+    segmentations/
+    features/
+  processed/
+    v1_prior_stack/
 ```
 
-Gate:
+Directory responsibilities:
 
 ```text
-Sampled particles produce stable and plausible volume trajectories.
-Noise assumptions widen low-quality observations as expected.
+data/raw/
+  original downloads, never edited
+
+data/curated/manifests/
+  download inventories, case maps, provenance, expected series counts
+
+data/curated/cohorts/
+  intermediate cleaned cohort tables
+
+data/curated/images_nifti/
+  converted or curated NIfTI image files
+
+data/curated/nnunet_inputs/
+  model-ready inputs for MAMA-MIA/nnU-Net
+
+data/curated/segmentations/
+  predicted or provided tumor masks
+
+data/curated/features/
+  small feature tables derived from MRI and masks
+
+data/processed/v1_prior_stack/
+  final eval-ready JSONL files
 ```
 
-Watch out for:
+Invariant:
 
 ```text
-Warning thresholds that are never triggered.
-Warning thresholds that are always triggered.
-Measurement noise so large that updates become uninformative.
+V1 prior evals read only processed cohort JSONL and cached feature tables.
+V1 prior evals do not read raw DICOM directly.
 ```
 
-### Phase 4: Layer 2 TNBC chemotherapy population prior
+---
 
-Initial TNBC chemotherapy prior:
+## 8. Primary V1 Cohort Artifact
+
+The primary real-data artifact is:
 
 ```text
-growth_rate_per_day median:             0.0067/day
-active_treatment_sensitivity median:    0.090/day
-resistant_fraction median:              0.20
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl
 ```
 
-Starting correlations:
+Each row should represent one real patient/case.
+
+### 8.1 Minimum required fields
 
 ```text
-growth vs treatment sensitivity:        +0.25
-treatment sensitivity vs resistance:    -0.40
-growth vs resistance:                   -0.05
+case_id
+data_origin
+subtype
+treatment_regimen or treatment_context
+baseline_day
+baseline_volume_ml
+final_day
+final_volume_ml
 ```
 
-Required tests:
+### 8.2 Recommended fields
 
 ```text
-configured medians are reproduced by samples
-configured 80% intervals are approximately reproduced
-covariance matrix is positive semidefinite
-correlation signs match config
-unknown population group fails or falls back explicitly
-```
-
-Evaluation outputs:
-
-```text
-Layer 2 vs V0 generic-prior leaderboard
-Layer 2 vs no-change / linear / exponential baselines
-Layer 2 uncertainty coverage
-Layer 2 trajectory distribution report
-```
-
-Gate:
-
-```text
-Layer 2 improves or better calibrates predictions compared with V0 generic prior.
-Layer 2 remains honestly compared against simple baselines.
-```
-
-Watch out for:
-
-```text
-Better RMSE but worse coverage.
-Prior too narrow for sparse longitudinal data.
-Subtype prior overclaiming patient-specific behavior.
-```
-
-### Phase 5: Adapter from V1 prior samples to the volume ODE
-
-For V1-A, map:
-
-```text
-active_treatment_sensitivity
-  -> shared chemo sensitivity
-  -> drug_sensitivity.anthracycline
-  -> drug_sensitivity.taxane
-```
-
-Inactive drug sensitivities stay inactive/fixed.
-
-Required tests:
-
-```text
-adapter emits valid simulator params
-shared sensitivity maps consistently to active chemotherapy agents
-inactive agents remain fixed
-fixed nuisance parameters do not vary across particles
-adapter output validates against simulator parameter schema
-```
-
-Evaluation outputs:
-
-```text
-adapter parity smoke test
-simulator input distribution report
-active-vs-inactive drug sensitivity report
-```
-
-Gate:
-
-```text
-The V1 prior builder can feed the current simulator without modifying simulator internals.
-```
-
-Watch out for:
-
-```text
-Accidentally reintroducing inactive drug sensitivity variation.
-Breaking existing V0 tests.
-```
-
-### Phase 6: Layer 3 pathology and biomarker rules
-
-Start with modest rules for:
-
-```text
-Ki-67
+early_day
+early_volume_ml
+er_status
+pr_status
+her2_status
 grade
-ER/PR/HER2 consistency
-BRCA/HRD status
-BRCA/HRD missingness
-```
-
-Rules should shift or widen priors. They should not create false certainty.
-
-Example rule shape:
-
-```json
-{
-  "rule_id": "ki67_high_v1",
-  "condition": "ki67_percent >= 30",
-  "effects": {
-    "growth_multiplier": 1.50,
-    "chemo_sensitivity_multiplier": 1.10,
-    "resistant_odds_multiplier": 0.90,
-    "growth_variance_multiplier": 1.10
-  },
-  "evidence_level": "A/B",
-  "explanation": "High Ki-67 shifts proliferation assumptions upward with modest chemotherapy-response effect."
-}
-```
-
-Required tests:
-
-```text
-unknown Ki-67 widens growth variance and does not invent status
-Ki-67 <=5 lowers growth prior
-Ki-67 >=30 raises growth prior
-intermediate Ki-67 causes only modest or no shift
-grade 3 raises growth modestly
-BRCA/HRD unknown is not treated as negative
-every applied rule appears in layer_contributions
-```
-
-Evaluation outputs:
-
-```text
-Layer 2 only vs Layer 3 full
-Layer 2 + Ki-67 only
-Layer 2 + grade only
-Layer 2 + biomarkers only
-cases helped/harmed by each rule family
-uncertainty change by missingness pattern
-```
-
-Gate:
-
-```text
-Pathology/biomarker rules provide measurable lift or calibrated uncertainty changes.
-Rules that harm performance are weakened, removed, or kept only as uncertainty drivers.
-```
-
-Watch out for:
-
-```text
-Outcome leakage.
-Unknown values treated as negative values.
-Biomarker rules dominating observed follow-up data.
-```
-
-### Phase 7: Layer 4 MRI feature and QC rules
-
-Initial MRI feature vector:
-
-```text
+ki67_percent
+brca_status
+hrd_status
+pathologic_complete_response
 volume_ml
 functional_tumor_volume_ml
-longest_diameter_cm
 enhancement_mean
 enhancement_std
 low_enhancement_fraction
-sphericity
-compactness
 segmentation_qc
-registration_qc, if longitudinal imaging exists
+registration_qc
+mri_source
+source_metadata_file
 ```
 
-In V1-A, MRI/QC should mostly affect:
-
-```text
-observation noise
-resistance/delivery uncertainty
-warnings
-uncertainty drivers
-```
-
-Required tests:
-
-```text
-low segmentation QC inflates observation noise
-high heterogeneity widens resistant-fraction uncertainty
-low-enhancement fraction increases resistance/delivery uncertainty
-missing MRI features do not fail the prior builder
-FTV/anatomic-volume inconsistency creates QC warning
-diameter-only case falls back to report-only mode
-```
-
-Evaluation outputs:
-
-```text
-Layer 3 vs Layer 4 leaderboard
-coverage by MRI QC group
-error-vs-uncertainty by MRI QC group
-same-volume paired-case MRI feature directionality test
-MRI feature ablation report
-```
-
-Gate:
-
-```text
-MRI features improve calibration or useful uncertainty stratification.
-Low-quality imaging produces wider and better-calibrated uncertainty.
-```
-
-Watch out for:
-
-```text
-MRI feature rules making deterministic resistance claims.
-MRI features dominating subtype/pathology priors.
-QC widening intervals so much that predictions become useless.
-```
-
-### Phase 8: Bayesian update policy
-
-Likelihood modes:
-
-```text
-log-volume likelihood
-diameter-derived volume likelihood
-manual-volume likelihood
-MRI-volume likelihood
-```
-
-Track posterior health:
-
-```text
-ESS
-ESS fraction
-posterior/prior interval shrinkage
-posterior predictive coverage
-number of high-weight particles
-seed-to-seed posterior stability
-```
-
-Suggested ESS policy:
-
-```text
-ESS >= 0.50N: accept
-0.30-0.50N: accept with warning
-0.10-0.30N: temper likelihood and report warning
-0.05-0.10N: fragile posterior; temper/resample only for diagnostics
-<0.05N: unreliable posterior; widen intervals and avoid parameter claims
-```
-
-Required tests:
-
-```text
-strong response downweights low-sensitivity particles
-weak response downweights high-sensitivity particles
-noisy observation does not collapse uncertainty
-contradictory observation triggers warning
-low ESS triggers tempering/fallback
-posterior explanation avoids parameter claims when ESS is low
-symptom/tolerance data does not update tumor biology parameters
-```
-
-Evaluation outputs:
-
-```text
-baseline-only vs early-update prediction
-early-update vs mid-update prediction
-posterior ESS report
-posterior collapse report
-posterior coverage report
-posterior/prior shrinkage report
-```
-
-Gate:
-
-```text
-Follow-up measurements improve future prediction more often than they hurt it.
-Posterior narrowing is accepted only when ESS and coverage remain healthy.
-```
-
-Watch out for:
-
-```text
-Posterior intervals getting narrower because nearly all particles died.
-Parameter explanations after low-ESS updates.
-Contradictory observations being treated as certainty.
-```
-
-### Phase 9: Evaluation suite before AI residuals
-
-Build the evaluation suite before enabling learned residuals.
-
-Planned report outputs:
-
-```text
-v1_leaderboard.md
-v1_layer_ablation.md
-v1_forecasting.md
-v1_uncertainty_calibration.md
-v1_update_value.md
-v1_posterior_health.md
-v1_failure_modes.md
-v1_scenario_lab_eval.md
-v1_explanation_audit.md
-```
-
-Gate:
-
-```text
-A single command can regenerate the V1 evaluation reports.
-Every report includes simple baselines, sample size, metric definitions, and warnings.
-```
-
-Watch out for:
-
-```text
-Only reporting one aggregate metric.
-Not reporting cases helped and harmed.
-Not reporting simple baselines.
-```
-
-### Phase 10: AI residual, initially disabled
-
-Implement the interface but keep it as a no-op until the non-AI prior stack is benchmarked.
-
-Initial residual:
+### 8.3 Example row
 
 ```json
 {
-  "delta_log_growth_rate": 0.0,
-  "delta_log_active_treatment_sensitivity": 0.0,
-  "delta_logit_resistant_fraction": 0.0,
-  "uncertainty_multipliers": {
-    "growth": 1.0,
-    "sensitivity": 1.0,
-    "resistance": 1.0
-  },
-  "ood_score": 0.0
+  "case_id": "ISPY2_001",
+  "data_origin": "ISPY2",
+  "subtype": "TNBC",
+  "treatment_regimen": "A/C-T neoadjuvant chemotherapy",
+  "baseline_day": 0,
+  "baseline_volume_ml": 28.0,
+  "early_day": 21,
+  "early_volume_ml": 18.5,
+  "final_day": 126,
+  "final_volume_ml": 7.5,
+  "er_status": "negative",
+  "pr_status": "negative",
+  "her2_status": "negative",
+  "grade": 3,
+  "ki67_percent": 45,
+  "volume_ml": 28.0,
+  "functional_tumor_volume_ml": 24.0,
+  "segmentation_qc": "high",
+  "registration_qc": "medium",
+  "mri_source": "curated_metadata"
 }
 ```
 
-Later residual limits:
+---
+
+## 9. Required Curation Scripts
+
+Add or maintain these scripts.
+
+### Required for V1-D1
 
 ```text
-growth multiplier: 0.50-2.00
-sensitivity multiplier: 0.75-1.35
-resistant odds multiplier: 0.67-1.50
-uncertainty multiplier: 0.75-1.50
-severe OOD: residual = 0, uncertainty x2.00
+scripts/build_v1_prior_eval_cohort.py
+scripts/inspect_v1_data_columns.py
 ```
+
+### Required for V1-D2 MRI-feature integration
+
+```text
+scripts/merge_mri_features_into_v1_cohort.py
+scripts/mri_preprocessing/convert_dicom_to_nifti.py
+scripts/mri_preprocessing/prepare_mamamia_nnunet_inputs.py
+scripts/mri_preprocessing/run_mamamia_inference.sh
+scripts/mri_preprocessing/extract_mri_features.py
+scripts/mri_preprocessing/qc_mri_features.py
+```
+
+### 9.1 Cohort builder outputs
+
+The cohort builder should write:
+
+```text
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.exclusions.jsonl
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.summary.json
+```
+
+### 9.2 Cohort summary fields
+
+The summary JSON should include:
+
+```text
+total_input_rows
+included_rows
+excluded_rows
+tnbc_count
+non_tnbc_count
+v1a_in_scope_count
+baseline_volume_available_count
+final_volume_available_count
+early_followup_available_count
+biomarker_completeness
+mri_feature_completeness
+excluded_reason_counts
+source_files
+created_at
+```
+
+### 9.3 Exclusion reasons
+
+Use stable exclusion reason labels:
+
+```text
+missing_case_id
+missing_baseline_volume
+missing_final_volume
+non_positive_baseline_volume
+non_positive_final_volume
+invalid_time_order
+unresolved_subtype
+out_of_v1a_scope
+synthetic_or_demo_data
+duplicate_case_id
+unsupported_treatment_context
+```
+
+---
+
+## 10. Curation Checks
+
+The cohort builder must enforce:
+
+```text
+real data only by default
+no demo/synthetic/fixture paths unless explicitly allowed
+patient-level rows only
+baseline volume > 0
+final volume > 0
+final_day > baseline_day
+case_id present and stable
+subtype resolvable
+treatment context resolvable
+V1-A in-scope flag for TNBC plus A/C-T-like chemotherapy
+clear reason for excluded rows
+```
+
+Recommended assertions:
+
+```text
+no duplicated case_id in included cohort
+no train/test leakage by scan/timepoint
+no synthetic/demo tokens in path or row content unless allow_demo_data=true
+all volumes in mL or explicitly converted to mL
+all days relative to treatment baseline or explicitly documented
+```
+
+---
+
+## 11. MRI Preprocessing Lane
+
+MRI preprocessing should be implemented as a separate cached lane.
+
+### 11.1 Pipeline
+
+```text
+DICOM or curated NIfTI
+  -> normalized NIfTI
+  -> MAMA-MIA/nnU-Net input format
+  -> pretrained nnU-Net tumor mask
+  -> feature extraction
+  -> feature JSONL
+  -> merge into V1 cohort
+```
+
+### 11.2 Preferred input sources
+
+Use this order:
+
+```text
+1. curated NIfTI datasets where available
+2. BreastDCEDL_ISPY2 curated imaging
+3. MAMA-MIA-compatible data
+4. QIN/RIDER selected cases
+5. raw I-SPY2 selected subset
+6. full raw I-SPY2 only in later reproducibility phase
+```
+
+### 11.3 MAMA-MIA adapter
+
+Add a replaceable adapter around MAMA-MIA inference. Suggested structure:
+
+```text
+experiments/mri_ingestion/
+  segmenters/
+    mamamia_nnunet.py
+  features/
+    tumor_volume.py
+    enhancement_features.py
+    qc.py
+  schemas.py
+```
+
+The adapter should expose a stable interface:
+
+```text
+input:
+  case_id
+  image_path_or_phase_paths
+  output_dir
+  model_config
+
+output:
+  segmentation_path
+  inference_metadata
+  warnings
+```
+
+Do not couple the prior stack directly to MAMA-MIA internals.
+
+### 11.4 MAMA-MIA inference command shape
+
+The exact command should be maintained in:
+
+```text
+scripts/mri_preprocessing/run_mamamia_inference.sh
+```
+
+Expected command shape:
+
+```bash
+nnUNetv2_predict \
+  -i data/curated/nnunet_inputs \
+  -o data/curated/segmentations/mamamia_nnunet \
+  -d 101 \
+  -c 3d_fullres
+```
+
+The script should validate that:
+
+```text
+nnUNetv2_predict is available
+nnUNet_results is set
+model weights exist
+input files are compressed NIfTI when required
+output directory is writable
+```
+
+---
+
+## 12. MRI Feature Table Contract
+
+The MRI feature table should be:
+
+```text
+data/curated/features/mri_features.jsonl
+```
+
+Each row should contain one case-level feature record.
+
+Example:
+
+```json
+{
+  "case_id": "ISPY2_001",
+  "source_image": "data/curated/images_nifti/ISPY2_001.nii.gz",
+  "source_mask": "data/curated/segmentations/mamamia_nnunet/ISPY2_001.nii.gz",
+  "tumor_volume_ml": 28.0,
+  "functional_tumor_volume_ml": 24.0,
+  "mask_voxels": 28000,
+  "voxel_volume_ml": 0.001,
+  "enhancement_mean": 1.35,
+  "enhancement_std": 0.22,
+  "low_enhancement_fraction": 0.18,
+  "connected_component_count": 1,
+  "segmentation_qc": "medium",
+  "registration_qc": "unknown",
+  "warnings": []
+}
+```
+
+Initial feature set:
+
+```text
+tumor_volume_ml
+functional_tumor_volume_ml
+enhancement_mean
+enhancement_std
+low_enhancement_fraction
+mask_voxels
+voxel_volume_ml
+connected_component_count
+segmentation_qc
+registration_qc
+```
+
+Feature naming should align with the fields consumed by Layer 4.
+
+---
+
+## 13. MRI QC Gates
+
+Before using MRI-derived features in V1 evals, require:
+
+```text
+non-empty tumor mask
+clinically plausible tumor volume
+valid voxel spacing
+valid image affine
+no obvious all-zero image
+no obvious full-volume mask
+connected component count recorded
+manual spot-check on at least 10-20 cases
+feature provenance saved
+```
+
+Recommended QC labels:
+
+```text
+high
+medium
+low
+failed
+unknown
+```
+
+Layer 4 behavior by QC:
+
+| QC | Layer 4 behavior |
+| --- | --- |
+| high | feature may influence uncertainty according to rules |
+| medium | conservative feature use; mild widening allowed |
+| low | uncertainty widening only or report-only |
+| failed | ignore MRI feature for parameter shifts; report failure |
+| unknown | conservative/report-only behavior |
+
+Layer 4 should never silently treat low-quality MRI-derived features as reliable.
+
+---
+
+## 14. Evaluation Categories
+
+V1 should include the following eval categories.
+
+### 14.1 Real-data prior-layer performance
+
+Runner:
+
+```text
+evals/prior_stack/v1_real_data_eval.py
+```
+
+Input:
+
+```text
+real longitudinal cohort JSONL/CSV
+```
+
+Required behavior:
+
+```text
+reject demo/synthetic data by default
+compute non-model baselines
+compute Layer 2, Layer 3, and Layer 4 prior-predictive metrics
+report Layer 3 vs Layer 2 deltas
+report Layer 4 vs Layer 3 deltas
+report cases helped and harmed
+```
+
+Metrics:
+
+```text
+MAE
+RMSE
+log-volume RMSE
+MAPE
+80% interval coverage
+95% interval coverage
+80% interval width
+```
+
+Baselines:
+
+```text
+baseline_no_change
+linear_early
+exponential_early
+```
+
+### 14.2 Uncertainty calibration
+
+Runner:
+
+```text
+evals/prior_stack/v1_uncertainty_calibration_eval.py
+```
+
+Required behavior:
+
+```text
+evaluate 80% and 95% coverage
+report interval widths
+report subgroup calibration when sample size allows
+flag overconfident behavior
+```
+
+### 14.3 Posterior health
+
+Runner:
+
+```text
+evals/prior_stack/v1_posterior_health_eval.py
+```
+
+V1 status:
+
+```text
+unavailable until posterior-update runtime exists
+```
+
+Future requirements:
+
+```text
+particle degeneracy diagnostics
+effective sample size
+posterior contraction
+posterior predictive checks
+failure-mode reporting
+```
+
+### 14.4 Sequential forecasting
+
+Runner:
+
+```text
+evals/prior_stack/v1_sequential_forecasting_eval.py
+```
+
+V1 status:
+
+```text
+unavailable until sequential update runtime exists
+```
+
+Future requirements:
+
+```text
+baseline-only prediction
+baseline plus early follow-up prediction
+forecast horizon metrics
+patient-level temporal splits
+```
+
+### 14.5 Update value
+
+Runner:
+
+```text
+evals/prior_stack/v1_update_value_eval.py
+```
+
+V1 status:
+
+```text
+unavailable until posterior-update runtime exists
+```
+
+Future requirements:
+
+```text
+value of biomarkers
+value of early volume
+value of MRI features
+value of QC-filtered MRI features
+```
+
+### 14.6 Scenario lab
+
+Runner:
+
+```text
+evals/prior_stack/v1_scenario_lab_eval.py
+```
+
+V1 status:
+
+```text
+unavailable until scenario runtime exists
+```
+
+Future requirements:
+
+```text
+alternative treatment schedule simulation
+posterior-particle scenario summaries
+stability diagnostics
+report uncertainty rather than point recommendation
+```
+
+### 14.7 Explanation quality
+
+Runner:
+
+```text
+evals/prior_stack/v1_explanation_quality_eval.py
+```
+
+V1 status:
+
+```text
+unavailable until explanation runtime exists
+```
+
+Future requirements:
+
+```text
+explanation faithfulness
+evidence provenance
+uncertainty wording
+missing-data transparency
+```
+
+---
+
+## 15. Eval Suite Runner
+
+Runner:
+
+```text
+evals/prior_stack/run_v1_eval_suite.py
+```
+
+Expected behavior:
+
+```text
+run all available V1 eval categories
+mark missing cohort as unavailable, not failed
+mark missing runtime-dependent categories as unavailable, not failed
+write markdown report
+write machine-readable summary if supported
+return nonzero only on actual unexpected failure
+```
+
+Example command:
+
+```bash
+python3 -m evals.prior_stack.run_v1_eval_suite \
+  --cohort data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl \
+  --report evals/reports/v1_eval_suite.md \
+  --n-samples 2000 \
+  --seed 2026
+```
+
+Expected V1-D1 result:
+
+```text
+real_data_prior_layer_performance: pass
+uncertainty_calibration: pass
+posterior_health: unavailable
+sequential_forecasting: unavailable
+update_value: unavailable
+scenario_lab: unavailable
+explanation_quality: unavailable
+```
+
+---
+
+## 16. Implementation Milestones
+
+### Milestone V1-D0: dataset inventory
+
+Goal:
+
+```text
+know what data exists locally and what columns are available
+```
+
+Required outputs:
+
+```text
+data/curated/manifests/dataset_inventory.json
+data/curated/manifests/local_download_status.json
+```
+
+Acceptance criteria:
+
+```text
+I-SPY2 metadata source identified
+QIN download status known
+RIDER download status known
+MAMA-MIA/BreastDCEDL acquisition plan documented
+full raw I-SPY2 explicitly marked optional/deferred
+```
+
+### Milestone V1-D1: real-data cohort eval
+
+Goal:
+
+```text
+run V1 prior-layer evals on a real longitudinal cohort table
+```
+
+Required artifact:
+
+```text
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl
+```
+
+Acceptance criteria:
+
+```text
+at least 50 real in-scope TNBC chemotherapy cases preferred
+baseline and held-out final volume available
+real_data_prior_layer_performance passes
+uncertainty_calibration passes
+demo/synthetic rows rejected by default
+exclusion report written
+cohort summary written
+```
+
+Minimum acceptable development threshold:
+
+```text
+10-25 real cases for pipeline smoke test only
+50+ real cases for initial V1 performance claims
+150-300+ real cases for stronger benchmark claims
+```
+
+### Milestone V1-D2: MRI-feature cohort eval
+
+Goal:
+
+```text
+re-run V1 evals with MRI-derived cached features available
+```
+
+Required artifacts:
+
+```text
+data/curated/features/mri_features.jsonl
+data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort_with_mri.jsonl
+```
+
+Acceptance criteria:
+
+```text
+feature completeness reported
+MRI QC flags propagate into eval reports
+Layer 4 vs Layer 3 deltas reported
+cases helped/harmed listed
+low/failed QC features do not create overconfident shifts
+```
+
+### Milestone V1-D3: MAMA-MIA segmentation adapter smoke test
+
+Goal:
+
+```text
+run MAMA-MIA pretrained nnU-Net on a small curated subset
+```
+
+Suggested scale:
+
+```text
+5-10 cases first
+25-50 cases after smoke test
+50-100 cases before broad MRI-feature eval claims
+```
+
+Acceptance criteria:
+
+```text
+nnU-Net inference completes
+masks are non-empty
+feature extractor produces valid rows
+manual spot-check passes on sampled cases
+features merge cleanly into cohort JSONL
+```
+
+### Milestone V1-D4: posterior/scenario runtime planning
+
+Goal:
+
+```text
+define runtime interfaces for future posterior updates and scenario lab
+```
+
+Acceptance criteria:
+
+```text
+posterior-update interface documented
+scenario-lab interface documented
+explanation interface documented
+current eval stubs continue to report unavailable until implemented
+```
+
+---
+
+## 17. Recommended Development Order
+
+1. Ensure eval runners exist and use real data only by default.
+2. Add cohort builder summary and exclusion reports.
+3. Build the I-SPY2 V1 cohort JSONL from metadata.
+4. Run V1-D1 evals.
+5. Add MRI feature table contract.
+6. Add feature merge script.
+7. Add MAMA-MIA segmentation adapter.
+8. Run MAMA-MIA inference on 5-10 cases.
+9. Extract MRI features and write JSONL.
+10. Merge MRI features into V1 cohort.
+11. Run V1-D2 evals.
+12. Scale to 50-100 MRI-feature cases.
+13. Defer full posterior/scenario/explanation evals until runtimes exist.
+14. Defer full raw I-SPY2/Duke processing until storage and specific use case justify it.
+
+---
+
+## 18. Non-Goals for V1
+
+V1 should not require:
+
+```text
+training a new MRI segmentation model
+full raw I-SPY2 DICOM download
+full raw Duke DICOM download
+multi-GPU segmentation training
+manual segmentation at scale
+end-to-end image-to-treatment recommendation
+real-time clinical deployment
+```
+
+V1 should prove:
+
+```text
+real data can be curated into a stable cohort contract
+prior layers can be evaluated on held-out tumor volumes
+uncertainty calibration is measurable
+MRI features can be integrated as cached QC-aware inputs
+the system fails closed when data quality is poor
+the eval suite distinguishes unavailable runtimes from failures
+```
+
+---
+
+## 19. Test Requirements
+
+### 19.1 Cohort loader tests
 
 Required tests:
 
 ```text
-AI-disabled mode exactly reproduces Layer 4 prior
-AI residual cannot exceed clip range
-OOD input zeros residual and widens uncertainty
-AI cannot modify fixed parameters
-AI contribution is separately traceable
+loads JSONL cohort
+loads CSV cohort
+rejects synthetic/demo data by default
+allows synthetic/demo data only with explicit flag
+rejects missing baseline/final volume
+rejects invalid time order
+records exclusion reasons
 ```
 
-Evaluation outputs, when AI is enabled later:
+### 19.2 Prior-layer eval tests
+
+Required tests:
 
 ```text
-Layer 0-4 non-AI baseline
-Layer 0-4 + AI growth residual
-Layer 0-4 + AI sensitivity residual
-Layer 0-4 + full AI residual
-calibration comparison
-subgroup comparison
-failure-mode comparison
+Layer 2 prior predictive metrics computed
+Layer 3 deltas computed
+Layer 4 deltas computed when MRI fields exist
+out-of-scope cases excluded or reported separately
+metrics stable under fixed seed
 ```
 
-Gate:
+### 19.3 Uncertainty calibration tests
+
+Required tests:
 
 ```text
-AI residuals improve the frozen non-AI baseline without worsening uncertainty calibration, posterior health, safety, or explanation quality.
+80% coverage computed
+95% coverage computed
+interval width computed
+empty input handled clearly
+small cohort warnings emitted
 ```
 
-Watch out for:
+### 19.4 MRI feature tests
+
+Required tests:
 
 ```text
-AI improves AUC but worsens trajectory calibration.
-AI learns site/scanner/cohort leakage.
-AI makes outputs less explainable.
+feature JSONL schema validated
+non-empty masks produce positive volume
+empty masks marked failed
+low QC maps to conservative Layer 4 behavior
+feature merge preserves patient-level rows
+missing feature rows do not drop cohort rows unless requested
 ```
 
-## Best V1 evaluations
+### 19.5 Suite tests
 
-### 1. Predictive performance leaderboard
-
-Question:
+Required tests:
 
 ```text
-Does V1 predict tumor response better than alternatives?
+no cohort -> real-data eval unavailable
+valid cohort -> real-data eval passes
+missing posterior runtime -> posterior eval unavailable
+suite report written
+unexpected exceptions fail loudly
 ```
 
-Compare:
+---
+
+## 20. Report Requirements
+
+The V1 suite report should include:
 
 ```text
-no-change baseline
-linear shrinkage baseline
-exponential shrinkage baseline
-subtype-average response baseline
-V0 generic prior
-V1 Layer 2 population prior
-V1 Layer 3 pathology/biomarker prior
-V1 Layer 4 MRI/QC prior
-V1 posterior after early follow-up
+cohort path
+number of input rows
+number of included rows
+number of excluded rows
+exclusion reason counts
+in-scope V1-A case count
+biomarker completeness
+MRI feature completeness
+baseline metrics
+Layer 2 metrics
+Layer 3 metrics
+Layer 4 metrics
+uncertainty coverage
+cases helped/harmed
+unavailable eval categories and why
+source provenance
+seed
+n_samples
+created_at
 ```
 
-Metrics:
+The report should clearly separate:
 
 ```text
-MAE final volume
-RMSE final volume
-log-volume RMSE
-median absolute percentage error
-rank correlation with final residual burden
-pCR/non-pCR AUC, if labels exist
-Brier score, if probabilities are emitted
+performance results
+calibration results
+data-quality warnings
+runtime-unavailable categories
 ```
 
-Success signal:
+---
+
+## 21. Acceptance Criteria for V1-A
+
+V1-A is successful when:
 
 ```text
-V1 beats V0 generic prior and remains competitive with simple baselines.
-If simple baselines win, V1 provides better-calibrated uncertainty or useful mechanistic insight.
+a real-data cohort JSONL exists
+the cohort builder writes summary and exclusion artifacts
+the eval suite runs on the real cohort
+real_data_prior_layer_performance produces metrics
+uncertainty_calibration produces coverage metrics
+demo/synthetic data is rejected by default
+Layer 2/3/4 behavior is separately reported
+Layer 4 uses cached MRI features only
+runtime-dependent evals are marked unavailable until implemented
 ```
 
-### 2. Sequential forecasting evaluation
-
-Question:
+V1-A is not required to:
 
 ```text
-Does the twin improve as new observations arrive?
+train MRI models
+download full raw I-SPY2
+implement full posterior updating
+implement full scenario lab
+implement clinical explanations
 ```
 
-Protocol:
+---
+
+## 22. Source Links
+
+The following sources informed the data and imaging strategy:
 
 ```text
-Use T0 to predict T1/T2/T3.
-Update with T1, then predict T2/T3.
-Update with T2, then predict T3.
+TCIA I-SPY2:
+https://www.cancerimagingarchive.net/collection/ispy2/
+
+IDC I-SPY2:
+https://portal.imaging.datacommons.cancer.gov/collections/ispy2/
+
+TCIA BreastDCEDL_ISPY2:
+https://www.cancerimagingarchive.net/analysis-result/breastdcedl_ispy2/
+
+BreastDCEDL GitHub:
+https://github.com/naomifridman/BreastDCEDL
+
+MAMA-MIA GitHub:
+https://github.com/LidiaGarrucho/MAMA-MIA
+
+NVIDIA L40 datasheet:
+https://images.nvidia.com/content/Solutions/data-center/vgpu-L40-datasheet.pdf
 ```
 
-Metrics:
+---
+
+## 23. Practical Current Recommendation
+
+For the current project state:
 
 ```text
-forecast error by horizon
-change in log likelihood after update
-change in interval width after update
-change in coverage after update
-ESS after update
+keep RIDER
+finish QIN if storage allows
+do not continue full raw I-SPY2 unless multi-TB storage is available
+build the processed I-SPY2 cohort table first
+use MAMA-MIA pretrained nnU-Net for segmentation integration
+cache final masks and feature JSONL
+delete large intermediate preprocessing caches when disk is constrained
 ```
 
-Success signal:
+With approximately 150 GB disk, prioritize:
 
 ```text
-Early and mid-treatment observations improve future prediction and calibration more often than they hurt it.
+cohort tables
+QIN/RIDER if they fit
+MAMA-MIA pretrained weights
+one curated imaging dataset or selected subset
+final masks
+feature JSONL
+eval reports
 ```
 
-### 3. Uncertainty calibration evaluation
-
-Question:
+Avoid:
 
 ```text
-Are uncertainty intervals honest?
-```
-
-Metrics:
-
-```text
-80% interval coverage
-95% interval coverage
-average interval width
-coverage by timepoint
-coverage by measurement type
-coverage by MRI QC group
-negative log likelihood
-```
-
-Success signal:
-
-```text
-Observed outcomes fall inside nominal intervals at approximately the claimed rates.
-Low-quality or sparse cases show wider uncertainty.
-```
-
-### 4. Error-vs-uncertainty evaluation
-
-Question:
-
-```text
-Does the model know when it is likely to be wrong?
-```
-
-Metrics:
-
-```text
-Spearman correlation between interval width and absolute error
-error by uncertainty quintile
-coverage by uncertainty quintile
-```
-
-Success signal:
-
-```text
-High-uncertainty cases have higher average error than low-uncertainty cases.
-```
-
-### 5. Personalization-lift ablation
-
-Question:
-
-```text
-Which patient-specific evidence actually helps?
-```
-
-Run:
-
-```text
-population prior only
-+ pathology
-+ biomarkers
-+ MRI features/QC
-+ early follow-up observation
-+ AI residual, later
-```
-
-Metrics:
-
-```text
-accuracy delta
-calibration delta
-interval-width delta
-number of cases helped
-number of cases harmed
-subgroup-level lift
-```
-
-Success signal:
-
-```text
-The report can say which layer helped, which mainly changed uncertainty, and which harmed performance.
-```
-
-### 6. Value-of-information evaluation
-
-Question:
-
-```text
-Which added data types make the twin meaningfully better?
-```
-
-Run counterfactual missingness tests:
-
-```text
-hide Ki-67
-hide grade
-hide BRCA/HRD
-hide MRI QC
-hide early follow-up volume
-```
-
-Metrics:
-
-```text
-prediction degradation
-uncertainty widening
-change in posterior ESS
-change in scenario ranking or interval overlap
-```
-
-Success signal:
-
-```text
-Important missing data widens uncertainty and sometimes degrades performance.
-Unknown values are not silently treated as negative values.
-```
-
-### 7. Posterior health and collapse evaluation
-
-Question:
-
-```text
-Is Bayesian updating learning, or just killing particles?
-```
-
-Metrics:
-
-```text
-ESS fraction
-number of high-weight particles
-posterior/prior shrinkage ratio
-coverage after shrinkage
-seed-to-seed posterior stability
-```
-
-Success signal:
-
-```text
-Posterior narrowing is accepted only when ESS and coverage remain healthy.
-```
-
-### 8. Explanation-quality and identifiability audit
-
-Question:
-
-```text
-Do explanations respect what the model can actually identify?
-```
-
-Audit cases where parameters are:
-
-```text
-well constrained
-partially constrained
-prior dominated
-non-identifiable
-```
-
-Metrics:
-
-```text
-percentage of explanations that mention uncertainty when required
-percentage of prior-dominated parameters incorrectly stated as known
-driver-stability agreement across seeds
-```
-
-Success signal:
-
-```text
-The model explains trajectories, uncertainty, and evidence shifts without pretending weakly identified parameters are measured facts.
-```
-
-### 9. Scenario-lab stability evaluation
-
-Question:
-
-```text
-Can research scenarios be compared without overclaiming?
-```
-
-Evaluate scenarios:
-
-```text
-current schedule
-delayed dose event
-reduced exposure event
-strong early response observation
-weak early response observation
-missing biomarker becomes positive/negative/unknown
-```
-
-Metrics:
-
-```text
-scenario ranking stability
-interval overlap
-probability one scenario beats another
-sensitivity to posterior uncertainty
-required disclaimer presence
-```
-
-Success signal:
-
-```text
-Scenario outputs show uncertainty and avoid treatment-prescriptive language.
-```
-
-### 10. Failure-mode discovery report
-
-Question:
-
-```text
-Where does V1 fail, and what do those failures teach us?
-```
-
-Create buckets:
-
-```text
-simple-baseline-wins cases
-mechanistic-model-wins cases
-posterior-collapse cases
-unexpected responders
-unexpected non-responders
-low-QC imaging cases
-high-missingness cases
-```
-
-Summarize:
-
-```text
-common features
-uncertainty drivers
-which prior layer helped or hurt
-whether follow-up updating corrected the prior
-whether warnings were appropriate
-```
-
-Success signal:
-
-```text
-The report produces actionable modeling insights, not just a leaderboard.
-```
-
-## Test cadence
-
-### Every pull request
-
-Run:
-
-```text
-unit tests
-schema tests
-snapshot tests for prior output
-safety-language tests
-small deterministic smoke simulation
-```
-
-### After each prior layer is implemented
-
-Run:
-
-```text
-layer-specific unit tests
-directionality tests
-sampling sanity tests
-small synthetic ensemble
-ablation against previous layer
-```
-
-### After changes to bounds, covariance, or rules
-
-Run:
-
-```text
-large sampling stress test
-trajectory sanity sweep
-identifiability report
-coverage check on synthetic cases
-```
-
-### After changes to Bayesian update
-
-Run:
-
-```text
-synthetic recovery tests
-strong/weak/noisy/contradictory observation tests
-ESS collapse tests
-held-out prediction leaderboard
-```
-
-### Before adding AI residuals
-
-Freeze:
-
-```text
-Layer 0-4 configs
-train/validation/test split
-baseline leaderboard
-calibration report
-safety criteria
-```
-
-### Before any product-facing demo
-
-Run:
-
-```text
-full regression suite
-full recovery sweep
-baseline leaderboard
-safety red-team tests
-example output review
-manual review of explanations
-```
-
-## V1 success criteria
-
-V1 succeeds if it demonstrates a useful and honest modeling pattern, not if it claims clinical readiness.
-
-Minimum success criteria:
-
-```text
-V1 beats the V0 generic prior on synthetic or semi-synthetic held-out forecasting.
-V1 remains competitive with simple no-change, linear, and exponential baselines.
-When simple baselines win, V1 exposes why and whether uncertainty is better calibrated.
-Follow-up observations improve future prediction more often than they hurt it.
-80% and 95% intervals are approximately calibrated.
-Higher uncertainty correlates with higher error.
-Missing data widens uncertainty rather than becoming fake negative evidence.
-Explanations respect identifiability and posterior health.
-Scenario comparisons include uncertainty and avoid treatment-directive claims.
-Safety-language tests pass for all product-facing summaries.
-```
-
-## Main red flags
-
-```text
-Held-out error improves but interval coverage worsens.
-Posterior ESS is very low but posterior intervals look narrow.
-Simple baselines still win and the report hides that fact.
-Parameter explanations appear before identifiability is earned.
-Layer rules dominate follow-up observations.
-Missing data behaves like negative data.
-AI residual improves AUC but worsens calibration.
-Scenario outputs sound like treatment recommendations.
-Safety disclaimers disappear in summaries.
-```
-
-## Practical build order
-
-```text
-1. Freeze V0 baseline and simple baselines.
-2. Add V1 prior-builder docs, config directories, and evaluation scaffolding.
-3. Implement transformed-space utilities.
-4. Implement Layer 0 parameter contract.
-5. Implement Layer 1 bounds and observation-noise policy.
-6. Implement adapter from V1 prior particles to current volume ODE params.
-7. Implement Layer 2 TNBC chemotherapy population prior.
-8. Run Layer 2 vs V0 vs simple-baseline evaluation.
-9. Implement Layer 3 pathology/biomarker rules.
-10. Run Layer 3 ablation and missingness evaluation.
-11. Implement Layer 4 MRI/QC rules.
-12. Run Layer 4 calibration, uncertainty, and QC subgroup evaluation.
-13. Formalize Bayesian update policy and ESS gates.
-14. Run sequential forecasting and update-value evaluations.
-15. Add failure-mode, explanation-quality, and scenario-stability reports.
-16. Add AI residual interface as a disabled no-op.
-17. Enable learned AI residuals only after the non-AI V1 stack has a frozen benchmark.
+full raw I-SPY2
+full raw Duke
+duplicated raw plus NIfTI plus nnU-Net preprocessed copies at scale
 ```

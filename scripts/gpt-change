@@ -154,6 +154,10 @@ GIT_STATUS="$(git status --short 2>/dev/null || true)"
   echo "   - writes a unified diff to /tmp/chatgpt.patch"
   echo "   - runs git apply --check /tmp/chatgpt.patch"
   echo "   - applies the patch only if the check passes"
+  echo
+  echo "Markdown/code-fence safety:"
+  echo "Before returning the patch shell block, check whether the block content contains Markdown fences, especially when editing README, docs, examples, or other Markdown files. If the patch or generated script contains triple-backtick fences, do not wrap the response in a normal \`\`\`bash fence because the inner fence can prematurely close the outer block. Use an outer fence longer than any fence inside, such as \`\`\`\`bash, or generate /tmp/chatgpt.patch from a script inside the shell block so embedded Markdown fences cannot break the response. The final answer must still contain one complete terminal-pasteable shell block. Do not add code-fence attributes such as id=\"...\"; the opening fence should be only the fence marker and language, for example \`\`\`bash or \`\`\`\`bash."
+  echo
   echo "4. A post-edit verification plan with the exact command or commands I should run afterward. Include tests, evals, benchmarks, report-generation commands, fixture/schema validation, or smoke checks as applicable; separate fast targeted checks from broader confidence checks. If no evals or extra checks apply, say so explicitly."
   echo
   echo "Important rules:"
@@ -165,6 +169,7 @@ GIT_STATUS="$(git status --short 2>/dev/null || true)"
   echo "- Do not modify lockfiles, generated files, or snapshots unless clearly necessary."
   echo "- Do not introduce new dependencies without explicitly explaining why."
   echo "- The shell block should be directly pasteable into my terminal."
+  echo "- If the patch content includes Markdown fences, use the Markdown/code-fence safety rule above so the final answer remains one intact, directly pasteable shell block."
   echo "- The patch must use paths relative to the repository root."
   echo
   echo "The shell block should look like this pattern:"
