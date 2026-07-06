@@ -1,0 +1,346 @@
+{
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/report_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for non-trajectory reports: identifiability, recovery sweeps, stress tests, synthetic fit, and large-particle checks.",
+  "oneOf": [
+    {
+      "additionalProperties": true,
+      "properties": {
+        "case_id": {
+          "type": "string"
+        },
+        "constrained_parameters": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "effective_sample_size": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "parameter_reports": {
+          "type": "object"
+        },
+        "prior_dominated_parameters": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "recommendation": {
+          "type": "string"
+        },
+        "similar_trajectory_pairs": {
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "weakly_constrained_parameters": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "case_id",
+        "parameter_reports",
+        "prior_dominated_parameters",
+        "weakly_constrained_parameters",
+        "warnings"
+      ],
+      "title": "Identifiability report",
+      "type": "object"
+    },
+    {
+      "additionalProperties": true,
+      "properties": {
+        "case_id": {
+          "type": "string"
+        },
+        "insights": {
+          "type": "array"
+        },
+        "records": {
+          "type": "array"
+        },
+        "summaries": {
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "case_id",
+        "records",
+        "summaries",
+        "insights",
+        "warnings"
+      ],
+      "title": "Recovery sweep or large-particle check report",
+      "type": "object"
+    },
+    {
+      "additionalProperties": true,
+      "properties": {
+        "stress_tests": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "warnings": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "name",
+              "status"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "stress_tests"
+      ],
+      "title": "Stress test report",
+      "type": "object"
+    },
+    {
+      "additionalProperties": true,
+      "properties": {
+        "case_id": {
+          "type": "string"
+        },
+        "effective_sample_size": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "observations": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "parameter_interval_report": {
+          "type": "object"
+        },
+        "particle_trajectories": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "likelihood": {
+                "type": "number"
+              },
+              "likelihood_placeholder": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "parameters": {
+                "$id": "https://oncotwin.local/schemas/mechanistic_simulator/resolved_params.schema.json",
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "description": "Fully resolved simulator parameter set. Prior configs use prior_config.schema.json.",
+                "properties": {
+                  "carrying_capacity_ml": {
+                    "exclusiveMinimum": 0,
+                    "type": "number"
+                  },
+                  "drug_decay": {
+                    "additionalProperties": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "minProperties": 1,
+                    "type": "object"
+                  },
+                  "drug_ec50": {
+                    "additionalProperties": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "minProperties": 1,
+                    "type": "object"
+                  },
+                  "drug_sensitivity": {
+                    "additionalProperties": {
+                      "maximum": 1,
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "minProperties": 1,
+                    "type": "object"
+                  },
+                  "growth_law": {
+                    "const": "logistic"
+                  },
+                  "growth_rate": {
+                    "maximum": 0.1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "observation_noise_fraction": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "particle_id": {
+                    "type": "string"
+                  },
+                  "resistant_fraction": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "resistant_sensitivity_scale": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "growth_law",
+                  "growth_rate",
+                  "carrying_capacity_ml",
+                  "drug_sensitivity",
+                  "drug_ec50",
+                  "drug_decay",
+                  "resistant_fraction",
+                  "resistant_sensitivity_scale",
+                  "observation_noise_fraction"
+                ],
+                "title": "Resolved mechanistic simulator parameters",
+                "type": "object"
+              },
+              "particle_id": {
+                "type": "string"
+              },
+              "predicted_longest_diameter_cm": {
+                "items": {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "predicted_volume_ml": {
+                "items": {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "times": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "warnings": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "weight_placeholder": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "particle_id",
+              "parameters",
+              "times",
+              "predicted_volume_ml",
+              "predicted_longest_diameter_cm",
+              "warnings"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "posterior_mean_prediction_ml": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "posterior_parameter_means": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "posterior_rmse": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "prior_mean_prediction_ml": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "prior_parameter_means": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "prior_rmse": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "truth_params_path": {
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "case_id",
+        "effective_sample_size",
+        "observations",
+        "parameter_interval_report",
+        "particle_trajectories",
+        "warnings"
+      ],
+      "title": "Synthetic fit report",
+      "type": "object"
+    }
+  ],
+  "title": "Mechanistic simulator report output"
+}

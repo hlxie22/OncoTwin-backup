@@ -1,54 +1,65 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://oncotwin.local/schemas/mechanistic_simulator/treatment_schedule.schema.json",
-  "title": "Treatment schedule",
-  "type": "object",
-  "required": ["schedule_id", "regimen_name", "total_duration_days", "events"],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
   "properties": {
-    "schedule_id": {
-      "type": "string",
-      "minLength": 1
+    "events": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "day": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "drug": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "relative_dose": {
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "drug",
+          "day",
+          "relative_dose"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
     },
     "regimen_name": {
-      "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "type": "string"
+    },
+    "schedule_id": {
+      "minLength": 1,
+      "type": "string"
     },
     "schedule_type": {
       "type": "string"
     },
     "total_duration_days": {
-      "type": "number",
-      "minimum": 0
-    },
-    "events": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["drug", "day", "relative_dose"],
-        "properties": {
-          "drug": {
-            "type": "string",
-            "minLength": 1
-          },
-          "day": {
-            "type": "number",
-            "minimum": 0
-          },
-          "relative_dose": {
-            "type": "number",
-            "minimum": 0
-          },
-          "label": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "notes": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "minimum": 0,
+      "type": "number"
     }
-  }
+  },
+  "required": [
+    "schedule_id",
+    "regimen_name",
+    "total_duration_days",
+    "events"
+  ],
+  "title": "Treatment schedule",
+  "type": "object"
 }

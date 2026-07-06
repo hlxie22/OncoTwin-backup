@@ -6,6 +6,9 @@ usage() {
   echo "  scripts/gpt-change \"Add a dark mode toggle to the settings page\""
   echo "  scripts/gpt-change --file task.md"
   echo
+  echo "Optional Repomix args:"
+  echo "  scripts/gpt-change \"task\" -- --ignore \"experiments/v0/**,docs/*.pdf\""
+  echo
   echo "Optional:"
   echo "  GPT_CHANGE_OUT_ROOT=/tmp scripts/gpt-change \"task\""
   exit 1
@@ -16,13 +19,30 @@ if [ "$#" -eq 0 ]; then
 fi
 
 TASK=""
+TASK_ARGS=()
+REPOMIX_ARGS=()
 
-if [ "$1" = "--file" ] || [ "$1" = "-f" ]; then
-  if [ "$#" -lt 2 ]; then
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = "--" ]; then
+    shift
+    REPOMIX_ARGS=("$@")
+    break
+  fi
+
+  TASK_ARGS+=("$1")
+  shift
+done
+
+if [ "${#TASK_ARGS[@]}" -eq 0 ]; then
+  usage
+fi
+
+if [ "${TASK_ARGS[0]}" = "--file" ] || [ "${TASK_ARGS[0]}" = "-f" ]; then
+  if [ "${#TASK_ARGS[@]}" -ne 2 ]; then
     usage
   fi
 
-  TASK_FILE="$2"
+  TASK_FILE="${TASK_ARGS[1]}"
 
   if [ ! -f "$TASK_FILE" ]; then
     echo "Task file not found: $TASK_FILE"
@@ -31,7 +51,11 @@ if [ "$1" = "--file" ] || [ "$1" = "-f" ]; then
 
   TASK="$(cat "$TASK_FILE")"
 else
-  TASK="$*"
+  TASK="${TASK_ARGS[*]}"
+fi
+
+if [ "${#REPOMIX_ARGS[@]}" -gt 0 ]; then
+  echo "Extra Repomix args: ${REPOMIX_ARGS[*]}"
 fi
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
@@ -52,6 +76,7 @@ echo
 
 npx --yes repomix@latest \
   --style xml \
+  "${REPOMIX_ARGS[@]}" \
   --output "$REPO"
 
 CURRENT_BRANCH="$(git branch --show-current 2>/dev/null || true)"
@@ -90,15 +115,26 @@ GIT_STATUS="$(git status --short 2>/dev/null || true)"
   echo
   echo "Use the repository's existing package manager, runtime, framework, and test style. Do not switch tools or introduce new dependencies unless the task clearly requires it."
   echo
-  echo "## Test-Aware Expectations"
+  echo "## Verification Expectations"
   echo
   echo "For behavior changes, new features, bug-prone logic, or important refactors, include meaningful tests when the repository already has a suitable test pattern."
   echo
+  echo "For modeling, prior-stack, personalization, uncertainty, safety, scenario-lab, or explanation changes, also consider whether an evaluation, ablation, benchmark, report regeneration, or smoke check should be added or run."
+  echo
+  echo "For V1 layer work, explicitly say which layer-specific verification is relevant, such as unit tests, layer ablations, calibration checks, posterior-health checks, sequential forecasting evals, update-value evals, scenario-lab stability evals, or explanation-quality audits."
+  echo
   echo "Prefer tests that verify externally observable behavior rather than implementation details."
   echo
-  echo "Do not add fake, trivial, or overly brittle tests just to appear test-driven."
+  echo "Prefer the smallest meaningful verification command first, followed by broader tests or evals when they provide additional confidence."
   echo
-  echo "When tests are not appropriate, briefly explain why."
+  echo "After the patch, always include a post-edit verification plan."
+  echo "For each applicable check, provide the exact command to run, the directory it should be run from, and what a successful result should look like."
+  echo "If evals, benchmarks, report regeneration, fixture regeneration, or manual smoke checks are relevant, include those commands separately from ordinary tests."
+  echo "If no evals or additional verification are applicable, explicitly say so and explain why."
+  echo
+  echo "Do not add fake, trivial, or overly brittle tests or evals just to appear test-driven."
+  echo
+  echo "When tests or evals are not appropriate, briefly explain why."
   echo
   echo "## Documentation Expectations"
   echo
@@ -118,14 +154,14 @@ GIT_STATUS="$(git status --short 2>/dev/null || true)"
   echo "   - writes a unified diff to /tmp/chatgpt.patch"
   echo "   - runs git apply --check /tmp/chatgpt.patch"
   echo "   - applies the patch only if the check passes"
-  echo "4. The exact command or commands I should run afterward to verify the change."
+  echo "4. A post-edit verification plan with the exact command or commands I should run afterward. Include tests, evals, benchmarks, report-generation commands, fixture/schema validation, or smoke checks as applicable; separate fast targeted checks from broader confidence checks. If no evals or extra checks apply, say so explicitly."
   echo
   echo "Important rules:"
   echo "- Optimize for a clean implementation, not necessarily the smallest diff."
   echo "- Avoid speculative abstractions or configurability that the task does not need."
   echo "- Follow existing project style where it is useful."
   echo "- Improve existing structure when the task benefits from it."
-  echo "- Add or update meaningful tests when they provide confidence."
+  echo "- Add or update meaningful tests or evals when they provide confidence."
   echo "- Do not modify lockfiles, generated files, or snapshots unless clearly necessary."
   echo "- Do not introduce new dependencies without explicitly explaining why."
   echo "- The shell block should be directly pasteable into my terminal."

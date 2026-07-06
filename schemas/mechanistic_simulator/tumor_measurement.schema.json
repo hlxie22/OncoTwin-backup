@@ -1,42 +1,63 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://oncotwin.local/schemas/mechanistic_simulator/tumor_measurement.schema.json",
-  "title": "Tumor measurement",
-  "type": "object",
-  "required": ["case_id", "day", "source", "confidence"],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
   "anyOf": [
     {
-      "required": ["tumor_volume_ml"]
+      "required": [
+        "tumor_volume_ml"
+      ]
     },
     {
-      "required": ["longest_diameter_cm"]
+      "required": [
+        "longest_diameter_cm"
+      ]
     }
   ],
+  "description": "A single tumor measurement. Case wrapper fixtures use case_fixture.schema.json.",
   "properties": {
     "case_id": {
-      "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "type": "string"
+    },
+    "confidence": {
+      "type": "string"
+    },
+    "day": {
+      "minimum": 0,
+      "type": "number"
+    },
+    "longest_diameter_cm": {
+      "minimum": 0,
+      "type": "number"
+    },
+    "source": {
+      "enum": [
+        "manual",
+        "metadata",
+        "mask_derived",
+        "synthetic",
+        "demo"
+      ]
     },
     "timepoint_id": {
       "type": "string"
     },
-    "day": {
-      "type": "number",
-      "minimum": 0
+    "true_tumor_volume_ml": {
+      "minimum": 0,
+      "type": "number"
     },
     "tumor_volume_ml": {
-      "type": "number",
-      "minimum": 0
-    },
-    "longest_diameter_cm": {
-      "type": "number",
-      "minimum": 0
-    },
-    "source": {
-      "enum": ["manual", "metadata", "mask_derived", "synthetic", "demo"]
-    },
-    "confidence": {
-      "type": "string"
+      "minimum": 0,
+      "type": "number"
     }
-  }
+  },
+  "required": [
+    "case_id",
+    "day",
+    "source",
+    "confidence"
+  ],
+  "title": "Individual tumor measurement",
+  "type": "object"
 }

@@ -36,23 +36,36 @@ The core idea is not to build a black-box response predictor. The system is desi
 10. [`10_product_backend_frontend_api.md`](10_product_backend_frontend_api.md)  
     Product and engineering implementation details: backend services, database schema, API endpoints, frontend screens, job queue, and milestones.
 
-11. [`11_high_level_app_overview.md`](11_high_level_app_overview.md)
+11. [`11_high_level_app_overview.md`](11_high_level_app_overview.md)  
     Plain-language overview of the proposed app, patient/research workflows, outputs, and safety stance.
 
-12. [`12_patient_facing_llm_copilot.md`](12_patient_facing_llm_copilot.md)
+12. [`12_patient_facing_llm_copilot.md`](12_patient_facing_llm_copilot.md)  
     Patient-facing LLM co-pilot design: adaptive daily check-ins, daily impact cards, symptom trend interpretation, doctor-ready summaries, and patient-safe scenario planning.
+
+## Current V1 implementation plan
+
+The near-term mechanistic-simulation implementation plan is:
+
+[`../roadmap/V1_PRIOR_STACK_IMPLEMENTATION_AND_EVALUATION_PLAN.md`](../roadmap/V1_PRIOR_STACK_IMPLEMENTATION_AND_EVALUATION_PLAN.md)
+
+That plan narrows the first serious implementation to:
+
+- TNBC + A/C-T style neoadjuvant chemotherapy.
+- Volume-only simulation.
+- A transparent layered prior stack.
+- Bayesian-style updating from follow-up tumor measurements.
+- Evaluation reports for predictive performance, calibration, posterior health, personalization lift, value of information, failure modes, scenario stability, explanation quality, and safety.
 
 ## Suggested build order
 
-1. Start with the **MRI segmentation and feature extraction pipeline** using MAMA-MIA / BreastDCEDL-style DCE-MRI data.
-2. Implement the **mechanistic simulator** in a simplified spatial or regional form.
-3. Add **Bayesian calibration** from longitudinal tumor-volume measurements.
-4. Train the **AI parameter amortizer** using fitted patient parameters from public longitudinal data.
-5. Add the **molecular graph explanation layer**.
-6. Build the **Twin Scenario Lab** and safe patient-facing UI.
-7. Add the **LLM-powered patient daily co-pilot** for adaptive check-ins, daily suggestions, care-team questions, and visit summaries.
-8. Add the **toxicity/person-burden twin** and connect it to patient-facing scenario planning.
-9. Wrap the system with clinical-safety language and model-validation reports.
+1. Freeze the current volume-only V0 harness as a legacy feasibility baseline.
+2. Build the **V1 prior stack** for TNBC + chemotherapy: parameter contract, biologic bounds, population prior, pathology/biomarker rules, MRI/QC feature rules, and transparent prior composition.
+3. Connect the V1 prior stack to the existing volume-only simulator through a small adapter rather than expanding the simulator's free parameter set.
+4. Add **Bayesian updating** from longitudinal tumor-volume measurements with ESS, posterior-collapse, and calibration checks promoted to first-class evaluation outputs.
+5. Build the **V1 evaluation suite** before adding learned AI residuals: simple baselines, layer ablations, sequential forecasting, uncertainty calibration, personalization lift, failure-mode reports, scenario-lab stability, and explanation-quality audits.
+6. Add AI residual personalization only after the non-AI prior stack has a frozen leaderboard and calibration report.
+7. Then expand toward MRI segmentation, spatial simulation, molecular graph explanations, the Twin Scenario Lab, and patient-facing surfaces.
+8. Wrap every product-facing output with clinical-safety language and model-validation reports.
 
 ## Key safety stance
 

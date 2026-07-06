@@ -1,0 +1,190 @@
+{
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/prior_config.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Bounded sampling prior config, separate from resolved simulator params.",
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "distributions": {
+      "additionalProperties": false,
+      "properties": {
+        "carrying_capacity_ml": {
+          "additionalProperties": false,
+          "properties": {
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "type": {
+              "const": "uniform"
+            }
+          },
+          "required": [
+            "type",
+            "min",
+            "max"
+          ],
+          "type": "object"
+        },
+        "drug_sensitivity": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "type": {
+                "const": "uniform"
+              }
+            },
+            "required": [
+              "type",
+              "min",
+              "max"
+            ],
+            "type": "object"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "growth_rate": {
+          "additionalProperties": false,
+          "properties": {
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "type": {
+              "const": "uniform"
+            }
+          },
+          "required": [
+            "type",
+            "min",
+            "max"
+          ],
+          "type": "object"
+        },
+        "observation_noise_fraction": {
+          "additionalProperties": false,
+          "properties": {
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "type": {
+              "const": "uniform"
+            }
+          },
+          "required": [
+            "type",
+            "min",
+            "max"
+          ],
+          "type": "object"
+        },
+        "resistant_fraction": {
+          "additionalProperties": false,
+          "properties": {
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "type": {
+              "const": "uniform"
+            }
+          },
+          "required": [
+            "type",
+            "min",
+            "max"
+          ],
+          "type": "object"
+        },
+        "resistant_sensitivity_scale": {
+          "additionalProperties": false,
+          "properties": {
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "type": {
+              "const": "uniform"
+            }
+          },
+          "required": [
+            "type",
+            "min",
+            "max"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "growth_rate",
+        "carrying_capacity_ml",
+        "resistant_fraction",
+        "resistant_sensitivity_scale",
+        "observation_noise_fraction",
+        "drug_sensitivity"
+      ],
+      "type": "object"
+    },
+    "fixed": {
+      "additionalProperties": false,
+      "properties": {
+        "drug_decay": {
+          "additionalProperties": {
+            "exclusiveMinimum": 0,
+            "type": "number"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "drug_ec50": {
+          "additionalProperties": {
+            "exclusiveMinimum": 0,
+            "type": "number"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "growth_law": {
+          "const": "logistic"
+        }
+      },
+      "required": [
+        "growth_law",
+        "drug_ec50",
+        "drug_decay"
+      ],
+      "type": "object"
+    },
+    "prior_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "prior_id",
+    "fixed",
+    "distributions"
+  ],
+  "title": "Mechanistic simulator prior config",
+  "type": "object"
+}

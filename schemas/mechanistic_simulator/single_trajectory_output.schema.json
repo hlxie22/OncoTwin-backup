@@ -1,0 +1,98 @@
+{
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/single_trajectory_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "case_id": {
+      "type": "string"
+    },
+    "initial_volume_ml": {
+      "minimum": 0,
+      "type": "number"
+    },
+    "simulation_version": {
+      "const": "volume_ode_v0"
+    },
+    "times": {
+      "items": {
+        "type": "number"
+      },
+      "type": "array"
+    },
+    "trajectory": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "day": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "growth_component": {
+            "type": "number"
+          },
+          "kill_component": {
+            "type": "number"
+          },
+          "predicted_longest_diameter_cm": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "resistant_volume_ml": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "sensitive_volume_ml": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "total_exposure_by_drug": {
+            "additionalProperties": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "type": "object"
+          },
+          "tumor_volume_ml": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "day",
+          "tumor_volume_ml",
+          "sensitive_volume_ml",
+          "resistant_volume_ml",
+          "predicted_longest_diameter_cm",
+          "growth_component",
+          "kill_component",
+          "total_exposure_by_drug",
+          "warnings"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "case_id",
+    "initial_volume_ml",
+    "simulation_version",
+    "times",
+    "trajectory",
+    "warnings"
+  ],
+  "title": "Volume simulator single trajectory output",
+  "type": "object"
+}

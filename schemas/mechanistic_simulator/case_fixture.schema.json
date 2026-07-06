@@ -1,0 +1,211 @@
+{
+  "$id": "https://oncotwin.local/schemas/mechanistic_simulator/case_fixture.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Case wrapper containing baseline and optional longitudinal measurements.",
+  "properties": {
+    "baseline_measurement": {
+      "$id": "https://oncotwin.local/schemas/mechanistic_simulator/tumor_measurement.schema.json",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "anyOf": [
+        {
+          "required": [
+            "tumor_volume_ml"
+          ]
+        },
+        {
+          "required": [
+            "longest_diameter_cm"
+          ]
+        }
+      ],
+      "description": "A single tumor measurement. Case wrapper fixtures use case_fixture.schema.json.",
+      "properties": {
+        "case_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string"
+        },
+        "day": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "longest_diameter_cm": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "source": {
+          "enum": [
+            "manual",
+            "metadata",
+            "mask_derived",
+            "synthetic",
+            "demo"
+          ]
+        },
+        "timepoint_id": {
+          "type": "string"
+        },
+        "true_tumor_volume_ml": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "tumor_volume_ml": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "case_id",
+        "day",
+        "source",
+        "confidence"
+      ],
+      "title": "Individual tumor measurement",
+      "type": "object"
+    },
+    "case_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "expected_qualitative_behavior": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "intended_use": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "measurements": {
+      "items": {
+        "$id": "https://oncotwin.local/schemas/mechanistic_simulator/tumor_measurement.schema.json",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "anyOf": [
+          {
+            "required": [
+              "tumor_volume_ml"
+            ]
+          },
+          {
+            "required": [
+              "longest_diameter_cm"
+            ]
+          }
+        ],
+        "description": "A single tumor measurement. Case wrapper fixtures use case_fixture.schema.json.",
+        "properties": {
+          "case_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "day": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "longest_diameter_cm": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "manual",
+              "metadata",
+              "mask_derived",
+              "synthetic",
+              "demo"
+            ]
+          },
+          "timepoint_id": {
+            "type": "string"
+          },
+          "true_tumor_volume_ml": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "tumor_volume_ml": {
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "case_id",
+          "day",
+          "source",
+          "confidence"
+        ],
+        "title": "Individual tumor measurement",
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "pathology": {
+      "type": "object"
+    },
+    "safety_notes": {
+      "oneOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "subtype": {
+      "type": "string"
+    },
+    "treatment_schedule": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "required": [
+    "case_id",
+    "display_name",
+    "subtype",
+    "pathology",
+    "baseline_measurement",
+    "treatment_schedule",
+    "intended_use"
+  ],
+  "title": "Mechanistic simulator demo case fixture",
+  "type": "object"
+}

@@ -15,3 +15,33 @@ coverage/
 *.crt
 
 .DS_Store
+Thumbs.db
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# Python environments
+.venv/
+venv/
+env/
+
+# Test / coverage artifacts
+.coverage
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editors / local IDE state
+.vscode/
+.idea/
+
+# Repomix outputs
+repomix.*
+!repomix.config.*
