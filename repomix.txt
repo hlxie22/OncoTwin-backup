@@ -1,0 +1,17 @@
+git ls-files \
+  .gitignore .repomixignore \
+  configs/prior \
+  evals/README.md evals/prior_stack tests/evals \
+  experiments/README.md experiments/prior_builder tests/prior_builder \
+  experiments/v0/mechanistic_simulator tests/mechanistic_simulator \
+  fixtures/mechanistic_simulator schemas/mechanistic_simulator \
+  docs/00_README.md \
+  docs/01_motivation_background.md \
+  docs/02_overall_system_architecture.md \
+  docs/03_data_pretraining_and_validation.md \
+  docs/04_mri_ingestion_segmentation_feature_extraction.md \
+  docs/05_mechanistic_tumor_simulator.md \
+  docs/07_bayesian_twin_update_uncertainty.md \
+  roadmap/V1_PRIOR_STACK_IMPLEMENTATION_AND_EVALUATION_PLAN.md \
+| grep -Ev '(^experiments/v0/mechanistic_simulator/outputs/|\.pdf$)' \
+| repomix --stdin -o repomix-v1.md --style markdown

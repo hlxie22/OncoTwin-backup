@@ -30,4 +30,7 @@ evals/reports/
 
 # Generated repo context / repomix outputs
 repomix-output.xml
-repomix.txt
+*repomix*.md
+
+environment.yml
+install-repomix-in-conda-env.sh
