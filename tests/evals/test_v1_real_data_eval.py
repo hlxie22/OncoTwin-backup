@@ -36,6 +36,103 @@ class V1RealDataEvalTest(unittest.TestCase):
         self.assertIn("V1 real-data prior-layer evaluation", text)
         self.assertIn("layer4_mri_qc", text)
 
+    def test_loads_csv_cohort(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cohort = Path(tmpdir) / "cohort.csv"
+            cohort.write_text(
+                "case_id,subtype,treatment_regimen,baseline_day,baseline_volume_ml,final_day,final_volume_ml\n"
+                "registry_001,TNBC,AC-T chemotherapy,0,12,84,3.5\n",
+                encoding="utf-8",
+            )
+            cases = load_real_cohort(cohort)
+
+        self.assertEqual(cases[0]["case_id"], "registry_001")
+        self.assertEqual(cases[0]["baseline_volume_ml"], 12.0)
+
+    def test_rejects_missing_case_id(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cohort = Path(tmpdir) / "cohort.jsonl"
+            cohort.write_text(
+                json.dumps(
+                    {
+                        "subtype": "TNBC",
+                        "treatment_regimen": "AC-T chemotherapy",
+                        "baseline_day": 0,
+                        "baseline_volume_ml": 30,
+                        "final_day": 84,
+                        "final_volume_ml": 7.5,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "case_id or patient_id"):
+                load_real_cohort(cohort)
+
+    def test_rejects_missing_required_volume(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cohort = Path(tmpdir) / "cohort.jsonl"
+            cohort.write_text(
+                json.dumps(
+                    {
+                        "case_id": "registry_001",
+                        "subtype": "TNBC",
+                        "treatment_regimen": "AC-T chemotherapy",
+                        "baseline_day": 0,
+                        "baseline_volume_ml": 30,
+                        "final_day": 84,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "missing required numeric field"):
+                load_real_cohort(cohort)
+
+    def test_rejects_invalid_time_order(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cohort = Path(tmpdir) / "cohort.jsonl"
+            cohort.write_text(
+                json.dumps(
+                    {
+                        "case_id": "registry_001",
+                        "subtype": "TNBC",
+                        "treatment_regimen": "AC-T chemotherapy",
+                        "baseline_day": 28,
+                        "baseline_volume_ml": 30,
+                        "final_day": 28,
+                        "final_volume_ml": 7.5,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "final_day after baseline_day"):
+                load_real_cohort(cohort)
+
+    def test_rejects_unpaired_or_out_of_order_early_followup(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cohort = Path(tmpdir) / "cohort.jsonl"
+            cohort.write_text(
+                json.dumps(
+                    {
+                        "case_id": "registry_001",
+                        "subtype": "TNBC",
+                        "treatment_regimen": "AC-T chemotherapy",
+                        "baseline_day": 0,
+                        "baseline_volume_ml": 30,
+                        "early_day": 100,
+                        "early_volume_ml": 20,
+                        "final_day": 84,
+                        "final_volume_ml": 7.5,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "early follow-up"):
+                load_real_cohort(cohort)
+
     def test_rejects_demo_fixture_by_default(self):
         fixture = Path("fixtures/mechanistic_simulator/cases/tnbc_demo_case.json")
         with self.assertRaisesRegex(ValueError, "refused demo/synthetic/fixture"):

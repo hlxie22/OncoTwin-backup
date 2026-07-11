@@ -4,8 +4,8 @@ Layer 3 applies deliberately modest, traceable shifts to the Layer 2 TNBC
 chemotherapy population prior. Rules operate in transformed parameter space so
 multiplicative biologic assumptions remain explicit: growth and treatment
 sensitivity multipliers become log-space offsets, while resistant-fraction odds
-multipliers become logit-space offsets. Missing biomarkers widen uncertainty;
-they never act like negative biomarker evidence.
+multipliers become logit-space offsets. Missing biomarkers are recorded as audit-only missingness evidence by default;
+they never act like negative biomarker evidence or automatically widen uncertainty.
 """
 
 from __future__ import annotations
@@ -248,13 +248,14 @@ def _ki67_rule_effects(context: Mapping[str, object]) -> List[_Layer3RuleEffect]
                 rule_id="ki67_missing_v1",
                 rule_family="ki67",
                 condition="ki67_percent is missing or unknown",
-                effects={"growth_variance_multiplier": 1.25},
-                evidence_level="missingness_policy",
+                effects={},
+                evidence_level="missingness_audit",
                 explanation=(
-                    "Missing Ki-67 widens proliferation uncertainty without "
-                    "inventing a high or low proliferation status."
+                    "Missing Ki-67 is recorded for audit without inventing a "
+                    "high/low proliferation status or automatically widening "
+                    "the prior."
                 ),
-                uncertainty_driver=True,
+                uncertainty_driver=False,
             )
         ]
 
@@ -405,16 +406,14 @@ def _brca_hrd_rule_effects(context: Mapping[str, object]) -> List[_Layer3RuleEff
                 rule_id="brca_hrd_missing_v1",
                 rule_family="brca_hrd",
                 condition="BRCA/HRD status is missing, pending, or unknown",
-                effects={
-                    "sensitivity_variance_multiplier": 1.10,
-                    "resistant_variance_multiplier": 1.15,
-                },
-                evidence_level="missingness_policy",
+                effects={},
+                evidence_level="missingness_audit",
                 explanation=(
-                    "Unknown BRCA/HRD status widens response and resistance "
-                    "uncertainty rather than behaving like negative evidence."
+                    "Unknown BRCA/HRD status is recorded for audit without "
+                    "behaving like negative evidence or automatically widening "
+                    "response/resistance uncertainty."
                 ),
-                uncertainty_driver=True,
+                uncertainty_driver=False,
             )
         ]
 

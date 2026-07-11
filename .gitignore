@@ -34,3 +34,29 @@ repomix-output.xml
 
 environment.yml
 install-repomix-in-conda-env.sh
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Patch backups / scratch files
+*.bak
+*.bak_*
+*.tmp
+*.log
+
+# Local data / generated artifacts
+data/
+scripts/data/
+v1_slurm_bundle/
+ispy2_derived_metadata.csv
+ispy2_derived_metadata.sql
+setup_s5cmd_nosign.sh
+
+# Slurm runtime outputs
+*.out
+*.err
+slurm/**/*.out
+slurm/**/*.err
+slurm/**/*.log
+*.bak*

@@ -11,7 +11,7 @@ from experiments.prior_builder.transforms import safe_sigmoid, validate_covarian
 
 
 class PathologyBiomarkerRuleTests(unittest.TestCase):
-    def test_unknown_ki67_widens_growth_variance_without_inventing_status(self):
+    def test_unknown_ki67_is_audit_only_without_inventing_status(self):
         base = _population_prior()
 
         adjusted = apply_pathology_biomarker_rules(
@@ -27,7 +27,7 @@ class PathologyBiomarkerRuleTests(unittest.TestCase):
             adjusted.transformed_means["log_growth_rate_per_day"],
             base.transformed_means["log_growth_rate_per_day"],
         )
-        self.assertGreater(
+        self.assertEqual(
             adjusted.transformed_covariance[0][0],
             base.transformed_covariance[0][0],
         )
@@ -85,7 +85,7 @@ class PathologyBiomarkerRuleTests(unittest.TestCase):
         self.assertAlmostEqual(_growth_median(adjusted), _growth_median(base) * 1.15)
         self.assertIn("grade3_high_growth_v1", _rule_ids(adjusted))
 
-    def test_brca_hrd_unknown_is_not_treated_as_negative(self):
+    def test_brca_hrd_unknown_is_audit_only_and_not_treated_as_negative(self):
         base = _population_prior()
         negative = apply_pathology_biomarker_rules(
             base,
@@ -111,11 +111,11 @@ class PathologyBiomarkerRuleTests(unittest.TestCase):
         )
 
         self.assertEqual(unknown.transformed_means, negative.transformed_means)
-        self.assertGreater(
+        self.assertEqual(
             unknown.transformed_covariance[1][1],
             negative.transformed_covariance[1][1],
         )
-        self.assertGreater(
+        self.assertEqual(
             unknown.transformed_covariance[2][2],
             negative.transformed_covariance[2][2],
         )

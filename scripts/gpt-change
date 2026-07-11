@@ -10,7 +10,7 @@ usage() {
   echo "  scripts/gpt-change \"task\" -- --ignore \"experiments/v0/**,docs/*.pdf\""
   echo
   echo "Optional:"
-  echo "  GPT_CHANGE_OUT_ROOT=/tmp scripts/gpt-change \"task\""
+  echo "  GPT_CHANGE_OUT_ROOT=. scripts/gpt-change \"task\""
   exit 1
 }
 
@@ -18,7 +18,6 @@ if [ "$#" -eq 0 ]; then
   usage
 fi
 
-TASK=""
 TASK_ARGS=()
 REPOMIX_ARGS=()
 
@@ -59,7 +58,7 @@ if [ "${#REPOMIX_ARGS[@]}" -gt 0 ]; then
 fi
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
-OUT_ROOT="${GPT_CHANGE_OUT_ROOT:-/tmp}"
+OUT_ROOT="${GPT_CHANGE_OUT_ROOT:-$PWD}"
 DIR="$OUT_ROOT/gpt-change-$STAMP"
 
 REPO="$DIR/repomix.xml"

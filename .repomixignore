@@ -42,6 +42,15 @@ htmlcov/
 .vscode/
 .idea/
 
+# Data / dataset artifacts
+data/
+ispy2_derived_metadata.csv
+ispy2_derived_metadata.sql
+configs/v1_data_tasks.tsv
+
+# Optional: generated experiment outputs
+experiments/**/outputs/
+
 # Repomix outputs
 repomix.*
 !repomix.config.*

@@ -1,0 +1,3 @@
+source	measurements	clinical	local_paths	urls	expected_files	default_treatment_context	use_nominal_ispy2_days
+breastdcedl-ispy2	/path/to/measurement_table.csv	/path/to/clinical_table.csv	/path/to/downloaded/table_or_directory	-	-	A/C-T neoadjuvant chemotherapy	1
+generic-longitudinal-table	/path/to/other_measurements.csv	-	-	-	-	A/C-T neoadjuvant chemotherapy	0
