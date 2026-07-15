@@ -105,6 +105,8 @@ def write_suite_report(
     if metadata is not None:
         lines.extend(_suite_metadata_lines(metadata))
 
+    lines.extend(_suite_quality_lines(results, metadata or {}))
+
     lines += ["", "## Metrics", ""]
     for result in results:
         if not result.metrics:
@@ -116,6 +118,75 @@ def write_suite_report(
 
     report.write_text("\n".join(lines), encoding="utf-8")
 
+
+def _suite_quality_lines(
+    results: Sequence[EvalResult],
+    metadata: Mapping[str, object],
+) -> list[str]:
+    lines: list[str] = []
+    warnings = _result_warning_items(results) + _cohort_readiness_warnings(metadata)
+    if warnings:
+        lines += ["", "## Data-quality warnings", ""]
+        lines.extend(f"- {warning}" for warning in warnings)
+
+    unavailable_results = [
+        result for result in results if result.status == "unavailable"
+    ]
+    if unavailable_results:
+        lines += ["", "## Unavailable eval categories", ""]
+        lines.append(
+            "These indicate missing runtime components or missing inputs, not a passed eval."
+        )
+        lines.append("")
+        for result in unavailable_results:
+            missing = (
+                ", ".join(result.missing_components)
+                if result.missing_components
+                else "unspecified"
+            )
+            lines.append(f"- `{result.name}`: {result.summary} Missing: {missing}.")
+
+    return lines
+
+
+def _result_warning_items(results: Sequence[EvalResult]) -> list[str]:
+    warnings = []
+    for result in results:
+        for warning in result.warnings:
+            warnings.append(f"`{result.name}`: {warning}")
+    return warnings
+
+
+def _cohort_readiness_warnings(metadata: Mapping[str, object]) -> list[str]:
+    if metadata.get("v1_d1_status") != "pass":
+        return []
+
+    curation = metadata.get("cohort_curation")
+    if not isinstance(curation, Mapping):
+        return []
+    cohort_summary = curation.get("cohort_summary")
+    if not isinstance(cohort_summary, Mapping):
+        return []
+
+    in_scope_count = _optional_int(
+        cohort_summary.get("v1a_in_scope_count", cohort_summary.get("included_rows"))
+    )
+    if in_scope_count is None or in_scope_count >= 50:
+        return []
+    return [
+        "V1-D1 cohort has "
+        f"{in_scope_count} in-scope cases; use this as a smoke/development check, "
+        "not an initial V1 performance claim."
+    ]
+
+
+def _optional_int(value: object) -> int | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 def _suite_metadata_lines(metadata: Mapping[str, object]) -> list[str]:
     lines = [

@@ -8,6 +8,10 @@ import math
 from pathlib import Path
 from typing import Mapping, Sequence
 
+from experiments.prior_builder.ai_residual_policy import (
+    apply_ai_residual_policy,
+    sample_ai_residual_prior,
+)
 from experiments.prior_builder.mri_feature_rules import (
     apply_mri_feature_rules,
     sample_mri_feature_prior,
@@ -32,7 +36,18 @@ DEFAULT_REPORT_PATH = Path("evals/reports/v1_real_data_prior_layer_eval.md")
 FAKE_TOKENS = ("demo", "synthetic", "simulated", "toy", "fixture")
 BASELINES = ("baseline_no_change", "linear_early", "exponential_early")
 BASELINE_IN_SCOPE = tuple(f"{name}_in_scope" for name in BASELINES)
-LAYERS = ("layer2_population", "layer3_pathology", "layer4_mri_qc")
+LAYERS = (
+    "layer2_population",
+    "layer3_pathology",
+    "layer4_mri_qc",
+    "layer5_ai_residual",
+)
+FINAL_PRIOR_LAYER = "layer5_ai_residual"
+LAYER_DELTA_COMPARISONS = (
+    ("layer3_vs_layer2", "layer3_pathology", "layer2_population"),
+    ("layer4_vs_layer3", "layer4_mri_qc", "layer3_pathology"),
+    ("layer5_vs_layer4", "layer5_ai_residual", "layer4_mri_qc"),
+)
 
 # Diagnostic V1 fix: active_treatment_sensitivity was previously applied
 # as a per-day kill rate. That made prior-predictive trajectories collapse
@@ -119,6 +134,25 @@ def run_real_data_eval(
         predictions["layer4_mri_qc"] = _interval(case, samples4)
         debug_by_layer["layer4_mri_qc"] = _debug_summary(case, samples4)
 
+        prior5 = apply_ai_residual_policy(prior4, case["context"])
+        audit_by_layer["layer5_ai_residual"] = prior5.layer_contribution()
+        warnings += list(prior5.warnings)
+        if not prior5.active:
+            # Non-active Layer 5 states must be exact no-ops in ablations, not
+            # fresh Monte Carlo draws that create apparent Layer 5 movement.
+            # This covers both missing-signal inactive_noop and validated_noop.
+            samples5 = samples4
+            predictions["layer5_ai_residual"] = dict(predictions["layer4_mri_qc"])
+            debug_by_layer["layer5_ai_residual"] = dict(debug_by_layer["layer4_mri_qc"])
+        else:
+            samples5 = sample_ai_residual_prior(
+                prior5,
+                n_samples=n_samples,
+                seed=seed + 3000 + index,
+            ).samples
+            predictions["layer5_ai_residual"] = _interval(case, samples5)
+            debug_by_layer["layer5_ai_residual"] = _debug_summary(case, samples5)
+
         rows.append(_row(case, predictions, warnings, debug_by_layer, audit_by_layer))
 
     in_scope = sum("layer2_population" in row["predictions"] for row in rows)
@@ -158,6 +192,7 @@ def run_real_data_eval_result(
         allow_demo_data=allow_demo_data,
     )
     write_markdown_report(result, report_path)
+    final_layer = result["metrics"].get(FINAL_PRIOR_LAYER, {})
     layer4 = result["metrics"].get("layer4_mri_qc", {})
     return EvalResult(
         name="real_data_prior_layer_performance",
@@ -167,9 +202,13 @@ def run_real_data_eval_result(
             "in-scope cases against held-out final volumes."
         ),
         metrics={
+            "final_layer": FINAL_PRIOR_LAYER,
+            "final_layer_mae_ml": final_layer.get("mae_ml"),
+            "final_layer_log_rmse": final_layer.get("log_volume_rmse"),
+            "final_layer_coverage_80": final_layer.get("coverage_80"),
             "layer4_mae_ml": layer4.get("mae_ml"),
-            "layer4_log_rmse": layer4.get("log_volume_rmse"),
-            "layer4_coverage_80": layer4.get("coverage_80"),
+            "layer5_mae_ml": final_layer.get("mae_ml"),
+            "layer5_coverage_80": final_layer.get("coverage_80"),
         },
         warnings=tuple(result["warnings"]),
         report_path=str(report_path),
@@ -193,6 +232,15 @@ def write_markdown_report(result: Mapping[str, object], report: Path) -> None:
         "## Layer deltas",
         "",
         _delta_table(result["layer_delta"]),
+        "",
+        "## Cases helped/harmed by layer",
+        "",
+        (
+            "Positive MAE delta means the newer layer reduced absolute error "
+            "for that case."
+        ),
+        "",
+        _delta_case_table(result["layer_delta"]),
         "",
         "## Layer debug",
         "",
@@ -436,11 +484,56 @@ def _row(
         "case_id": case["case_id"],
         "observed_final_volume_ml": case["final_volume_ml"],
         "predictions": dict(predictions),
+        "calibration_groups": _calibration_groups(case),
         "layer_debug": dict(debug_by_layer or {}),
         "layer_audit": dict(audit_by_layer or {}),
         "warnings": list(warnings),
     }
 
+
+
+def _calibration_groups(case: Mapping[str, object]) -> dict[str, str]:
+    context = case.get("context", {})
+    if not isinstance(context, Mapping):
+        context = {}
+
+    return {
+        "data_origin": _calibration_label(context.get("data_origin"), "missing"),
+        "early_followup": (
+            "available"
+            if case.get("early_day") is not None and case.get("early_volume_ml") is not None
+            else "missing"
+        ),
+        "mri_qc": _mri_qc_group(context),
+        "baseline_volume_bin": _baseline_volume_bin(case.get("baseline_volume_ml")),
+    }
+
+
+def _mri_qc_group(context: Mapping[str, object]) -> str:
+    for field in ("segmentation_qc", "mri_qc", "qc_status", "registration_qc"):
+        value = context.get(field)
+        if value not in (None, ""):
+            return _calibration_label(value, "unknown")
+    return "missing"
+
+
+def _baseline_volume_bin(value: object) -> str:
+    try:
+        volume = float(value)
+    except (TypeError, ValueError):
+        return "missing"
+    if volume < 10.0:
+        return "lt_10ml"
+    if volume < 30.0:
+        return "10_to_30ml"
+    return "gte_30ml"
+
+
+def _calibration_label(value: object, fallback: str) -> str:
+    if value in (None, ""):
+        return fallback
+    normalized = "_".join(str(value).strip().lower().split())
+    return normalized or fallback
 
 def _all_metrics(rows: Sequence[Mapping[str, object]]) -> dict[str, dict[str, object]]:
     names = sorted({name for row in rows for name in row["predictions"]})
@@ -513,28 +606,59 @@ def _width(
 
 def _deltas(rows: Sequence[Mapping[str, object]]) -> dict[str, dict[str, object]]:
     output = {}
-    comparisons = (
-        ("layer3_vs_layer2", "layer3_pathology", "layer2_population"),
-        ("layer4_vs_layer3", "layer4_mri_qc", "layer3_pathology"),
-    )
-    for label, new_name, old_name in comparisons:
-        deltas = []
+    for label, new_name, old_name in LAYER_DELTA_COMPARISONS:
+        case_deltas = []
         for row in rows:
             predictions = row["predictions"]
             if new_name not in predictions or old_name not in predictions:
                 continue
             observed = float(row["observed_final_volume_ml"])
-            deltas.append(
-                abs(predictions[old_name]["point_ml"] - observed)
-                - abs(predictions[new_name]["point_ml"] - observed)
+            old_point = float(predictions[old_name]["point_ml"])
+            new_point = float(predictions[new_name]["point_ml"])
+            old_error = abs(old_point - observed)
+            new_error = abs(new_point - observed)
+            delta = old_error - new_error
+            case_deltas.append(
+                {
+                    "case_id": row["case_id"],
+                    "old_layer": old_name,
+                    "new_layer": new_name,
+                    "observed_final_volume_ml": observed,
+                    "old_point_ml": old_point,
+                    "new_point_ml": new_point,
+                    "old_abs_error_ml": old_error,
+                    "new_abs_error_ml": new_error,
+                    "mae_delta_ml": delta,
+                    "outcome": _delta_outcome(delta),
+                }
             )
+
+        sorted_cases = sorted(
+            case_deltas,
+            key=lambda item: abs(float(item["mae_delta_ml"])),
+            reverse=True,
+        )
         output[label] = {
-            "n": len(deltas),
-            "helped": sum(delta > 0 for delta in deltas),
-            "harmed": sum(delta < 0 for delta in deltas),
-            "mean_mae_delta_ml": sum(deltas) / len(deltas) if deltas else 0.0,
+            "n": len(case_deltas),
+            "helped": sum(case["outcome"] == "helped" for case in case_deltas),
+            "harmed": sum(case["outcome"] == "harmed" for case in case_deltas),
+            "mean_mae_delta_ml": (
+                sum(float(case["mae_delta_ml"]) for case in case_deltas)
+                / len(case_deltas)
+                if case_deltas
+                else 0.0
+            ),
+            "cases": sorted_cases,
         }
     return output
+
+
+def _delta_outcome(delta: float) -> str:
+    if delta > 1e-9:
+        return "helped"
+    if delta < -1e-9:
+        return "harmed"
+    return "unchanged"
 
 
 def _metrics_table(metrics: Mapping[str, Mapping[str, object]]) -> str:
@@ -565,6 +689,53 @@ def _delta_table(deltas: Mapping[str, Mapping[str, object]]) -> str:
             f"| {name} | {row['n']} | {row['helped']} | {row['harmed']} | "
             f"{_fmt(row['mean_mae_delta_ml'])} |"
         )
+    return "\n".join(lines)
+
+
+def _delta_case_table(
+    deltas: Mapping[str, Mapping[str, object]],
+    *,
+    case_limit: int = 80,
+) -> str:
+    lines = [
+        (
+            "| Comparison | Case | Outcome | old -> new | observed ml | "
+            "old pred ml | new pred ml | old abs err ml | new abs err ml | "
+            "MAE delta ml |"
+        ),
+        "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+
+    emitted = 0
+    for comparison, summary in deltas.items():
+        cases = summary.get("cases", [])
+        if not isinstance(cases, Sequence) or isinstance(cases, (str, bytes)):
+            continue
+        for case in cases:
+            if not isinstance(case, Mapping):
+                continue
+            emitted += 1
+            if emitted > case_limit:
+                break
+
+            layer_transition = f"{case.get('old_layer')} -> {case.get('new_layer')}"
+            lines.append(
+                f"| {comparison} | {case.get('case_id')} | {case.get('outcome')} | "
+                f"{layer_transition} | "
+                f"{_fmt(case.get('observed_final_volume_ml'))} | "
+                f"{_fmt(case.get('old_point_ml'))} | "
+                f"{_fmt(case.get('new_point_ml'))} | "
+                f"{_fmt(case.get('old_abs_error_ml'))} | "
+                f"{_fmt(case.get('new_abs_error_ml'))} | "
+                f"{_fmt(case.get('mae_delta_ml'))} |"
+            )
+        if emitted > case_limit:
+            break
+
+    if len(lines) == 2:
+        return "No layer-delta case rows were available."
+    if emitted > case_limit:
+        lines.append(f"\nShowing first {case_limit} layer-delta case rows.")
     return "\n".join(lines)
 
 
@@ -1675,8 +1846,8 @@ def _point(predictions: Mapping[str, Mapping[str, float]], name: str) -> str:
 
 def _case_table(rows: Sequence[Mapping[str, object]]) -> str:
     lines = [
-        "| Case | Observed ml | no-change | linear | exponential | Layer 2 | Layer 3 | Layer 4 |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Case | Observed ml | no-change | linear | exponential | Layer 2 | Layer 3 | Layer 4 | Layer 5 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         pred = row["predictions"]
@@ -1687,7 +1858,8 @@ def _case_table(rows: Sequence[Mapping[str, object]]) -> str:
             f"{_point(pred, 'exponential_early')} | "
             f"{_point(pred, 'layer2_population')} | "
             f"{_point(pred, 'layer3_pathology')} | "
-            f"{_point(pred, 'layer4_mri_qc')} |"
+            f"{_point(pred, 'layer4_mri_qc')} | "
+            f"{_point(pred, 'layer5_ai_residual')} |"
         )
     return "\n".join(lines)
 

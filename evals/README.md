@@ -56,28 +56,34 @@ Run real-data prior-layer performance on a user-provided longitudinal cohort:
 python3 -m evals.prior_stack.v1_real_data_eval --cohort path/to/real_cohort.json --report evals/reports/v1_real_data_prior_layer_eval.md
 ```
 
-Run the full suite with graceful unavailable handling:
+Run the full suite and collect runtime-layer analysis artifacts:
 
 ```bash
-python3 -m evals.prior_stack.run_v1_eval_suite --cohort path/to/real_cohort.json --report evals/reports/v1_eval_suite.md
+python3 -m evals.prior_stack.run_v1_eval_suite \
+  --cohort path/to/real_cohort.json \
+  --report evals/reports/v1_eval_suite.md \
+  --summary evals/reports/v1_eval_suite.summary.json \
+  --analysis-dir evals/reports/v1_eval_suite_artifacts
 ```
+
+The suite writes the Markdown report, a machine-readable summary JSON, and one JSON analysis artifact per runtime-layer smoke eval under `--analysis-dir`. When no cohort is supplied, real-data prior-layer performance and uncertainty calibration are reported as unavailable, but runtime-layer smoke evals still run.
 
 The real-data eval accepts `.json`, `.jsonl`, and `.csv` cohorts. Records need `case_id`, `subtype`, `treatment_regimen` or `treatment_context`, `baseline_day`, `baseline_volume_ml`, `final_day`, and `final_volume_ml`; optional fields include early follow-up volume, biomarkers, pathology, MRI volume features, and QC fields. JSON records may also use a `measurements` list with `day` and `tumor_volume_ml` or `volume_ml` values.
 
 Demo, synthetic, simulated, toy, and fixture data are rejected by default. Use `--allow-demo-data` only for local smoke checks, not for performance claims.
 
+Uncertainty calibration reports aggregate final-prior-layer interval coverage and, when a group has enough in-scope cases, subgroup coverage for cohort provenance, early-follow-up availability, MRI/QC status, and baseline-volume bins. Low 80% or 95% coverage is flagged as a calibration warning rather than silently folded into the pass/fail status.
+
 Implemented categories:
 
-- real-data prior-layer performance and Layer 2/3/4 ablation
-- real-data uncertainty interval coverage
-- posterior-health stub, unavailable until the Bayesian update runtime exists
-- sequential-forecasting stub, unavailable until the Bayesian update runtime exists
-- update-value stub, unavailable until posterior comparison runtime exists
-- scenario-lab stability stub, unavailable until scenario-lab runtime exists
-- explanation-quality audit stub, unavailable until explanation engine and rubric data exist
+- real-data prior-layer performance and Layer 2/3/4/5 ablation
+- real-data uncertainty interval coverage on the final available prior layer
+- posterior-health smoke checks for the V1 posterior update runtime
+- sequential-forecasting smoke checks for patient-specific updates
+- update-value smoke checks comparing population-prior and posterior errors
+- scenario-lab stability smoke checks, including fail-closed unsafe scenarios
+- explanation-quality smoke audits for guardrails, sections, uncertainty drivers, and prior context
 
-The suite records unavailable evals in the report instead of crashing. Individual stub runners exit non-zero with a clear missing-component message when invoked directly.
-
-Every V1 report should include simple baselines, layer ablations, uncertainty calibration, posterior health, cases helped/harmed, and clear warnings about limits. Posterior-health, sequential forecasting, update-value, scenario-lab stability, and explanation-quality audits should produce unavailable results until their required runtime components exist.
+Runtime-layer smoke evals are deterministic wiring and artifact checks. They do not replace real-data performance claims, calibration checks, posterior-health checks on production cohorts, scenario-lab stability evals on curated scenario sets, or explanation-quality audits with adjudicated rubric data.
 <!-- V1_PRIOR_STACK_EVALS_END -->
 

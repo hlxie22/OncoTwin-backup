@@ -10,7 +10,7 @@ layer1_bounds_v1.yaml
 layer2_population_priors_v1.yaml
 layer3_pathology_biomarker_rules_v1.yaml
 layer4_mri_feature_rules_v1.yaml
-layer5_ai_residual_policy_v1.yaml
+layer5_ai_residual_policy_v1.yaml  # optional, bounded, validated residual policy
 layer6_update_policy_v1.yaml
 ```
 

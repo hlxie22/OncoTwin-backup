@@ -30,11 +30,32 @@ class V1RealDataEvalTest(unittest.TestCase):
             "layer2_population",
             "layer3_pathology",
             "layer4_mri_qc",
+            "layer5_ai_residual",
         ):
             self.assertIn(name, result["metrics"])
         self.assertIn("layer3_vs_layer2", result["layer_delta"])
+        self.assertIn("layer5_vs_layer4", result["layer_delta"])
+        delta_cases = result["layer_delta"]["layer3_vs_layer2"]["cases"]
+        self.assertEqual(
+            {case["case_id"] for case in delta_cases},
+            {"tnbc_registry_001", "tnbc_registry_002"},
+        )
+        self.assertTrue(
+            all(
+                case["outcome"] in {"helped", "harmed", "unchanged"}
+                for case in delta_cases
+            )
+        )
+        self.assertTrue(
+            all(
+                "old_abs_error_ml" in case and "new_abs_error_ml" in case
+                for case in delta_cases
+            )
+        )
         self.assertIn("V1 real-data prior-layer evaluation", text)
+        self.assertIn("Cases helped/harmed by layer", text)
         self.assertIn("layer4_mri_qc", text)
+        self.assertIn("layer5_ai_residual", text)
 
     def test_loads_csv_cohort(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -185,6 +206,12 @@ def _cases():
             "segmentation_qc": "high",
             "registration_qc": "high",
             "source": "clinical_mri_report",
+            "ai_residual": {
+                "validated": True,
+                "model_version": "unit_residual_v1",
+                "log_active_treatment_sensitivity_shift": 0.03,
+                "resistant_variance_multiplier": 1.10,
+            },
         },
         {
             "case_id": "tnbc_registry_002",

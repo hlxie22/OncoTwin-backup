@@ -21,6 +21,7 @@ from .v1_update_value_eval import run_eval as run_update_value
 DEFAULT_REPORT_PATH = Path("evals/reports/v1_eval_suite.md")
 SUMMARY_SUFFIX = ".summary.json"
 EXCLUSIONS_SUFFIX = ".exclusions.jsonl"
+ANALYSIS_SUFFIX = "_artifacts"
 
 
 def run_suite(
@@ -30,11 +31,13 @@ def run_suite(
     summary_path: Path | None = None,
     cohort_summary_path: Path | None = None,
     exclusions_path: Path | None = None,
+    analysis_dir: Path | None = None,
     n_samples: int = 2000,
     seed: int = 2026,
     allow_demo_data: bool = False,
 ) -> list[EvalResult]:
     results: list[EvalResult] = []
+    resolved_analysis_dir = analysis_dir or report_path.parent / f"{report_path.stem}{ANALYSIS_SUFFIX}"
     cohort_evidence = load_cohort_curation_evidence(
         cohort_path,
         cohort_summary_path=cohort_summary_path,
@@ -69,16 +72,36 @@ def run_suite(
             allow_demo_data=allow_demo_data,
         )
     )
-    results.append(run_posterior_health())
-    results.append(run_sequential_forecasting())
-    results.append(run_update_value())
-    results.append(run_scenario_lab())
-    results.append(run_explanation_quality())
+    results.extend(
+        [
+            run_posterior_health(
+                report_path=report_path.with_name("v1_posterior_health.md"),
+                analysis_path=resolved_analysis_dir / "v1_posterior_health.analysis.json",
+            ),
+            run_sequential_forecasting(
+                report_path=report_path.with_name("v1_sequential_forecasting.md"),
+                analysis_path=resolved_analysis_dir / "v1_sequential_forecasting.analysis.json",
+            ),
+            run_update_value(
+                report_path=report_path.with_name("v1_update_value.md"),
+                analysis_path=resolved_analysis_dir / "v1_update_value.analysis.json",
+            ),
+            run_scenario_lab(
+                report_path=report_path.with_name("v1_scenario_lab_stability.md"),
+                analysis_path=resolved_analysis_dir / "v1_scenario_lab_stability.analysis.json",
+            ),
+            run_explanation_quality(
+                report_path=report_path.with_name("v1_explanation_quality.md"),
+                analysis_path=resolved_analysis_dir / "v1_explanation_quality.analysis.json",
+            ),
+        ]
+    )
 
     suite_summary = build_suite_summary(
         results,
         cohort_path=cohort_path,
         report_path=report_path,
+        analysis_dir=resolved_analysis_dir,
         cohort_evidence=cohort_evidence,
         n_samples=n_samples,
         seed=seed,
@@ -138,6 +161,7 @@ def build_suite_summary(
     *,
     cohort_path: Path | None,
     report_path: Path,
+    analysis_dir: Path,
     cohort_evidence: Mapping[str, object],
     n_samples: int,
     seed: int,
@@ -147,6 +171,7 @@ def build_suite_summary(
         "created_at": datetime.now(timezone.utc).isoformat(),
         "cohort_path": str(cohort_path) if cohort_path is not None else None,
         "report_path": str(report_path),
+        "analysis_dir": str(analysis_dir),
         "n_samples": n_samples,
         "seed": seed,
         "allow_demo_data": allow_demo_data,
@@ -239,6 +264,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Machine-readable suite summary JSON. Defaults to the report path with .summary.json.",
     )
     parser.add_argument(
+        "--analysis-dir",
+        type=Path,
+        help="Directory for runtime-layer JSON analysis artifacts. Defaults to <report stem>_artifacts next to the suite report.",
+    )
+    parser.add_argument(
         "--cohort-summary",
         type=Path,
         help="Optional cohort-builder summary JSON. Defaults to <cohort>.summary.json when present.",
@@ -253,12 +283,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--allow-demo-data", action="store_true")
     args = parser.parse_args(argv)
 
+    analysis_dir = args.analysis_dir or args.report.parent / f"{args.report.stem}{ANALYSIS_SUFFIX}"
     results = run_suite(
         cohort_path=args.cohort,
         report_path=args.report,
         summary_path=args.summary,
         cohort_summary_path=args.cohort_summary,
         exclusions_path=args.exclusions,
+        analysis_dir=analysis_dir,
         n_samples=args.n_samples,
         seed=args.seed,
         allow_demo_data=args.allow_demo_data,
@@ -270,6 +302,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"Report: {args.report}")
     print(f"Summary: {summary_path}")
+    print(f"Analysis directory: {analysis_dir}")
     for result in results:
         print(f"- {result.name}: {result.status}")
     return 0

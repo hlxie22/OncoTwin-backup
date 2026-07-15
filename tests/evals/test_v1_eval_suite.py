@@ -10,17 +10,36 @@ from evals.prior_stack.run_v1_eval_suite import run_suite
 from evals.prior_stack.v1_posterior_health_eval import run_eval as run_posterior_health
 
 
+RUNTIME_EVAL_NAMES = {
+    "posterior_health",
+    "sequential_forecasting",
+    "update_value",
+    "scenario_lab_stability",
+    "explanation_quality",
+}
+
+
 class V1EvalSuiteTest(unittest.TestCase):
-    def test_suite_runs_without_cohort_or_optional_runtimes(self):
+    def test_suite_runs_without_cohort_and_writes_runtime_analysis(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            report = Path(tmpdir) / "suite.md"
-            results = run_suite(report_path=report)
+            root = Path(tmpdir)
+            report = root / "suite.md"
+            analysis_dir = root / "analysis"
+            results = run_suite(report_path=report, analysis_dir=analysis_dir)
+            payload = json.loads(report.with_suffix(".summary.json").read_text(encoding="utf-8"))
+
             self.assertTrue(report.exists())
             self.assertTrue(report.with_suffix(".summary.json").exists())
+            self.assertEqual(payload["analysis_dir"], str(analysis_dir))
+            for name in RUNTIME_EVAL_NAMES:
+                self.assertTrue((analysis_dir / f"v1_{name}.analysis.json").exists())
 
         self.assertTrue(any(r.name == "real_data_prior_layer_performance" for r in results))
         self.assertTrue(any(r.status == "unavailable" for r in results))
         self.assertTrue(all(isinstance(r, EvalResult) for r in results))
+        runtime_results = {result.name: result for result in results if result.name in RUNTIME_EVAL_NAMES}
+        self.assertEqual(set(runtime_results), RUNTIME_EVAL_NAMES)
+        self.assertTrue(all(result.status == "pass" for result in runtime_results.values()))
 
     def test_suite_writes_v1_d1_machine_summary_with_curation_sidecars(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -62,6 +81,7 @@ class V1EvalSuiteTest(unittest.TestCase):
                 cohort_path=cohort,
                 report_path=report,
                 summary_path=summary,
+                analysis_dir=root / "analysis",
                 n_samples=120,
                 seed=11,
             )
@@ -87,13 +107,16 @@ class V1EvalSuiteTest(unittest.TestCase):
         self.assertIn("missing_final_volume", report_text)
         self.assertIn("local/ispy2_longitudinal.csv", report_text)
 
-    def test_stub_reports_missing_runtime(self):
-        result = run_posterior_health()
-        self.assertEqual(result.status, "unavailable")
-        self.assertIn(
-            "experiments.prior_builder.bayesian_update",
-            result.missing_components,
-        )
+    def test_posterior_health_runtime_eval_passes_and_writes_analysis(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            analysis = Path(tmpdir) / "posterior.analysis.json"
+            result = run_posterior_health(analysis_path=analysis)
+            payload = json.loads(analysis.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.status, "pass")
+        self.assertGreater(result.metrics["effective_sample_size_fraction"], 0)
+        self.assertEqual(payload["eval_name"], "posterior_health")
+        self.assertIn("posterior_trajectory_summary", payload)
 
     def test_require_modules_raises_clear_error(self):
         with self.assertRaises(EvalUnavailable) as raised:

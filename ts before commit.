@@ -1,0 +1,736 @@
+[1mdiff --git a/evals/prior_stack/v1_real_data_eval.py b/evals/prior_stack/v1_real_data_eval.py[m
+[1mindex 5e2d736..1d36ac9 100644[m
+[1m--- a/evals/prior_stack/v1_real_data_eval.py[m
+[1m+++ b/evals/prior_stack/v1_real_data_eval.py[m
+[36m@@ -8,6 +8,10 @@[m [mimport math[m
+ from pathlib import Path[m
+ from typing import Mapping, Sequence[m
+ [m
+[32m+[m[32mfrom experiments.prior_builder.ai_residual_policy import ([m
+[32m+[m[32m    apply_ai_residual_policy,[m
+[32m+[m[32m    sample_ai_residual_prior,[m
+[32m+[m[32m)[m
+ from experiments.prior_builder.mri_feature_rules import ([m
+     apply_mri_feature_rules,[m
+     sample_mri_feature_prior,[m
+[36m@@ -32,7 +36,18 @@[m [mDEFAULT_REPORT_PATH = Path("evals/reports/v1_real_data_prior_layer_eval.md")[m
+ FAKE_TOKENS = ("demo", "synthetic", "simulated", "toy", "fixture")[m
+ BASELINES = ("baseline_no_change", "linear_early", "exponential_early")[m
+ BASELINE_IN_SCOPE = tuple(f"{name}_in_scope" for name in BASELINES)[m
+[31m-LAYERS = ("layer2_population", "layer3_pathology", "layer4_mri_qc")[m
+[32m+[m[32mLAYERS = ([m
+[32m+[m[32m    "layer2_population",[m
+[32m+[m[32m    "layer3_pathology",[m
+[32m+[m[32m    "layer4_mri_qc",[m
+[32m+[m[32m    "layer5_ai_residual",[m
+[32m+[m[32m)[m
+[32m+[m[32mFINAL_PRIOR_LAYER = "layer5_ai_residual"[m
+[32m+[m[32mLAYER_DELTA_COMPARISONS = ([m
+[32m+[m[32m    ("layer3_vs_layer2", "layer3_pathology", "layer2_population"),[m
+[32m+[m[32m    ("layer4_vs_layer3", "layer4_mri_qc", "layer3_pathology"),[m
+[32m+[m[32m    ("layer5_vs_layer4", "layer5_ai_residual", "layer4_mri_qc"),[m
+[32m+[m[32m)[m
+ [m
+ # Diagnostic V1 fix: active_treatment_sensitivity was previously applied[m
+ # as a per-day kill rate. That made prior-predictive trajectories collapse[m
+[36m@@ -119,6 +134,25 @@[m [mdef run_real_data_eval([m
+         predictions["layer4_mri_qc"] = _interval(case, samples4)[m
+         debug_by_layer["layer4_mri_qc"] = _debug_summary(case, samples4)[m
+ [m
+[32m+[m[32m        prior5 = apply_ai_residual_policy(prior4, case["context"])[m
+[32m+[m[32m        audit_by_layer["layer5_ai_residual"] = prior5.layer_contribution()[m
+[32m+[m[32m        warnings += list(prior5.warnings)[m
+[32m+[m[32m        if not prior5.active:[m
+[32m+[m[32m            # Non-active Layer 5 states must be exact no-ops in ablations, not[m
+[32m+[m[32m            # fresh Monte Carlo draws that create apparent Layer 5 movement.[m
+[32m+[m[32m            # This covers both missing-signal inactive_noop and validated_noop.[m
+[32m+[m[32m            samples5 = samples4[m
+[32m+[m[32m            predictions["layer5_ai_residual"] = dict(predictions["layer4_mri_qc"])[m
+[32m+[m[32m            debug_by_layer["layer5_ai_residual"] = dict(debug_by_layer["layer4_mri_qc"])[m
+[32m+[m[32m        else:[m
+[32m+[m[32m            samples5 = sample_ai_residual_prior([m
+[32m+[m[32m                prior5,[m
+[32m+[m[32m                n_samples=n_samples,[m
+[32m+[m[32m                seed=seed + 3000 + index,[m
+[32m+[m[32m            ).samples[m
+[32m+[m[32m            predictions["layer5_ai_residual"] = _interval(case, samples5)[m
+[32m+[m[32m            debug_by_layer["layer5_ai_residual"] = _debug_summary(case, samples5)[m
+[32m+[m
+         rows.append(_row(case, predictions, warnings, debug_by_layer, audit_by_layer))[m
+ [m
+     in_scope = sum("layer2_population" in row["predictions"] for row in rows)[m
+[36m@@ -158,6 +192,7 @@[m [mdef run_real_data_eval_result([m
+         allow_demo_data=allow_demo_data,[m
+     )[m
+     write_markdown_report(result, report_path)[m
+[32m+[m[32m    final_layer = result["metrics"].get(FINAL_PRIOR_LAYER, {})[m
+     layer4 = result["metrics"].get("layer4_mri_qc", {})[m
+     return EvalResult([m
+         name="real_data_prior_layer_performance",[m
+[36m@@ -167,9 +202,13 @@[m [mdef run_real_data_eval_result([m
+             "in-scope cases against held-out final volumes."[m
+         ),[m
+         metrics={[m
+[32m+[m[32m            "final_layer": FINAL_PRIOR_LAYER,[m
+[32m+[m[32m            "final_layer_mae_ml": final_layer.get("mae_ml"),[m
+[32m+[m[32m            "final_layer_log_rmse": final_layer.get("log_volume_rmse"),[m
+[32m+[m[32m            "final_layer_coverage_80": final_layer.get("coverage_80"),[m
+             "layer4_mae_ml": layer4.get("mae_ml"),[m
+[31m-            "layer4_log_rmse": layer4.get("log_volume_rmse"),[m
+[31m-            "layer4_coverage_80": layer4.get("coverage_80"),[m
+[32m+[m[32m            "layer5_mae_ml": final_layer.get("mae_ml"),[m
+[32m+[m[32m            "layer5_coverage_80": final_layer.get("coverage_80"),[m
+         },[m
+         warnings=tuple(result["warnings"]),[m
+         report_path=str(report_path),[m
+[36m@@ -194,6 +233,15 @@[m [mdef write_markdown_report(result: Mapping[str, object], report: Path) -> None:[m
+         "",[m
+         _delta_table(result["layer_delta"]),[m
+         "",[m
+[32m+[m[32m        "## Cases helped/harmed by layer",[m
+[32m+[m[32m        "",[m
+[32m+[m[32m        ([m
+[32m+[m[32m            "Positive MAE delta means the newer layer reduced absolute error "[m
+[32m+[m[32m            "for that case."[m
+[32m+[m[32m        ),[m
+[32m+[m[32m        "",[m
+[32m+[m[32m        _delta_case_table(result["layer_delta"]),[m
+[32m+[m[32m        "",[m
+         "## Layer debug",[m
+         "",[m
+         "Shows the first in-scope cases. `tx/day` is the effective treatment pressure after scaling.",[m
+[36m@@ -436,12 +484,57 @@[m [mdef _row([m
+         "case_id": case["case_id"],[m
+         "observed_final_volume_ml": case["final_volume_ml"],[m
+         "predictions": dict(predictions),[m
+[32m+[m[32m        "calibration_groups": _calibration_groups(case),[m
+         "layer_debug": dict(debug_by_layer or {}),[m
+         "layer_audit": dict(audit_by_layer or {}),[m
+         "warnings": list(warnings),[m
+     }[m
+ [m
+ [m
+[32m+[m
+[32m+[m[32mdef _calibration_groups(case: Mapping[str, object]) -> dict[str, str]:[m
+[32m+[m[32m    context = case.get("context", {})[m
+[32m+[m[32m    if not isinstance(context, Mapping):[m
+[32m+[m[32m        context = {}[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        "data_origin": _calibration_label(context.get("data_origin"), "missing"),[m
+[32m+[m[32m        "early_followup": ([m
+[32m+[m[32m            "available"[m
+[32m+[m[32m            if case.get("early_day") is not None and case.get("early_volume_ml") is not None[m
+[32m+[m[32m            else "missing"[m
+[32m+[m[32m        ),[m
+[32m+[m[32m        "mri_qc": _mri_qc_group(context),[m
+[32m+[m[32m        "baseline_volume_bin": _baseline_volume_bin(case.get("baseline_volume_ml")),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _mri_qc_group(context: Mapping[str, object]) -> str:[m
+[32m+[m[32m    for field in ("segmentation_qc", "mri_qc", "qc_status", "registration_qc"):[m
+[32m+[m[32m        value = context.get(field)[m
+[32m+[m[32m        if value not in (None, ""):[m
+[32m+[m[32m            return _calibration_label(value, "unknown")[m
+[32m+[m[32m    return "missing"[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _baseline_volume_bin(value: object) -> str:[m
+[32m+[m[32m    try:[m
+[32m+[m[32m        volume = float(value)[m
+[32m+[m[32m    except (TypeError, ValueError):[m
+[32m+[m[32m        return "missing"[m
+[32m+[m[32m    if volume < 10.0:[m
+[32m+[m[32m        return "lt_10ml"[m
+[32m+[m[32m    if volume < 30.0:[m
+[32m+[m[32m        return "10_to_30ml"[m
+[32m+[m[32m    return "gte_30ml"[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _calibration_label(value: object, fallback: str) -> str:[m
+[32m+[m[32m    if value in (None, ""):[m
+[32m+[m[32m        return fallback[m
+[32m+[m[32m    normalized = "_".join(str(value).strip().lower().split())[m
+[32m+[m[32m    return normalized or fallback[m
+[32m+[m
+ def _all_metrics(rows: Sequence[Mapping[str, object]]) -> dict[str, dict[str, object]]:[m
+     names = sorted({name for row in rows for name in row["predictions"]})[m
+     output = {name: _metrics(rows, name) for name in names}[m
+[36m@@ -513,30 +606,61 @@[m [mdef _width([m
+ [m
+ def _deltas(rows: Sequence[Mapping[str, object]]) -> dict[str, dict[str, object]]:[m
+     output = {}[m
+[31m-    comparisons = ([m
+[31m-        ("layer3_vs_layer2", "layer3_pathology", "layer2_population"),[m
+[31m-        ("layer4_vs_layer3", "layer4_mri_qc", "layer3_pathology"),[m
+[31m-    )[m
+[31m-    for label, new_name, old_name in comparisons:[m
+[31m-        deltas = [][m
+[32m+[m[32m    for label, new_name, old_name in LAYER_DELTA_COMPARISONS:[m
+[32m+[m[32m        case_deltas = [][m
+         for row in rows:[m
+             predictions = row["predictions"][m
+             if new_name not in predictions or old_name not in predictions:[m
+                 continue[m
+             observed = float(row["observed_final_volume_ml"])[m
+[31m-            deltas.append([m
+[31m-                abs(predictions[old_name]["point_ml"] - observed)[m
+[31m-                - abs(predictions[new_name]["point_ml"] - observed)[m
+[32m+[m[32m            old_point = float(predictions[old_name]["point_ml"])[m
+[32m+[m[32m            new_point = float(predictions[new_name]["point_ml"])[m
+[32m+[m[32m            old_error = abs(old_point - observed)[m
+[32m+[m[32m            new_error = abs(new_point - observed)[m
+[32m+[m[32m            delta = old_error - new_error[m
+[32m+[m[32m            case_deltas.append([m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "case_id": row["case_id"],[m
+[32m+[m[32m                    "old_layer": old_name,[m
+[32m+[m[32m                    "new_layer": new_name,[m
+[32m+[m[32m                    "observed_final_volume_ml": observed,[m
+[32m+[m[32m                    "old_point_ml": old_point,[m
+[32m+[m[32m                    "new_point_ml": new_point,[m
+[32m+[m[32m                    "old_abs_error_ml": old_error,[m
+[32m+[m[32m                    "new_abs_error_ml": new_error,[m
+[32m+[m[32m                    "mae_delta_ml": delta,[m
+[32m+[m[32m                    "outcome": _delta_outcome(delta),[m
+[32m+[m[32m                }[m
+             )[m
+[32m+[m
+[32m+[m[32m        sorted_cases = sorted([m
+[32m+[m[32m            case_deltas,[m
+[32m+[m[32m            key=lambda item: abs(float(item["mae_delta_ml"])),[m
+[32m+[m[32m            reverse=True,[m
+[32m+[m[32m        )[m
+         output[label] = {[m
+[31m-            "n": len(deltas),[m
+[31m-            "helped": sum(delta > 0 for delta in deltas),[m
+[31m-            "harmed": sum(delta < 0 for delta in deltas),[m
+[31m-            "mean_mae_delta_ml": sum(deltas) / len(deltas) if deltas else 0.0,[m
+[32m+[m[32m            "n": len(case_deltas),[m
+[32m+[m[32m            "helped": sum(case["outcome"] == "helped" for case in case_deltas),[m
+[32m+[m[32m            "harmed": sum(case["outcome"] == "harmed" for case in case_deltas),[m
+[32m+[m[32m            "mean_mae_delta_ml": ([m
+[32m+[m[32m                sum(float(case["mae_delta_ml"]) for case in case_deltas)[m
+[32m+[m[32m                / len(case_deltas)[m
+[32m+[m[32m                if case_deltas[m
+[32m+[m[32m                else 0.0[m
+[32m+[m[32m            ),[m
+[32m+[m[32m            "cases": sorted_cases,[m
+         }[m
+     return output[m
+ [m
+ [m
+[32m+[m[32mdef _delta_outcome(delta: float) -> str:[m
+[32m+[m[32m    if delta > 1e-9:[m
+[32m+[m[32m        return "helped"[m
+[32m+[m[32m    if delta < -1e-9:[m
+[32m+[m[32m        return "harmed"[m
+[32m+[m[32m    return "unchanged"[m
+[32m+[m
+[32m+[m
+ def _metrics_table(metrics: Mapping[str, Mapping[str, object]]) -> str:[m
+     lines = [[m
+         "| Model | n | MAE ml | RMSE ml | log RMSE | MAPE | 80% cov | 95% cov | 80% width ml |",[m
+[36m@@ -568,6 +692,53 @@[m [mdef _delta_table(deltas: Mapping[str, Mapping[str, object]]) -> str:[m
+     return "\n".join(lines)[m
+ [m
+ [m
+[32m+[m[32mdef _delta_case_table([m
+[32m+[m[32m    deltas: Mapping[str, Mapping[str, object]],[m
+[32m+[m[32m    *,[m
+[32m+[m[32m    case_limit: int = 80,[m
+[32m+[m[32m) -> str:[m
+[32m+[m[32m    lines = [[m
+[32m+[m[32m        ([m
+[32m+[m[32m            "| Comparison | Case | Outcome | old -> new | observed ml | "[m
+[32m+[m[32m            "old pred ml | new pred ml | old abs err ml | new abs err ml | "[m
+[32m+[m[32m            "MAE delta ml |"[m
+[32m+[m[32m        ),[m
+[32m+[m[32m        "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",[m
+[32m+[m[32m    ][m
+[32m+[m
+[32m+[m[32m    emitted = 0[m
+[32m+[m[32m    for comparison, summary in deltas.items():[m
+[32m+[m[32m        cases = summary.get("cases", [])[m
+[32m+[m[32m        if not isinstance(cases, Sequence) or isinstance(cases, (str, bytes)):[m
+[32m+[m[32m            continue[m
+[32m+[m[32m        for case in cases:[m
+[32m+[m[32m            if not isinstance(case, Mapping):[m
+[32m+[m[32m                continue[m
+[32m+[m[32m            emitted += 1[m
+[32m+[m[32m            if emitted > case_limit:[m
+[32m+[m[32m                break[m
+[32m+[m
+[32m+[m[32m            layer_transition = f"{case.get('old_layer')} -> {case.get('new_layer')}"[m
+[32m+[m[32m            lines.append([m
+[32m+[m[32m                f"| {comparison} | {case.get('case_id')} | {case.get('outcome')} | "[m
+[32m+[m[32m                f"{layer_transition} | "[m
+[32m+[m[32m                f"{_fmt(case.get('observed_final_volume_ml'))} | "[m
+[32m+[m[32m                f"{_fmt(case.get('old_point_ml'))} | "[m
+[32m+[m[32m                f"{_fmt(case.get('new_point_ml'))} | "[m
+[32m+[m[32m                f"{_fmt(case.get('old_abs_error_ml'))} | "[m
+[32m+[m[32m                f"{_fmt(case.get('new_abs_error_ml'))} | "[m
+[32m+[m[32m                f"{_fmt(case.get('mae_delta_ml'))} |"[m
+[32m+[m[32m            )[m
+[32m+[m[32m        if emitted > case_limit:[m
+[32m+[m[32m            break[m
+[32m+[m
+[32m+[m[32m    if len(lines) == 2:[m
+[32m+[m[32m        return "No layer-delta case rows were available."[m
+[32m+[m[32m    if emitted > case_limit:[m
+[32m+[m[32m        lines.append(f"\nShowing first {case_limit} layer-delta case rows.")[m
+[32m+[m[32m    return "\n".join(lines)[m
+[32m+[m
+[32m+[m
+ [m
+ [m
+ _LAYER3_AUDIT_FIELD_GROUPS = {[m
+[36m@@ -1675,8 +1846,8 @@[m [mdef _point(predictions: Mapping[str, Mapping[str, float]], name: str) -> str:[m
+ [m
+ def _case_table(rows: Sequence[Mapping[str, object]]) -> str:[m
+     lines = [[m
+[31m-        "| Case | Observed ml | no-change | linear | exponential | Layer 2 | Layer 3 | Layer 4 |",[m
+[31m-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",[m
+[32m+[m[32m        "| Case | Observed ml | no-change | linear | exponential | Layer 2 | Layer 3 | Layer 4 | Layer 5 |",[m
+[32m+[m[32m        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",[m
+     ][m
+     for row in rows:[m
+         pred = row["predictions"][m
+[36m@@ -1687,7 +1858,8 @@[m [mdef _case_table(rows: Sequence[Mapping[str, object]]) -> str:[m
+             f"{_point(pred, 'exponential_early')} | "[m
+             f"{_point(pred, 'layer2_population')} | "[m
+             f"{_point(pred, 'layer3_pathology')} | "[m
+[31m-            f"{_point(pred, 'layer4_mri_qc')} |"[m
+[32m+[m[32m            f"{_point(pred, 'layer4_mri_qc')} | "[m
+[32m+[m[32m            f"{_point(pred, 'layer5_ai_residual')} |"[m
+         )[m
+     return "\n".join(lines)[m
+ [m
+[1mdiff --git a/scripts/apply_v1_layer5_global_calibrator.py b/scripts/apply_v1_layer5_global_calibrator.py[m
+[1mnew file mode 100755[m
+[1mindex 0000000..0129c88[m
+[1m--- /dev/null[m
+[1m+++ b/scripts/apply_v1_layer5_global_calibrator.py[m
+[36m@@ -0,0 +1,265 @@[m
+[32m+[m[32m#!/usr/bin/env python3[m
+[32m+[m[32m"""Apply the validated V1 Layer 5 global growth-down calibrator.[m
+[32m+[m
+[32m+[m[32mThis script materializes the first real-data Layer 5 residual input:[m
+[32m+[m
+[32m+[m[32m    ai_residual = {[m
+[32m+[m[32m        "validated": True,[m
+[32m+[m[32m        "model_version": "layer5_global_growth_down_calibrator_v0_1",[m
+[32m+[m[32m        "log_growth_rate_shift": -log(1.15),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32mIt does not inspect or modify held-out outcome fields. It only adds a validated[m
+[32m+[m[32mbounded residual signal consumed by experiments.prior_builder.ai_residual_policy.[m
+[32m+[m[32m"""[m
+[32m+[m
+[32m+[m[32mfrom __future__ import annotations[m
+[32m+[m
+[32m+[m[32mimport argparse[m
+[32m+[m[32mimport json[m
+[32m+[m[32mimport math[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m[32mimport shutil[m
+[32m+[m[32mimport sys[m
+[32m+[m[32mfrom typing import Iterable, Mapping[m
+[32m+[m
+[32m+[m
+[32m+[m[32mROOT = Path(__file__).resolve().parents[1][m
+[32m+[m[32mif str(ROOT) not in sys.path:[m
+[32m+[m[32m    sys.path.insert(0, str(ROOT))[m
+[32m+[m
+[32m+[m
+[32m+[m[32mDEFAULT_CALIBRATOR_VERSION = "layer5_global_growth_down_calibrator_v0_1"[m
+[32m+[m[32mDEFAULT_LOG_GROWTH_RATE_SHIFT = -math.log(1.15)[m
+[32m+[m[32mDEFAULT_DATA_ORIGIN = "ISPY2"[m
+[32m+[m[32mSUMMARY_SUFFIX = ".summary.json"[m
+[32m+[m[32mEXCLUSIONS_SUFFIX = ".exclusions.jsonl"[m
+[32m+[m[32mRESIDUAL_FIELD = "ai_residual"[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef apply_layer5_global_calibrator([m
+[32m+[m[32m    cohort_path: Path,[m
+[32m+[m[32m    output_path: Path,[m
+[32m+[m[32m    *,[m
+[32m+[m[32m    calibrator_version: str = DEFAULT_CALIBRATOR_VERSION,[m
+[32m+[m[32m    log_growth_rate_shift: float = DEFAULT_LOG_GROWTH_RATE_SHIFT,[m
+[32m+[m[32m    data_origin: str = DEFAULT_DATA_ORIGIN,[m
+[32m+[m[32m    overwrite_existing_residual: bool = False,[m
+[32m+[m[32m    write_sidecars: bool = True,[m
+[32m+[m[32m) -> dict[str, object]:[m
+[32m+[m[32m    """Write a JSONL cohort with a validated Layer 5 global calibrator signal."""[m
+[32m+[m
+[32m+[m[32m    _validate_shift(log_growth_rate_shift)[m
+[32m+[m[32m    rows = _read_jsonl(cohort_path)[m
+[32m+[m[32m    output_rows = [[m
+[32m+[m[32m        _calibrated_row([m
+[32m+[m[32m            row,[m
+[32m+[m[32m            row_index=index,[m
+[32m+[m[32m            calibrator_version=calibrator_version,[m
+[32m+[m[32m            log_growth_rate_shift=log_growth_rate_shift,[m
+[32m+[m[32m            data_origin=data_origin,[m
+[32m+[m[32m            overwrite_existing_residual=overwrite_existing_residual,[m
+[32m+[m[32m        )[m
+[32m+[m[32m        for index, row in enumerate(rows, start=1)[m
+[32m+[m[32m    ][m
+[32m+[m
+[32m+[m[32m    _write_jsonl(output_path, output_rows)[m
+[32m+[m[32m    if write_sidecars:[m
+[32m+[m[32m        _write_summary_sidecar([m
+[32m+[m[32m            source_cohort=cohort_path,[m
+[32m+[m[32m            output_cohort=output_path,[m
+[32m+[m[32m            included_rows=len(output_rows),[m
+[32m+[m[32m            calibrator_version=calibrator_version,[m
+[32m+[m[32m            log_growth_rate_shift=log_growth_rate_shift,[m
+[32m+[m[32m            data_origin=data_origin,[m
+[32m+[m[32m            overwrite_existing_residual=overwrite_existing_residual,[m
+[32m+[m[32m        )[m
+[32m+[m[32m        _copy_or_create_exclusions_sidecar(cohort_path, output_path)[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        "cohort_path": str(cohort_path),[m
+[32m+[m[32m        "output_path": str(output_path),[m
+[32m+[m[32m        "rows": len(output_rows),[m
+[32m+[m[32m        "calibrator_version": calibrator_version,[m
+[32m+[m[32m        "log_growth_rate_shift": log_growth_rate_shift,[m
+[32m+[m[32m        "data_origin": data_origin,[m
+[32m+[m[32m        "summary_path": str(_summary_path(output_path)) if write_sidecars else None,[m
+[32m+[m[32m        "exclusions_path": str(_exclusions_path(output_path)) if write_sidecars else None,[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _calibrated_row([m
+[32m+[m[32m    row: Mapping[str, object],[m
+[32m+[m[32m    *,[m
+[32m+[m[32m    row_index: int,[m
+[32m+[m[32m    calibrator_version: str,[m
+[32m+[m[32m    log_growth_rate_shift: float,[m
+[32m+[m[32m    data_origin: str,[m
+[32m+[m[32m    overwrite_existing_residual: bool,[m
+[32m+[m[32m) -> dict[str, object]:[m
+[32m+[m[32m    output = dict(row)[m
+[32m+[m[32m    existing = output.get(RESIDUAL_FIELD)[m
+[32m+[m[32m    if _present(existing) and not overwrite_existing_residual:[m
+[32m+[m[32m        case_id = output.get("case_id") or output.get("patient_id") or f"row {row_index}"[m
+[32m+[m[32m        raise ValueError([m
+[32m+[m[32m            f"{case_id} already has {RESIDUAL_FIELD}; pass "[m
+[32m+[m[32m            "--overwrite-existing-residual to replace it"[m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m    output.setdefault("data_origin", data_origin)[m
+[32m+[m[32m    context = output.get("context")[m
+[32m+[m[32m    if isinstance(context, Mapping):[m
+[32m+[m[32m        nested_context = dict(context)[m
+[32m+[m[32m        nested_context.setdefault("data_origin", data_origin)[m
+[32m+[m[32m        output["context"] = nested_context[m
+[32m+[m
+[32m+[m[32m    output[RESIDUAL_FIELD] = {[m
+[32m+[m[32m        "validated": True,[m
+[32m+[m[32m        "model_version": calibrator_version,[m
+[32m+[m[32m        "log_growth_rate_shift": log_growth_rate_shift,[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return output[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _read_jsonl(path: Path) -> list[dict[str, object]]:[m
+[32m+[m[32m    rows: list[dict[str, object]] = [][m
+[32m+[m[32m    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):[m
+[32m+[m[32m        if not line.strip():[m
+[32m+[m[32m            continue[m
+[32m+[m[32m        payload = json.loads(line)[m
+[32m+[m[32m        if not isinstance(payload, Mapping):[m
+[32m+[m[32m            raise ValueError(f"{path}:{line_number} must contain a JSON object")[m
+[32m+[m[32m        rows.append(dict(payload))[m
+[32m+[m[32m    if not rows:[m
+[32m+[m[32m        raise ValueError(f"cohort contains no rows: {path}")[m
+[32m+[m[32m    return rows[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _write_jsonl(path: Path, rows: Iterable[Mapping[str, object]]) -> None:[m
+[32m+[m[32m    path.parent.mkdir(parents=True, exist_ok=True)[m
+[32m+[m[32m    path.write_text([m
+[32m+[m[32m        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),[m
+[32m+[m[32m        encoding="utf-8",[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _write_summary_sidecar([m
+[32m+[m[32m    *,[m
+[32m+[m[32m    source_cohort: Path,[m
+[32m+[m[32m    output_cohort: Path,[m
+[32m+[m[32m    included_rows: int,[m
+[32m+[m[32m    calibrator_version: str,[m
+[32m+[m[32m    log_growth_rate_shift: float,[m
+[32m+[m[32m    data_origin: str,[m
+[32m+[m[32m    overwrite_existing_residual: bool,[m
+[32m+[m[32m) -> None:[m
+[32m+[m[32m    source_summary_path = _summary_path(source_cohort)[m
+[32m+[m[32m    summary: dict[str, object] = {}[m
+[32m+[m[32m    if source_summary_path.exists():[m
+[32m+[m[32m        payload = json.loads(source_summary_path.read_text(encoding="utf-8"))[m
+[32m+[m[32m        if not isinstance(payload, Mapping):[m
+[32m+[m[32m            raise ValueError(f"source summary must be a JSON object: {source_summary_path}")[m
+[32m+[m[32m        summary.update(payload)[m
+[32m+[m
+[32m+[m[32m    summary["included_rows"] = included_rows[m
+[32m+[m[32m    summary["source_cohort_path"] = str(source_cohort)[m
+[32m+[m[32m    summary["layer5_calibrator"] = {[m
+[32m+[m[32m        "calibrator_version": calibrator_version,[m
+[32m+[m[32m        "residual_field": RESIDUAL_FIELD,[m
+[32m+[m[32m        "validated": True,[m
+[32m+[m[32m        "policy": "global_growth_down",[m
+[32m+[m[32m        "log_growth_rate_shift": log_growth_rate_shift,[m
+[32m+[m[32m        "data_origin_default": data_origin,[m
+[32m+[m[32m        "overwrite_existing_residual": overwrite_existing_residual,[m
+[32m+[m[32m        "not_patient_specific": True,[m
+[32m+[m[32m        "uses_heldout_outcomes": False,[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    path = _summary_path(output_cohort)[m
+[32m+[m[32m    path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _copy_or_create_exclusions_sidecar(source_cohort: Path, output_cohort: Path) -> None:[m
+[32m+[m[32m    source = _exclusions_path(source_cohort)[m
+[32m+[m[32m    target = _exclusions_path(output_cohort)[m
+[32m+[m[32m    target.parent.mkdir(parents=True, exist_ok=True)[m
+[32m+[m[32m    if source.exists():[m
+[32m+[m[32m        shutil.copyfile(source, target)[m
+[32m+[m[32m    else:[m
+[32m+[m[32m        target.write_text("", encoding="utf-8")[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _summary_path(cohort_path: Path) -> Path:[m
+[32m+[m[32m    return cohort_path.with_name(f"{cohort_path.stem}{SUMMARY_SUFFIX}")[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _exclusions_path(cohort_path: Path) -> Path:[m
+[32m+[m[32m    return cohort_path.with_name(f"{cohort_path.stem}{EXCLUSIONS_SUFFIX}")[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _validate_shift(value: float) -> None:[m
+[32m+[m[32m    if not math.isfinite(value):[m
+[32m+[m[32m        raise ValueError("log_growth_rate_shift must be finite")[m
+[32m+[m[32m    max_abs_shift = math.log(1.15)[m
+[32m+[m[32m    if abs(value) > max_abs_shift:[m
+[32m+[m[32m        raise ValueError("log_growth_rate_shift exceeds Layer 5 bound")[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _present(value: object) -> bool:[m
+[32m+[m[32m    return value not in (None, "", {}, [])[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef main() -> int:[m
+[32m+[m[32m    parser = argparse.ArgumentParser([m
+[32m+[m[32m        description="Apply the V1 Layer 5 global growth-down calibrator to a JSONL cohort."[m
+[32m+[m[32m    )[m
+[32m+[m[32m    parser.add_argument("--cohort", required=True, type=Path)[m
+[32m+[m[32m    parser.add_argument("--output", required=True, type=Path)[m
+[32m+[m[32m    parser.add_argument([m
+[32m+[m[32m        "--calibrator-version",[m
+[32m+[m[32m        default=DEFAULT_CALIBRATOR_VERSION,[m
+[32m+[m[32m        help="Validated residual model_version to write into ai_residual.",[m
+[32m+[m[32m    )[m
+[32m+[m[32m    parser.add_argument([m
+[32m+[m[32m        "--log-growth-rate-shift",[m
+[32m+[m[32m        type=float,[m
+[32m+[m[32m        default=DEFAULT_LOG_GROWTH_RATE_SHIFT,[m
+[32m+[m[32m        help="Bounded transformed-space growth-rate shift. Default is -log(1.15).",[m
+[32m+[m[32m    )[m
+[32m+[m[32m    parser.add_argument([m
+[32m+[m[32m        "--data-origin",[m
+[32m+[m[32m        default=DEFAULT_DATA_ORIGIN,[m
+[32m+[m[32m        help="Default data_origin to add when missing.",[m
+[32m+[m[32m    )[m
+[32m+[m[32m    parser.add_argument([m
+[32m+[m[32m        "--overwrite-existing-residual",[m
+[32m+[m[32m        action="store_true",[m
+[32m+[m[32m        help="Replace existing top-level ai_residual values instead of failing.",[m
+[32m+[m[32m    )[m
+[32m+[m[32m    parser.add_argument([m
+[32m+[m[32m        "--no-sidecars",[m
+[32m+[m[32m        action="store_true",[m
+[32m+[m[32m        help="Do not write summary/exclusions sidecars for the calibrated cohort.",[m
+[32m+[m[32m    )[m
+[32m+[m[32m    args = parser.parse_args()[m
+[32m+[m
+[32m+[m[32m    try:[m
+[32m+[m[32m        result = apply_layer5_global_calibrator([m
+[32m+[m[32m            args.cohort,[m
+[32m+[m[32m            args.output,[m
+[32m+[m[32m            calibrator_version=args.calibrator_version,[m
+[32m+[m[32m            log_growth_rate_shift=args.log_growth_rate_shift,[m
+[32m+[m[32m            data_origin=args.data_origin,[m
+[32m+[m[32m            overwrite_existing_residual=args.overwrite_existing_residual,[m
+[32m+[m[32m            write_sidecars=not args.no_sidecars,[m
+[32m+[m[32m        )[m
+[32m+[m[32m    except Exception as exc:[m
+[32m+[m[32m        print(f"Layer 5 calibration failed: {exc}", file=sys.stderr)[m
+[32m+[m[32m        return 2[m
+[32m+[m
+[32m+[m[32m    print(json.dumps(result, indent=2, sort_keys=True))[m
+[32m+[m[32m    return 0[m
+[32m+[m
+[32m+[m
+[32m+[m[32mif __name__ == "__main__":[m
+[32m+[m[32m    raise SystemExit(main())[m
+[1mdiff --git a/tests/evals/test_v1_layer5_global_calibrator.py b/tests/evals/test_v1_layer5_global_calibrator.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c4f4047[m
+[1m--- /dev/null[m
+[1m+++ b/tests/evals/test_v1_layer5_global_calibrator.py[m
+[36m@@ -0,0 +1,150 @@[m
+[32m+[m[32mfrom __future__ import annotations[m
+[32m+[m
+[32m+[m[32mimport json[m
+[32m+[m[32mimport math[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m[32mimport tempfile[m
+[32m+[m[32mimport unittest[m
+[32m+[m
+[32m+[m[32mfrom evals.prior_stack.v1_cohort_validation import validate_v1_prior_eval_cohort[m
+[32m+[m[32mfrom evals.prior_stack.v1_real_data_eval import run_real_data_eval[m
+[32m+[m[32mfrom scripts.apply_v1_layer5_global_calibrator import ([m
+[32m+[m[32m    DEFAULT_CALIBRATOR_VERSION,[m
+[32m+[m[32m    DEFAULT_LOG_GROWTH_RATE_SHIFT,[m
+[32m+[m[32m    apply_layer5_global_calibrator,[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass V1Layer5GlobalCalibratorTest(unittest.TestCase):[m
+[32m+[m[32m    def test_applies_validated_growth_down_residual_and_sidecars(self):[m
+[32m+[m[32m        with tempfile.TemporaryDirectory() as tmpdir:[m
+[32m+[m[32m            root = Path(tmpdir)[m
+[32m+[m[32m            cohort = root / "cohort.jsonl"[m
+[32m+[m[32m            output = root / "cohort.layer5.jsonl"[m
+[32m+[m[32m            cohort.write_text(json.dumps(_case("registry_001")) + "\n", encoding="utf-8")[m
+[32m+[m
+[32m+[m[32m            result = apply_layer5_global_calibrator(cohort, output)[m
+[32m+[m
+[32m+[m[32m            rows = [[m
+[32m+[m[32m                json.loads(line)[m
+[32m+[m[32m                for line in output.read_text(encoding="utf-8").splitlines()[m
+[32m+[m[32m                if line.strip()[m
+[32m+[m[32m            ][m
+[32m+[m[32m            summary_path = output.with_name("cohort.layer5.summary.json")[m
+[32m+[m[32m            exclusions_path = output.with_name("cohort.layer5.exclusions.jsonl")[m
+[32m+[m[32m            validation = validate_v1_prior_eval_cohort([m
+[32m+[m[32m                output,[m
+[32m+[m[32m                require_in_scope=True,[m
+[32m+[m[32m                require_sidecars=True,[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            summary_exists = summary_path.exists()[m
+[32m+[m[32m            exclusions_exists = exclusions_path.exists()[m
+[32m+[m[32m            summary = json.loads(summary_path.read_text(encoding="utf-8"))[m
+[32m+[m
+[32m+[m[32m        self.assertEqual(result["rows"], 1)[m
+[32m+[m[32m        self.assertEqual(rows[0]["data_origin"], "ISPY2")[m
+[32m+[m[32m        self.assertEqual(rows[0]["ai_residual"]["validated"], True)[m
+[32m+[m[32m        self.assertEqual(rows[0]["ai_residual"]["model_version"], DEFAULT_CALIBRATOR_VERSION)[m
+[32m+[m[32m        self.assertAlmostEqual([m
+[32m+[m[32m            rows[0]["ai_residual"]["log_growth_rate_shift"],[m
+[32m+[m[32m            DEFAULT_LOG_GROWTH_RATE_SHIFT,[m
+[32m+[m[32m        )[m
+[32m+[m[32m        self.assertTrue(summary_exists)[m
+[32m+[m[32m        self.assertTrue(exclusions_exists)[m
+[32m+[m[32m        self.assertEqual(validation.case_count, 1)[m
+[32m+[m[32m        self.assertEqual(validation.in_scope_case_count, 1)[m
+[32m+[m[32m        self.assertEqual(summary["included_rows"], 1)[m
+[32m+[m[32m        self.assertEqual([m
+[32m+[m[32m            summary["layer5_calibrator"]["calibrator_version"],[m
+[32m+[m[32m            DEFAULT_CALIBRATOR_VERSION,[m
+[32m+[m[32m        )[m
+[32m+[m[32m        self.assertEqual(summary["layer5_calibrator"]["uses_heldout_outcomes"], False)[m
+[32m+[m
+[32m+[m[32m    def test_rejects_existing_residual_without_overwrite(self):[m
+[32m+[m[32m        with tempfile.TemporaryDirectory() as tmpdir:[m
+[32m+[m[32m            root = Path(tmpdir)[m
+[32m+[m[32m            cohort = root / "cohort.jsonl"[m
+[32m+[m[32m            output = root / "cohort.layer5.jsonl"[m
+[32m+[m[32m            case = _case("registry_001")[m
+[32m+[m[32m            case["ai_residual"] = {[m
+[32m+[m[32m                "validated": True,[m
+[32m+[m[32m                "model_version": "existing_residual",[m
+[32m+[m[32m                "log_growth_rate_shift": -0.01,[m
+[32m+[m[32m            }[m
+[32m+[m[32m            cohort.write_text(json.dumps(case) + "\n", encoding="utf-8")[m
+[32m+[m
+[32m+[m[32m            with self.assertRaisesRegex(ValueError, "already has ai_residual"):[m
+[32m+[m[32m                apply_layer5_global_calibrator(cohort, output)[m
+[32m+[m
+[32m+[m[32m            result = apply_layer5_global_calibrator([m
+[32m+[m[32m                cohort,[m
+[32m+[m[32m                output,[m
+[32m+[m[32m                calibrator_version="replacement",[m
+[32m+[m[32m                log_growth_rate_shift=-math.log(1.07),[m
+[32m+[m[32m                overwrite_existing_residual=True,[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            row = json.loads(output.read_text(encoding="utf-8").splitlines()[0])[m
+[32m+[m
+[32m+[m[32m        self.assertEqual(result["rows"], 1)[m
+[32m+[m[32m        self.assertEqual(row["ai_residual"]["model_version"], "replacement")[m
+[32m+[m[32m        self.assertAlmostEqual(row["ai_residual"]["log_growth_rate_shift"], -math.log(1.07))[m
+[32m+[m
+[32m+[m[32m    def test_validated_noop_layer5_is_exact_layer4_noop(self):[m
+[32m+[m[32m        with tempfile.TemporaryDirectory() as tmpdir:[m
+[32m+[m[32m            cohort = Path(tmpdir) / "cohort.jsonl"[m
+[32m+[m[32m            case = _case("registry_001")[m
+[32m+[m[32m            case["ai_residual"] = {[m
+[32m+[m[32m                "validated": True,[m
+[32m+[m[32m                "model_version": "validated_noop_unit_test",[m
+[32m+[m[32m            }[m
+[32m+[m[32m            cohort.write_text(json.dumps(case) + "\n", encoding="utf-8")[m
+[32m+[m
+[32m+[m[32m            result = run_real_data_eval(cohort, n_samples=200, seed=7)[m
+[32m+[m
+[32m+[m[32m        row = result["case_predictions"][0][m
+[32m+[m[32m        layer4 = row["predictions"]["layer4_mri_qc"][m
+[32m+[m[32m        layer5 = row["predictions"]["layer5_ai_residual"][m
+[32m+[m[32m        layer5_audit = row["layer_audit"]["layer5_ai_residual"][m
+[32m+[m[32m        delta = result["layer_delta"]["layer5_vs_layer4"]["cases"][0][m
+[32m+[m
+[32m+[m[32m        self.assertEqual(layer5_audit["policy_mode"], "validated_noop")[m
+[32m+[m[32m        self.assertEqual(layer5, layer4)[m
+[32m+[m[32m        self.assertEqual([m
+[32m+[m[32m            row["layer_debug"]["layer5_ai_residual"],[m
+[32m+[m[32m            row["layer_debug"]["layer4_mri_qc"],[m
+[32m+[m[32m        )[m
+[32m+[m[32m        self.assertEqual(delta["outcome"], "unchanged")[m
+[32m+[m[32m        self.assertAlmostEqual(delta["mae_delta_ml"], 0.0)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef _case(case_id: str) -> dict[str, object]:[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        "case_id": case_id,[m
+[32m+[m[32m        "data_origin": "ISPY2",[m
+[32m+[m[32m        "subtype": "TNBC",[m
+[32m+[m[32m        "cancer_subtype": "TNBC",[m
+[32m+[m[32m        "disease_context": "TNBC",[m
+[32m+[m[32m        "treatment_context": "neoadjuvant chemotherapy",[m
+[32m+[m[32m        "schedule_type": "neoadjuvant chemotherapy",[m
+[32m+[m[32m        "treatment_regimen": "AC-T chemotherapy",[m
+[32m+[m[32m        "regimen_name": "AC-T chemotherapy",[m
+[32m+[m[32m        "er_status": "negative",[m
+[32m+[m[32m        "pr_status": "negative",[m
+[32m+[m[32m        "hr_status": "negative",[m
+[32m+[m[32m        "her2_status": "negative",[m
+[32m+[m[32m        "baseline_day": 0,[m
+[32m+[m[32m        "baseline_volume_ml": 24,[m
+[32m+[m[32m        "early_day": 28,[m
+[32m+[m[32m        "early_volume_ml": 18,[m
+[32m+[m[32m        "final_day": 84,[m
+[32m+[m[32m        "final_volume_ml": 6,[m
+[32m+[m[32m        "volume_ml": 24,[m
+[32m+[m[32m        "functional_tumor_volume_ml": 20,[m
+[32m+[m[32m        "segmentation_qc": "high",[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mif __name__ == "__main__":[m
+[32m+[m[32m    unittest.main()[m

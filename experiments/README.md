@@ -7,6 +7,7 @@ This directory contains research harnesses, prototypes, and implementation-risk 
 ```text
 v0/mechanistic_simulator/   Legacy V0 volume-only simulator and recovery harness
 prior_builder/             Planned V1 layered-prior implementation experiments
+twin_runtime/             V1 posterior-update and scenario-runtime prototypes
 ```
 
 The V0 harness remains useful as a regression baseline, but it should not keep growing into the V1 architecture. V1 work should keep prior construction, simulator adapters, benchmark runners, and generated evaluation reports separate enough that each layer can be ablated and compared against simple baselines.

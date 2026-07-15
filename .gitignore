@@ -47,7 +47,6 @@ __pycache__/
 
 # Local data / generated artifacts
 data/
-scripts/data/
 v1_slurm_bundle/
 ispy2_derived_metadata.csv
 ispy2_derived_metadata.sql
