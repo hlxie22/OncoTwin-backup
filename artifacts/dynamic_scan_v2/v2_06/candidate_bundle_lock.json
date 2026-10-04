@@ -1,0 +1,108 @@
+{
+  "freeze_targets": [
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_05/candidate_lock.json",
+      "present": true,
+      "sha256": "8078a86f031a2dacac54d1f27c0001ef3ac93893da2acbf40c3d39df0a878127",
+      "size_bytes": 4116
+    },
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_05/prospective_external_protocol.json",
+      "present": true,
+      "sha256": "6845a99998baa1b65a26b3245518ce5d17b492e65aa91288c9bb8a36e6752edd",
+      "size_bytes": 1171
+    },
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_05/artifact_manifest.json",
+      "present": true,
+      "sha256": "6234d5487889c3256a506e41fd8892c15853bedbf646d1c358cfefc594b936ad",
+      "size_bytes": 2034
+    },
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_03/selected_update_rule.json",
+      "present": true,
+      "sha256": "e363d0200324cff2fcbdf7cb8b7708a95878721b228c69fd1fe9f34eda028506",
+      "size_bytes": 158
+    },
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_03/gate_decision.json",
+      "present": true,
+      "sha256": "9e192924e7404a6dc6c9381d3c889c941d41ea1d0524c79a8bf0552cfa52b988",
+      "size_bytes": 9858
+    },
+    {
+      "path": "artifacts/dynamic_scan_v2/v2_02/selection_decision.json",
+      "present": true,
+      "sha256": "064a2ca684a12838daafcdcda8ef8eebece3afe351325835caca069aff013c5f",
+      "size_bytes": 676
+    },
+    {
+      "path": "artifacts/checkpoint7r1_line_agnostic_temporal/temporal_encoder.pt",
+      "present": true,
+      "sha256": "daa47e1d30d61a3c3a6c86a146c683a0a1ac0a635e0d8e6247f3ce47c4ae1411",
+      "size_bytes": 14329879
+    },
+    {
+      "path": "artifacts/checkpoint3/genomic_encoder.pt",
+      "present": true,
+      "sha256": "bc24caa44cfe951e50ad232fc22f670ad38cb122c64feb812910c56de0a1cbe6",
+      "size_bytes": 3724466
+    },
+    {
+      "path": "artifacts/checkpoint3/prepared/gene_space_468.txt",
+      "present": true,
+      "sha256": "9351aee9a41261e4e821f3eea762f6c664b433afc02deb812370e3375372a15c",
+      "size_bytes": 2712
+    },
+    {
+      "path": "artifacts/checkpoint3/prepared/graph_edges.npy",
+      "present": true,
+      "sha256": "9bf05cf45d8a18b09305b03a49d30a91035055be60585257dc256c3940d716b5",
+      "size_bytes": 39264
+    },
+    {
+      "path": "scripts/dynamic_scan/ckpt7r1_line_agnostic_temporal.py",
+      "present": true,
+      "sha256": "8e747c64af927ae923714f307c1bb796f9805e8c59b84323a57991a0653ff4ba",
+      "size_bytes": 156236
+    },
+    {
+      "path": "scripts/dynamic_scan_v2/v2_02_models.py",
+      "present": true,
+      "sha256": "499a34d651ebe843772f1e6c10f2fe8570620254eef0a9180debf4f2f8de407d",
+      "size_bytes": 12205
+    },
+    {
+      "path": "configs/dynamic_scan_v2/v2_02_training.json",
+      "present": true,
+      "sha256": "ffd4fb638b2b74a8ef14d43c8a543e7d5134a1850e992552bbc957207f5de51b",
+      "size_bytes": 2383
+    },
+    {
+      "path": "artifacts/checkpoint7r3b_bounded_candidate/bounded_dynamic_scan_candidate.pt",
+      "present": true,
+      "sha256": "1819af166f004cb0911508d4c74d96b7602cb2548aaf1946d532ad21ab1a0eea",
+      "size_bytes": 2157562
+    },
+    {
+      "path": "artifacts/checkpoint7r3f2_site_unavailable_ablation/transport_rule.json",
+      "present": true,
+      "sha256": "4b65b554ee6ced8894b98c3ea2ed622dcbf8283656929d146c73975728230576",
+      "size_bytes": 1044
+    }
+  ],
+  "important_note": "Cross-fitted V2-02 fold heads are development-evaluation artifacts, not the final deploy model. V2-07 must fit and freeze one all-development supervised head before Stage-B new-cohort prediction generation.",
+  "legacy_comparator": {
+    "name": "checkpoint7r3b_bounded_repaired_legacy_candidate",
+    "optional_artifact_present": true,
+    "use": "prespecified comparator on genuinely new patients only when its input contract can be satisfied without post-landmark information"
+  },
+  "selected_candidate": {
+    "branch_family": "r1_temporal_fixed",
+    "locked_alpha": 0.52,
+    "selected_rule": "v2_03_frozen_temporal_constant_alpha",
+    "status": "PASS",
+    "v2_04_candidate_retained": false
+  },
+  "status": "SPECIFICATION_FROZEN_DEPLOY_FIT_PENDING_V2_07"
+}

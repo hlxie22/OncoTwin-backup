@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "project": "scan_updated_dynamic_breast_cancer",
+  "scan_episode": {
+    "primary_window_days": 3,
+    "sensitivity_windows_days": [0, 3, 7],
+    "landmark_time": "episode_end_day",
+    "reason": "Using episode end guarantees that every component grouped into the scan episode is available by the landmark."
+  },
+  "line_construction": {
+    "day_split_days": 365,
+    "progression_grace_days": 28,
+    "radiology_lookback_days": 90,
+    "exclude_bone_treatment": true,
+    "exclude_investigational_agent": true,
+    "metastatic_onset": "stage4_at_diagnosis_or_first_specific_tumor_site"
+  },
+  "targets": {
+    "administrative_horizon_days": 730,
+    "primary_events": ["PROGRESSION", "DEATH"],
+    "competing_event": "SWITCH",
+    "primary_scan_landmarks": ["NON_PROGRESSIVE"],
+    "extended_scan_landmarks": ["NON_PROGRESSIVE", "INDETERMINATE"]
+  },
+  "scan_state_policy": {
+    "CHORD": [
+      "PROGRESSIVE",
+      "NON_PROGRESSIVE",
+      "INDETERMINATE"
+    ],
+    "BPC_MSK": [
+      "PROGRESSIVE",
+      "MIXED",
+      "STABLE",
+      "RESPONDING",
+      "INDETERMINATE"
+    ],
+    "rule": "Never invent response-versus-stable labels unavailable in CHORD."
+  },
+  "coverage_policy": {
+    "regions": [
+      "CHEST",
+      "ABDOMEN",
+      "PELVIS",
+      "HEAD",
+      "OTHER"
+    ],
+    "rule": "Source region flags represent observation coverage. A false/unobserved region is never interpreted as disease-negative."
+  },
+  "availability_policy": {
+    "CHORD_timeline": "START_DATE relative-event-day proxy",
+    "CHORD_scan_episode": "maximum component START_DATE in episode",
+    "genomics": "SEQ_DATE proxy with explicit quality flag; not claimed to be report-release time"
+  },
+  "external_validation_policy": {
+    "BPC_MSK": "development-time scan/endpoint audit",
+    "BPC_DFCI": "untouched external validation",
+    "BPC_VICC": "untouched external validation"
+  }
+}

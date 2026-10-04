@@ -1,0 +1,63 @@
+{
+  "candidate": {
+    "branch_family": "r1_temporal_fixed",
+    "locked_alpha": 0.52,
+    "prediction_execution_reason": "V2-05 selected the V2-03 specification, but current supervised branch weights are cross-fitted fold checkpoints rather than one final all-development deploy fit.",
+    "prediction_execution_status": "DEFERRED_TO_V2_07_FINAL_DEPLOY_FIT",
+    "selected_rule": "v2_03_frozen_temporal_constant_alpha",
+    "status": "PASS",
+    "v2_04_candidate_retained": false
+  },
+  "checkpoint": "V2-06",
+  "eligibility": {
+    "new_independent_patients_only": true,
+    "old_dfci_vicc_not_new_evidence": true,
+    "random_subset_of_prior_external_not_new_evidence": true,
+    "upstream_train_pretrain_development_and_legacy_external_overlap_prohibited": true
+  },
+  "missingness": {
+    "genomics_unavailable": "zero genomic embedding contribution, genomic_available=0, genomic_age_scaled=0",
+    "natural_missingness_only_for_primary": true,
+    "optional_stream_missing": "preserve missingness explicitly; do not infer negative disease findings",
+    "unknown_current_scan_state": "ABSTAIN_CANNOT_EVALUATE",
+    "unknown_required_clock": "ABSTAIN_CANNOT_EVALUATE"
+  },
+  "old_external_rule": "Completed DFCI/VICC outcomes/predictions remain historical legacy evidence only and are not V2 confirmation.",
+  "outcome_reveal_rule": "No new-cohort outcomes may be inspected until Stage-B predictions and their hashes are immutable.",
+  "primary_evaluation": {
+    "cause_order": [
+      "no_event",
+      "progression",
+      "death",
+      "switch"
+    ],
+    "center_reporting": "report each center separately; pooled summary is descriptive only unless separately prespecified",
+    "horizons_months": [
+      3,
+      6,
+      12,
+      18
+    ],
+    "legacy_comparator": "checkpoint7r3b bounded repaired legacy candidate when the new-cohort input contract permits",
+    "month_width_days": 30.4375,
+    "primary_metric": "patient-balanced PFS Brier mean at 3/6/12/18m",
+    "supporting_metric": "fractional-censor patient mean NLL V1",
+    "time_bins": 24
+  },
+  "prohibited": [
+    "DFCI/VICC outcome reuse for V2 selection or confirmation",
+    "inspection of new-cohort outcomes before primary prediction freeze",
+    "candidate-specific recalibration before primary evaluation",
+    "changing eligibility, predictor mapping, missingness policy, horizons, nuisance estimation, or metrics after outcome inspection",
+    "using a single CV fold checkpoint as the final deploy model",
+    "treatment-line identity as a model-facing predictor or landmark-membership rule"
+  ],
+  "stage_order": [
+    "A_OUTCOME_BLIND_COHORT_INTAKE_AND_OVERLAP",
+    "B_OUTCOME_BLIND_PREDICTION_FREEZE",
+    "C_ENDPOINT_REVEAL_AND_ONE_SHOT_PRIMARY_EVALUATION",
+    "D_OPTIONAL_SEPARATE_RECALIBRATION_ANALYSIS"
+  ],
+  "status": "EXTERNAL_CONFIRMATION_PENDING",
+  "version": "v2_06_1"
+}

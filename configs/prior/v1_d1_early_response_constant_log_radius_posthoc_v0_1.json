@@ -1,0 +1,121 @@
+{
+  "artifact_version": "oncotwin_interval_calibrator_v1",
+  "created_at_utc": "2026-07-27T02:53:56.931364+00:00",
+  "method": {
+    "formula": {
+      "lower": "point_ml * exp(-log_radius)",
+      "upper": "point_ml * exp(log_radius)"
+    },
+    "name": "symmetric_absolute_log_residual_split_conformal",
+    "point_prediction_changed": false
+  },
+  "model_version": "v1_d1_early_response_constant_log_radius_posthoc_v0_1",
+  "parameters": {
+    "80": {
+      "finite_sample_rank": 217,
+      "log_radius": 0.5570229783854512,
+      "multiplicative_factor": 1.7454684605356163,
+      "nominal_coverage": 0.8
+    },
+    "95": {
+      "finite_sample_rank": 258,
+      "log_radius": 1.033650871188414,
+      "multiplicative_factor": 2.8113108554979274,
+      "nominal_coverage": 0.95
+    }
+  },
+  "selection_evidence": {
+    "cross_validated_metrics": {
+      "bias": {
+        "mean": -0.009886992674630281,
+        "median": -0.009928540341986926,
+        "p10": -0.010794652249071725,
+        "p90": -0.008771463004850145,
+        "sd": 0.000683081601087066
+      },
+      "calibration_error": {
+        "mean": 0.01345679012345679,
+        "median": 0.01296296296296301,
+        "p10": 0.005555555555555536,
+        "p90": 0.020370370370370372,
+        "sd": 0.005213690424082151
+      },
+      "combined_score": {
+        "mean": 2.1292883054440375,
+        "median": 2.1274795928139865,
+        "p10": 2.110088265345927,
+        "p90": 2.1541157549012517,
+        "sd": 0.017269973893638005
+      },
+      "coverage_80": {
+        "mean": 0.8071604938271605,
+        "median": 0.8074074074074075,
+        "p10": 0.7996296296296297,
+        "p90": 0.8148148148148148,
+        "sd": 0.005830435399558555
+      },
+      "coverage_95": {
+        "mean": 0.9523456790123457,
+        "median": 0.9537037037037037,
+        "p10": 0.9444444444444444,
+        "p90": 0.9592592592592593,
+        "sd": 0.00605333447523613
+      },
+      "log_rmse": {
+        "mean": 0.4851619145547523,
+        "median": 0.48502148915074483,
+        "p10": 0.4835480587239299,
+        "p90": 0.48717420607531015,
+        "sd": 0.0013133710318628052
+      },
+      "mae": {
+        "mean": 0.21486004296810335,
+        "median": 0.21469012235848958,
+        "p10": 0.21373830361322738,
+        "p90": 0.21590959740618101,
+        "sd": 0.0010077553500385241
+      },
+      "rmse": {
+        "mean": 0.31862416460131837,
+        "median": 0.3182769299900976,
+        "p10": 0.3170442743846556,
+        "p90": 0.3204288549769337,
+        "sd": 0.0013617730661205048
+      },
+      "width_80": {
+        "mean": 0.7993846308640231,
+        "median": 0.7988005725383374,
+        "p10": 0.7898309251191751,
+        "p90": 0.8092935361446969,
+        "sd": 0.008832807516033414
+      },
+      "width_95": {
+        "mean": 1.5658235016608122,
+        "median": 1.5651948385070247,
+        "p10": 1.5404160104491413,
+        "p90": 1.5873508545358592,
+        "sd": 0.02225349585867137
+      }
+    },
+    "rejected_policies": [
+      "shifted_mechanistic_intervals",
+      "availability_specific_constant"
+    ],
+    "selected_policy": "global_constant"
+  },
+  "status": "candidate_posthoc",
+  "training_source": {
+    "cohort_path": "data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl",
+    "cohort_sha256": "8cd51c7f00c073a3d7894692a25bcd8c04384c201c8c3989e91cf5b832c664c0",
+    "diagnostic_artifact_sha256": "70364059a2466a25564ed3b298c307a1873c483c67bfe96b084941c380d228c7",
+    "inner_calibration_folds": 4,
+    "n_cases": 270,
+    "outer_selection_folds": 5,
+    "point_artifact_sha256": "b38e9ca219b2e0309d42a490c2a6b95f5bc5e36e1245d042e06fa1daf1f64dbc",
+    "point_model_version": "v1_d1_continuous_early_volume_posthoc_v0_1",
+    "residual_generation": "cross_fitted_early_response_predictions",
+    "selection_repeats": 30,
+    "source_prediction": "early_response_update_candidate_point"
+  },
+  "validation_note": "Selected using nested repeated cross-validation on the frozen V1-D1 cohort. This remains a post-hoc candidate requiring external or prospective validation."
+}

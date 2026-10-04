@@ -1,0 +1,18 @@
+{
+  "cause_counts": {
+    "0": 4343,
+    "1": 9405,
+    "2": 692,
+    "3": 2754
+  },
+  "eligibility": "split in {train,val} AND survival_mask=True",
+  "external_rows_used": 0,
+  "historical_test_patients_used": 0,
+  "historical_test_rows_used": 0,
+  "patients": 2443,
+  "rows": 17194,
+  "split_counts": {
+    "train": 14000,
+    "val": 3194
+  }
+}

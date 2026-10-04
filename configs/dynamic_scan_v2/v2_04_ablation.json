@@ -1,0 +1,64 @@
+{
+  "checkpoint": "V2-04",
+  "version": "v2_04_1",
+  "screening_seed": 20261004,
+  "confirmation_seeds": [20261018, 20261101],
+  "epochs": 10,
+  "batch_size": 512,
+  "learning_rate": 0.0003,
+  "adapter_learning_rate": 0.0001,
+  "weight_decay": 0.02,
+  "gradient_clip_norm": 1.0,
+  "locked_update_alpha_source": "V2-03 selected_update_rule.json",
+  "selection": {
+    "primary_metric": "PATIENT_BALANCED_PFS_BRIER_4H_MEAN",
+    "simplicity_tie_margin": 0.0005,
+    "auxiliary_trigger_improvement": 0.00025,
+    "nll_guardrail": 0.01,
+    "confirmation_min_improving_seeds": 2,
+    "representation_candidate_margin": 0.0005
+  },
+  "representation_candidates": [
+    "temporal_post_only",
+    "pre_temporal_plus_explicit_scan",
+    "post_temporal_plus_explicit_scan"
+  ],
+  "genomic_modes": [
+    "embedding",
+    "simple_summary",
+    "availability_age",
+    "none"
+  ],
+  "genomic_simplicity_order": [
+    "none",
+    "availability_age",
+    "simple_summary",
+    "embedding"
+  ],
+  "auxiliary": {
+    "next_scan_max_weight": 0.08,
+    "postprog_weight": 0.05,
+    "postprog_time_weight": 0.02,
+    "preserve_continued_or_censored_class": true,
+    "next_scan_classes": {
+      "NON_PROGRESSIVE": 0,
+      "INDETERMINATE": 1,
+      "PROGRESSIVE": 2
+    },
+    "postprog_classes": {
+      "NEXT_TREATMENT": 0,
+      "CONTINUED_OR_CENSORED": 1,
+      "DEATH": 2
+    }
+  },
+  "temporal_adapter": {
+    "enabled_as_diagnostic_trigger": true,
+    "bottleneck_dim": 32,
+    "transport_robust_claim": false,
+    "note": "Adapter operates on frozen R1 latent states. It is diagnostic only because synthetic source-stream missingness cannot be applied before the already-frozen temporal encoder cache."
+  },
+  "survival_formulation": {
+    "additional_rate_model_triggered": false,
+    "reason": "V2-00 already identified the historical partial-bin censor approximation; V2-02 onward uses the separately versioned fractional-censor likelihood and probability/calibration invariants pass."
+  }
+}

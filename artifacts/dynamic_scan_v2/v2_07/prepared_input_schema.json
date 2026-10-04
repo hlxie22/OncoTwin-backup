@@ -1,0 +1,42 @@
+{
+  "boundary": "Prepared landmark tensors after frozen upstream R1 temporal/genomic preprocessing; raw-cohort intake remains governed by V2-06.",
+  "line_derived_context_coordinates": "not accepted by V2-07 inference API",
+  "optional_arrays": {
+    "current_scan_state_known": [
+      "N"
+    ],
+    "required_clock_known": [
+      "N"
+    ]
+  },
+  "portable_context_order": [
+    "scan_number_patient_log",
+    "genomic_available",
+    "genomic_age_scaled"
+  ],
+  "raw_cohort_preflight": "V2-06 contracts govern upstream predictor construction before this boundary",
+  "required_arrays": {
+    "genomic_age_scaled": [
+      "N"
+    ],
+    "genomic_available": [
+      "N"
+    ],
+    "scan_number_patient_log": [
+      "N"
+    ],
+    "temporal_post": [
+      "N",
+      192
+    ],
+    "temporal_pre": [
+      "N",
+      192
+    ],
+    "tumor_embedding": [
+      "N",
+      128
+    ]
+  },
+  "version": "v2_07_prepared_landmark_v1"
+}

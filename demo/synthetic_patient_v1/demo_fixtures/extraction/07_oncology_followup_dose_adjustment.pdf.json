@@ -1,0 +1,35 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "06a00190986f145af6f3511efc4f9c8069c03ffab93a8ef5366eacffb0714f19",
+  "source_file": "baseline/07_oncology_followup_dose_adjustment.pdf",
+  "response": {
+    "document_type": "treatment",
+    "facts": [
+      {
+        "fact_type": "treatment",
+        "value": "ribociclib held for 7 days for neutropenia",
+        "effective_date": "2025-07-22",
+        "unit": null,
+        "confidence": 0.98,
+        "source_page": 1,
+        "source_snippet": "Hold ribociclib for 7 days. Repeat CBC.",
+        "attributes": {
+          "active": false
+        }
+      },
+      {
+        "fact_type": "treatment",
+        "value": "letrozole 2.5 mg daily + ribociclib 400 mg days 1-21 every 28 days",
+        "effective_date": "2025-07-29",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Ribociclib resumed at 400 mg daily on days 1-21 of each 28-day cycle. Letrozole 2.5 mg daily continues without change.",
+        "attributes": {
+          "active": true
+        }
+      }
+    ]
+  }
+}

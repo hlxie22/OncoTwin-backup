@@ -1,0 +1,69 @@
+{
+  "artifact_version": "oncotwin_interval_calibrator_v1",
+  "created_at_utc": "2026-07-27T02:01:37.090068+00:00",
+  "full_fit_diagnostics": {
+    "aggregate": {
+      "coverage_80": 0.8037037037037037,
+      "coverage_95": 0.9555555555555556,
+      "mean_width_80_ml": 1.1358784730787175,
+      "mean_width_95_ml": 1.9214014728369886
+    },
+    "by_final_day": {
+      "126": {
+        "coverage_80": 0.8,
+        "coverage_95": 0.9636363636363636,
+        "mean_width_80_ml": 1.115195616433536,
+        "mean_width_95_ml": 1.886415273025652,
+        "n": 220
+      },
+      "42": {
+        "coverage_80": 0.7777777777777778,
+        "coverage_95": 0.9444444444444444,
+        "mean_width_80_ml": 1.4023273254684834,
+        "mean_width_95_ml": 2.372114493244712,
+        "n": 18
+      },
+      "84": {
+        "coverage_80": 0.84375,
+        "coverage_95": 0.90625,
+        "mean_width_80_ml": 1.1281956330450966,
+        "mean_width_95_ml": 1.9084055225605836,
+        "n": 32
+      }
+    }
+  },
+  "method": {
+    "formula": {
+      "lower": "point_ml * exp(-log_radius)",
+      "upper": "point_ml * exp(log_radius)"
+    },
+    "name": "symmetric_absolute_log_residual_split_conformal",
+    "point_prediction_changed": false
+  },
+  "model_version": "v1_d1_constant_log_radius_posthoc_v0_1",
+  "parameters": {
+    "80": {
+      "finite_sample_rank": 217,
+      "log_radius": 0.7588707883051214,
+      "multiplicative_factor": 2.1358630167471278,
+      "nominal_coverage": 0.8
+    },
+    "95": {
+      "finite_sample_rank": 258,
+      "log_radius": 1.1440564261771882,
+      "multiplicative_factor": 3.1394776299026015,
+      "nominal_coverage": 0.95
+    }
+  },
+  "status": "candidate_posthoc",
+  "training_source": {
+    "cohort_path": "data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl",
+    "cohort_sha256": "8cd51c7f00c073a3d7894692a25bcd8c04384c201c8c3989e91cf5b832c664c0",
+    "early_response_rule": "disabled",
+    "evaluation_samples": 2000,
+    "evaluation_seed": 2026,
+    "n_cases": 270,
+    "target_prediction": "static_layer4_mri_qc"
+  },
+  "validation_note": "Selected using repeated cross-validation on the frozen V1-D1 cohort. Full-cohort fit is intended for future external or prospective validation and must not be reported as an unbiased frozen-D1 result."
+}

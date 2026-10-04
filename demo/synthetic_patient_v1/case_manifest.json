@@ -1,0 +1,50 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "version": "v4_clinical_export_records",
+  "patient": {
+    "name": "Maya Rowan",
+    "dob": "1966-11-02",
+    "mrn": "MV-000017",
+    "sex": "female",
+    "fictional": true
+  },
+  "institution": "Meridian Vale Health System / Apex Molecular Diagnostics (fictional)",
+  "clinical_summary": "De novo ER-positive/HER2-negative metastatic breast cancer with liver and bone disease treated with letrozole plus ribociclib, followed by hepatic progression and a post-progression ESR1 D538G ctDNA result.",
+  "scan_landmarks": [
+    {
+      "date": "2025-01-27",
+      "assessment": "indeterminate",
+      "file": "baseline/04_baseline_ct.pdf"
+    },
+    {
+      "date": "2025-04-28",
+      "assessment": "stable",
+      "file": "baseline/05_followup_ct_1.pdf"
+    },
+    {
+      "date": "2025-07-30",
+      "assessment": "stable",
+      "file": "baseline/08_followup_ct_2.pdf"
+    },
+    {
+      "date": "2025-10-29",
+      "assessment": "stable",
+      "file": "baseline/09_followup_ct_3.pdf"
+    },
+    {
+      "date": "2026-01-28",
+      "assessment": "stable",
+      "file": "baseline/10_followup_ct_4.pdf"
+    },
+    {
+      "date": "2026-04-29",
+      "assessment": "progression",
+      "file": "new_evidence/11_newest_ct_progression.pdf"
+    }
+  ],
+  "demo_sequence": {
+    "baseline": "Upload 01-10 together or in order, resolve the PR conflict, then calculate trajectory.",
+    "signature_update": "Upload 11 through the newest-scan flow.",
+    "extension": "Upload 12 after the scan-update moment for future evidence/questions/brief workflows."
+  }
+}

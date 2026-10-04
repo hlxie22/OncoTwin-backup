@@ -1,0 +1,57 @@
+{
+  "project": "scan_updated_dynamic_breast_cancer",
+  "policy_version": 1,
+  "dataset_roles": {
+    "GENIE": {
+      "role": "coverage_aware_genomic_pretraining",
+      "development_access": true,
+      "supervised_dynamic_training": false,
+      "hyperparameter_tuning": true,
+      "external_validation": false
+    },
+    "CHORD": {
+      "role": "temporal_pretraining_and_primary_dynamic_training",
+      "development_access": true,
+      "supervised_dynamic_training": true,
+      "hyperparameter_tuning": true,
+      "external_validation": false
+    },
+    "BPC_MSK": {
+      "role": "schema_endpoint_and_scan_label_audit",
+      "development_access": true,
+      "supervised_dynamic_training": false,
+      "hyperparameter_tuning": false,
+      "external_validation": false
+    },
+    "BPC_DFCI": {
+      "role": "untouched_external_validation",
+      "development_access": false,
+      "supervised_dynamic_training": false,
+      "hyperparameter_tuning": false,
+      "external_validation": true
+    },
+    "BPC_VICC": {
+      "role": "untouched_external_validation",
+      "development_access": false,
+      "supervised_dynamic_training": false,
+      "hyperparameter_tuning": false,
+      "external_validation": true
+    }
+  },
+  "external_quarantine_tokens": [
+    "dfci",
+    "dana-farber",
+    "dana_farber",
+    "danafarber",
+    "vanderbilt",
+    "vicc"
+  ],
+  "principles": [
+    "Every eligible scan will ultimately be a prediction landmark.",
+    "Treatment start is an initial landmark, not the only landmark.",
+    "Patient history persists across treatment lines.",
+    "Use information only after its clinical availability timestamp.",
+    "Not observed is distinct from observed negative.",
+    "DFCI and Vanderbilt/VICC are external-validation-only cohorts."
+  ]
+}

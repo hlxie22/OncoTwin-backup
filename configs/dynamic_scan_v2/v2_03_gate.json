@@ -1,0 +1,44 @@
+{
+  "checkpoint": "V2-03",
+  "version": "v2_03_1",
+  "selected_branch_family": "r1_temporal_fixed",
+  "seeds": [20261003, 20261017, 20261031],
+  "primary_seed": 20261003,
+  "constant_grid": {
+    "coarse_step": 0.05,
+    "refine_step": 0.01,
+    "refine_radius": 0.05
+  },
+  "linear_gate": {
+    "epochs": 220,
+    "learning_rate": 0.02,
+    "weight_decay": 0.001,
+    "alpha_shrinkage": 0.02
+  },
+  "nonlinear_gate": {
+    "hidden_dim": 8,
+    "epochs": 260,
+    "learning_rate": 0.01,
+    "weight_decay": 0.002,
+    "alpha_shrinkage": 0.03
+  },
+  "selection": {
+    "primary_metric": "PATIENT_BALANCED_PFS_BRIER_4H_MEAN",
+    "supporting_metric": "FRACTIONAL_CENSOR_PATIENT_NLL_V1",
+    "min_mean_brier_improvement_over_crossfit_constant": 0.0001,
+    "nll_noninferiority_margin": 0.01,
+    "required_nonworse_outer_folds": 2,
+    "required_improving_seeds": 2,
+    "max_saturation_fraction": 0.5,
+    "min_alpha_std": 0.01,
+    "natural_missingness_stratum_noninferiority_margin": 0.003,
+    "minimum_stratum_rows": 250
+  },
+  "feature_policy": {
+    "no_site_identifier": true,
+    "no_future_outcome_or_censoring_inputs": true,
+    "no_raw_shared_logit_offsets": true,
+    "post_information_allowed_only_as_current_scan_model_update_summary": true,
+    "scalar_gate_shared_across_all_24_intervals_and_4_causes": true
+  }
+}

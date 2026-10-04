@@ -134,38 +134,6 @@ if [ "$PATIENT_COUNT" -lt 1 ]; then
   exit 2
 fi
 
-SHARD_DIR="$OUTPUT_ROOT/manifests/launch_shards"
-rm -rf "$SHARD_DIR"
-mkdir -p "$SHARD_DIR"
-python3 - "$MANIFEST" "$SHARD_DIR" <<'PY'
-import csv
-import sys
-from collections import defaultdict
-from pathlib import Path
-
-manifest = Path(sys.argv[1])
-shard_dir = Path(sys.argv[2])
-delimiter = "\t" if manifest.suffix.lower() in {".tsv", ".txt"} else ","
-with manifest.open(newline="", encoding="utf-8") as handle:
-    rows = list(csv.DictReader(handle, delimiter=delimiter))
-if not rows:
-    raise SystemExit("Manifest has no rows: %s" % manifest)
-fieldnames = list(rows[0].keys())
-by_case = defaultdict(list)
-for row in rows:
-    case_id = (row.get("case_id") or row.get("patient_id") or row.get("subject_id") or "").strip()
-    if case_id:
-        by_case[case_id].append(row)
-if not by_case:
-    raise SystemExit("No case_id/patient_id/subject_id values found in %s" % manifest)
-for index, case_id in enumerate(sorted(by_case), start=1):
-    path = shard_dir / ("shard_%04d.tsv" % index)
-    with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t")
-        writer.writeheader()
-        writer.writerows(by_case[case_id])
-PY
-
 mkdir -p logs/slurm
 
 SBATCH_COMMON=()
@@ -183,8 +151,8 @@ fi
 ARRAY_SBATCH=(
   sbatch --parsable
   "${SBATCH_COMMON[@]}"
-  --array "1-${PATIENT_COUNT}%${WORKER_COUNT}"
-  --export "ALL,MANIFEST=${MANIFEST},SHARD_DIR=${SHARD_DIR},OUTPUT_ROOT=${OUTPUT_ROOT},PATIENT_COUNT=${PATIENT_COUNT},WORKER_COUNT=${WORKER_COUNT},MIN_FREE_SPACE_GB=${MIN_FREE_SPACE_GB},MAX_ACTIVE_SCRATCH_GB=${MAX_ACTIVE_SCRATCH_GB},KEEP_FAILED_DICOM=${KEEP_FAILED_DICOM},FORCE=${FORCE},SETUP_SCRIPT=${SETUP_SCRIPT}"
+  --array "1-${WORKER_COUNT}"
+  --export "ALL,MANIFEST=${MANIFEST},SHARD_DIR=,OUTPUT_ROOT=${OUTPUT_ROOT},PATIENT_COUNT=${PATIENT_COUNT},WORKER_COUNT=${WORKER_COUNT},MIN_FREE_SPACE_GB=${MIN_FREE_SPACE_GB},MAX_ACTIVE_SCRATCH_GB=${MAX_ACTIVE_SCRATCH_GB},KEEP_FAILED_DICOM=${KEEP_FAILED_DICOM},FORCE=${FORCE},SETUP_SCRIPT=${SETUP_SCRIPT}"
 )
 if [ -n "$CPUS" ]; then ARRAY_SBATCH+=(--cpus-per-task "$CPUS"); fi
 ARRAY_SBATCH+=("$ARRAY_SCRIPT")
@@ -194,9 +162,9 @@ printf ' %q' "${ARRAY_SBATCH[@]}"
 echo
 
 echo "Patients: $PATIENT_COUNT"
-echo "Max concurrent array tasks: $WORKER_COUNT"
-echo "Array task count: $PATIENT_COUNT"
-echo "Shard manifests: $SHARD_DIR"
+echo "Worker array tasks: $WORKER_COUNT"
+echo "Assignment: each worker processes a strided subset of patients"
+echo "Example: worker 1 processes 1, $((1 + WORKER_COUNT)), $((1 + 2 * WORKER_COUNT)), ..."
 
 if [ "$DRY_RUN" = "1" ]; then
   if [ "$DO_MERGE" = "1" ]; then

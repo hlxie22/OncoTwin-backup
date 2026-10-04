@@ -1,0 +1,66 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "b375efc91a80c2b9631ab3792e83e0cd10e82ab8d195c0e0830cda2b86edae42",
+  "source_file": "baseline/02_metastatic_liver_pathology.pdf",
+  "response": {
+    "document_type": "pathology",
+    "facts": [
+      {
+        "fact_type": "diagnosis",
+        "value": "metastatic breast cancer",
+        "effective_date": "2025-01-15",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "LIVER, SEGMENT VIII MASS, CORE BIOPSY: Metastatic carcinoma consistent with breast primary.",
+        "attributes": {}
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "liver",
+        "effective_date": "2025-01-15",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "LIVER, SEGMENT VIII MASS, CORE BIOPSY: Metastatic carcinoma consistent with breast primary.",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "er_status",
+        "value": "positive",
+        "effective_date": "2025-01-15",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Estrogen receptor (ER) - Positive - 90% tumor nuclei; strong intensity",
+        "attributes": {}
+      },
+      {
+        "fact_type": "pr_status",
+        "value": "negative",
+        "effective_date": "2025-01-15",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Progesterone receptor (PR) - Negative - <1% tumor nuclei",
+        "attributes": {}
+      },
+      {
+        "fact_type": "her2_status",
+        "value": "negative",
+        "effective_date": "2025-01-15",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Final HER2 status - Negative - IHC 2+ with ISH not amplified",
+        "attributes": {
+          "ihc": "2+",
+          "ish": "not amplified"
+        }
+      }
+    ]
+  }
+}

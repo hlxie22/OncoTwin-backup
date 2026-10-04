@@ -1,0 +1,47 @@
+{
+  "protocol_version": "v2_00_1",
+  "development_population": "CHORD original train plus val patients only",
+  "historical_test_policy": "Original CHORD test patients remain historical-test-only and are not used for V2 architecture, feature, hyperparameter, gate, calibration, or stopping decisions.",
+  "folds": {
+    "count": 3,
+    "assignment": "sha256(patient_id, fixed salt) modulo 3; outcome-blind",
+    "salt": "oncotwin_dynamic_scan_v2_devfold_v1",
+    "patient_disjoint": true,
+    "artifact": "artifacts/dynamic_scan_v2/v2_00/development_folds.parquet"
+  },
+  "seeds": {
+    "screening": [20261001],
+    "finalists": [20261001, 20261002, 20261003]
+  },
+  "selection": {
+    "primary_metric": "PATIENT_BALANCED_PFS_BRIER_4H_MEAN",
+    "horizons_months": [3, 6, 12, 18],
+    "direction": "lower_is_better",
+    "secondary_metrics": [
+      "FRACTIONAL_CENSOR_PATIENT_NLL_V1",
+      "LEGACY_PATIENT_NLL_FOR_REPLAY_ONLY"
+    ],
+    "tie_policy": "If primary CV means differ by less than 0.0005, prefer the simpler model unless a prespecified robustness criterion distinguishes them.",
+    "test_feedback": "PROHIBITED"
+  },
+  "experiment_budget": {
+    "v2_01_representation_families_max": 4,
+    "v2_02_transport_training_families_max": 6,
+    "v2_03_gate_families_max": 3,
+    "v2_04_targeted_ablation_families_max": 8,
+    "finalist_seed_count": 3,
+    "note": "A family may contain fixed prespecified controls such as alpha=0,0.5,1 without counting each control as a new architecture search."
+  },
+  "cross_fitting": {
+    "small_head_default": "3-fold patient-disjoint development CV",
+    "gate_rule": "Gate fitting for a fold may consume only out-of-fold branch predictions for that fold's patients.",
+    "assessment_outcomes": "A fold's outcomes may not influence the branch or gate that generated predictions being assessed on that fold.",
+    "fixed_feature_label": "Experiments using CKPT7R1/CKPT7R2 frozen features are fixed-feature CV, not fully fold-clean encoder retraining.",
+    "encoder_adaptation_rule": "Any later trainable encoder adaptation must be retrained within each development fold excluding the assessment fold to claim fold-clean evaluation."
+  },
+  "stopping": {
+    "screening": "Advance only changes that improve mean development-fold primary metric or answer a prespecified mechanism question without violating calibration/robustness checks.",
+    "final_candidate": "Freeze architecture, feature rules, missingness profiles, gate rule, calibration, and preprocessing before any one-shot historical-test descriptive evaluation.",
+    "external": "No DFCI/VICC reuse for V2 selection; genuinely new external patients are required for V2-06 confirmation."
+  }
+}

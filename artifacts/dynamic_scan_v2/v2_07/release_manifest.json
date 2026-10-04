@@ -1,0 +1,41 @@
+{
+  "checkpoint": "V2-07",
+  "deploy_model_sha256": "a2de9909b2f7323dbafb1e9d9343946815bea160791b53f10eb31b85c4eaa4be",
+  "files": {
+    "CHANGELOG_CKPT7_TO_V2.md": "a7f22573ede9c109c9e5127613945a210ab34f437bb135f9985fe8e7d13f00de",
+    "PROJECT_STATE_V2.md": "dd8c193c3a192411e9de1ea290011501115f0b23062f2b30261685577d03cf0a",
+    "data_card.md": "15473c5021ef4cec0c84bc10570a3e1e6adb1fc8faa4166b539dca42261b7e10",
+    "deploy_model.pt": "a2de9909b2f7323dbafb1e9d9343946815bea160791b53f10eb31b85c4eaa4be",
+    "deployment_contract.json": "dc4e1085465e0402699c51939d16f511bf122881c7bdbd2cf1e77d8ad586d3b5",
+    "inference_fixture_report.json": "ee2346fb49bc8332b61169d08e73f87559f0d2166b87e0af545b004d2a016d68",
+    "model_card.md": "23f4c132ca5ee9803db03ebd22899775a0fcda56c694c830781e9f44bb1dfb44",
+    "prepared_input_schema.json": "04264c7b5c5b5f60799ae768a6e254b313b84f73384c8084169d1a357bd0ea06",
+    "synthetic_inference_fixture_expected.npz": "0ed1e3a4304abf3cf47b69700993dc059c336568c63a861d0e73147eb9f24b6b",
+    "synthetic_inference_fixture_input.npz": "717660e10e5589f994a62e39441b659965814d36be57c8626ca6cc5cb63bb59c",
+    "training_history.json": "0d5b5ccef39c6fe8cdf9efd7a59ca8c011cde2fd057da3fba14063f1a060f484",
+    "training_population.json": "54db5045d0f0ca79ea8d3cb14cc2b70c06a70dce1197e74c209cee2a3ce97bf5"
+  },
+  "release_code_hashes": {
+    "configs/dynamic_scan_v2/v2_07_release.json": "8769f5cf9dcd55a894b59dabdcb9467317ee022eb10c4a74c1455e7c3ba7c34e",
+    "scripts/dynamic_scan_v2/v2_07_inference.py": "a70d7cd09c98d5d318d27cbefdf53bfd189a699eee52d25fa1d356a02e71438c",
+    "scripts/dynamic_scan_v2/v2_07_predict_prepared.py": "4f4a7b23344428d9c8644dcc41e81396294c1846f986a563fab9da4d1af9b738",
+    "scripts/dynamic_scan_v2/v2_07_release.py": "a49936cd47b00ee90d291d767f86ed5d6d85fd9d93027122ba01cd2310c5c316"
+  },
+  "status": "FROZEN",
+  "training_state_sha256": "48a68a83633525f931cb57c7c31058e805b6ad4fa1db51e0381fdb8445695b2d",
+  "upstream_source_hashes": {
+    "artifacts/checkpoint3/genomic_encoder.pt": "bc24caa44cfe951e50ad232fc22f670ad38cb122c64feb812910c56de0a1cbe6",
+    "artifacts/checkpoint3/prepared/gene_space_468.txt": "9351aee9a41261e4e821f3eea762f6c664b433afc02deb812370e3375372a15c",
+    "artifacts/checkpoint3/prepared/graph_edges.npy": "9bf05cf45d8a18b09305b03a49d30a91035055be60585257dc256c3940d716b5",
+    "artifacts/checkpoint7r1_line_agnostic_temporal/temporal_encoder.pt": "daa47e1d30d61a3c3a6c86a146c683a0a1ac0a635e0d8e6247f3ce47c4ae1411",
+    "artifacts/checkpoint7r2_transport_safe_supervised/prepared/context_features_f32.npy": "f15125f98c72c29f2d699ad8f0024da5e2fbf683a8851abf322094e7c7676a03",
+    "artifacts/checkpoint7r2_transport_safe_supervised/prepared/scan_index.parquet": "0d912e59e0823efd96ddb57de9b77a07ed71b40d7aa52e7532e8509ac495e2cd",
+    "artifacts/checkpoint7r2_transport_safe_supervised/prepared/temporal_prepost_f16.npy": "267eb5244f0e3f71d008f87cedf81bcb74c5c189eecbcdceea7b53f51733a767",
+    "artifacts/checkpoint7r2_transport_safe_supervised/prepared/tumor_embeddings_f16.npy": "cb45c57ad73bd0d652602f3cb98d4ebbc8e6079680ec703e930ad27d945a559a",
+    "artifacts/dynamic_scan_v2/v2_05/candidate_lock.json": "8078a86f031a2dacac54d1f27c0001ef3ac93893da2acbf40c3d39df0a878127",
+    "artifacts/dynamic_scan_v2/v2_06/candidate_bundle_lock.json": "cac22c6b9317c2ddd3a1224bca4dacbb9a8914050cf460f0baf27d77c3f204e5",
+    "artifacts/dynamic_scan_v2/v2_06/locked_external_protocol.json": "949f64f7ae617cdd4f78ef95e1930059d5cb70c148989dcbf30f87e73dbfa2a8",
+    "scripts/dynamic_scan_v2/v2_02_models.py": "499a34d651ebe843772f1e6c10f2fe8570620254eef0a9180debf4f2f8de407d"
+  },
+  "version": "v2_07_1"
+}

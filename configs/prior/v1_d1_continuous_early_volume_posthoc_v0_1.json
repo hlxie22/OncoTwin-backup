@@ -1,0 +1,141 @@
+{
+  "artifact_version": "oncotwin_early_response_update_v1",
+  "created_at_utc": "2026-07-27T02:44:26.343142+00:00",
+  "full_fit_diagnostics": {
+    "candidate": {
+      "bias": -0.01029971424246496,
+      "log_rmse": 0.4824603785756471,
+      "mae": 0.21339848392817612,
+      "n": 270,
+      "rmse": 0.317164142957144
+    },
+    "current": {
+      "bias": 0.030091956479822844,
+      "log_rmse": 0.5558347442155213,
+      "mae": 0.24230665299462503,
+      "n": 270,
+      "rmse": 0.35050009608407406
+    },
+    "static": {
+      "bias": 0.027635478536152898,
+      "log_rmse": 0.5749440789715001,
+      "mae": 0.24869353969551108,
+      "n": 270,
+      "rmse": 0.36142580131357865
+    }
+  },
+  "method": {
+    "formula": "updated_point_ml = source_point_ml * exp(clip(intercept + slope * log(early_volume_ml / baseline_volume_ml), min_log_correction, max_log_correction))",
+    "interval_prediction_changed": false,
+    "missing_early_policy": "global_mean_static_log_residual",
+    "name": "bounded_log_linear_early_volume_residual_update",
+    "point_prediction_changed": true
+  },
+  "model_version": "v1_d1_continuous_early_volume_posthoc_v0_1",
+  "parameters": {
+    "intercept": -0.07390443919179766,
+    "max_log_correction": 0.75,
+    "min_log_correction": -0.75,
+    "missing_early_log_correction": -0.04955888829518541,
+    "ridge_penalty": 0.001,
+    "slope": 0.7127777605265024
+  },
+  "selection_evidence": {
+    "coefficient_stability": {
+      "intercept": {
+        "mean": -0.073943434341339,
+        "median": -0.07315544713012853,
+        "p10": -0.0914523422732106,
+        "p90": -0.05511430105135066,
+        "sd": 0.01433762907280631
+      },
+      "missing_early_correction": {
+        "mean": -0.04953405083757586,
+        "median": -0.04938233057746711,
+        "p10": -0.06702792614785363,
+        "p90": -0.03273477322156745,
+        "sd": 0.01359408280642155
+      },
+      "slope": {
+        "mean": 0.7127035161563873,
+        "median": 0.7120686103827285,
+        "p10": 0.6553980468601113,
+        "p90": 0.7718760738043415,
+        "sd": 0.048212136536160716
+      }
+    },
+    "cross_validation": {
+      "candidate_metrics": {
+        "bias": {
+          "mean": -0.009804631762943855,
+          "median": -0.009881459980772075,
+          "p10": -0.010794652249071725,
+          "p90": -0.008771463004850145,
+          "sd": 0.0006977441731435167
+        },
+        "log_rmse": {
+          "mean": 0.48534448202603003,
+          "median": 0.48506950785669634,
+          "p10": 0.48377253177067125,
+          "p90": 0.48717420607531015,
+          "sd": 0.0014315313839737022
+        },
+        "mae": {
+          "mean": 0.21481511369060324,
+          "median": 0.21472319159934472,
+          "p10": 0.21371314121477594,
+          "p90": 0.21595159074664955,
+          "sd": 0.0010438092893838785
+        },
+        "rmse": {
+          "mean": 0.3185787580200694,
+          "median": 0.3182769299900976,
+          "p10": 0.3169734568874612,
+          "p90": 0.3204288549769337,
+          "sd": 0.00141919702267925
+        }
+      },
+      "folds": 5,
+      "gain_versus_current_layer4": {
+        "log_rmse": {
+          "mean": 0.07049026218949121,
+          "median": 0.0707652363588249,
+          "p10": 0.0686605381402111,
+          "p90": 0.07206221244485,
+          "sd": 0.0014315313839737022,
+          "win_rate": 1.0
+        },
+        "mae": {
+          "mean": 0.027491539304021786,
+          "median": 0.027583461395280298,
+          "p10": 0.02635506224797549,
+          "p90": 0.028593511779849104,
+          "sd": 0.0010438092893838785,
+          "win_rate": 1.0
+        },
+        "rmse": {
+          "mean": 0.03192133806400466,
+          "median": 0.03222316609397646,
+          "p10": 0.03007124110714039,
+          "p90": 0.033526639196612876,
+          "sd": 0.00141919702267925,
+          "win_rate": 1.0
+        }
+      },
+      "repeats": 50
+    }
+  },
+  "status": "candidate_posthoc",
+  "training_source": {
+    "categorical_early_response_rule": "disabled_for_source_prediction",
+    "cohort_path": "data/processed/v1_prior_stack/ispy2_v1_prior_eval_cohort.jsonl",
+    "cohort_sha256": "8cd51c7f00c073a3d7894692a25bcd8c04384c201c8c3989e91cf5b832c664c0",
+    "evaluation_samples": 2000,
+    "evaluation_seed": 2026,
+    "n_cases": 270,
+    "n_early_available": 252,
+    "n_early_missing": 18,
+    "source_prediction": "layer4_mri_qc_static_pre_early_response"
+  },
+  "validation_note": "Selected and fit using the frozen V1-D1 cohort. This is a post-hoc candidate for future external or prospective validation and must not be reported as an unbiased frozen-D1 result."
+}

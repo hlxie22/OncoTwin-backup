@@ -1,0 +1,78 @@
+{
+  "analysis_version": "oncotwin_layer7_locked_specification_v1",
+  "status": "locked_internal_specification",
+  "evidence_class": "internal_locked_evaluation_after_exploratory_selection",
+  "independent_confirmatory_evidence": false,
+  "scope": {
+    "contract_id": "v1a_tnbc_chemo_parameter_contract",
+    "disease": "TNBC or contract-resolved TNBC-like disease",
+    "treatment": "A/C-T-style neoadjuvant chemotherapy",
+    "state": "tumor volume only",
+    "update_observation": "one valid early-treatment tumor-volume measurement",
+    "prediction_target": "held-out final tumor volume"
+  },
+  "particle_runtime": {
+    "particle_count": 256,
+    "seed": 730000,
+    "sampling": "deterministic_rejection_sampling",
+    "selection_basis": "Monte Carlo stability and computational efficiency",
+    "selection_not_based_on_best_predictive_metric": true
+  },
+  "posterior_update": {
+    "method": "batch_self_normalized_importance_sampling",
+    "likelihood": "existing_qc_aware_volume_likelihood",
+    "ess_threshold_fraction": 0.1,
+    "accepted_health_statuses": [
+      "updated_healthy"
+    ],
+    "low_ess_policy": "exact_mechanistic_prior_fallback",
+    "boundary_collapse_policy": "exact_mechanistic_prior_fallback",
+    "resampling_performed": false,
+    "tempering_selected": false
+  },
+  "schedule": {
+    "version": "oncotwin_layer7_canonical_act_schedule_v0_1",
+    "patient_specific_administration_events_available": false,
+    "anthracycline_days": [
+      0,
+      14,
+      28,
+      42
+    ],
+    "taxane_start_day": 56,
+    "taxane_interval_days": 7,
+    "relative_dose": 1.0
+  },
+  "missing_early_observation": {
+    "status": "not_updated_no_valid_observation",
+    "prediction": "exact_mechanistic_prior_prediction"
+  },
+  "locked_evaluation": {
+    "bootstrap_replicates": 5000,
+    "bootstrap_seed": 740000,
+    "selection_performed_in_locked_run": false,
+    "development_selection_preceded_lock": true
+  },
+  "expected_hashes": {
+    "cohort": "8cd51c7f00c073a3d7894692a25bcd8c04384c201c8c3989e91cf5b832c664c0",
+    "particle_policy": "0ae3675296d4cca5a110eac5ca87073af796c679183af6a50b2366559690044f",
+    "evaluation_policy": "bc91dd5a01ec537542848081733314edf0c23cb957355d8ddc8f857466112b74",
+    "candidate_policy": "4117443a261536977d2a0a9cd6ad852903e46bfe9e5f8a12beffd42cf96d010f",
+    "prelock_robustness": "4009155bcace8afba19fde38f1b79f8bfae7a6ef58c3335068ee8b585a4489bd",
+    "layer6_closure": "ba036971b889673d0c821c8ab02d143d5c875e821935a11065fef953946d47a3"
+  },
+  "interpretation": [
+    "Layer 7 is a mechanistic posterior candidate and does not replace Layer 6 as the primary predictive model.",
+    "The locked run evaluates update value relative to the same mechanistic prior before observing the early MRI.",
+    "Because exploratory design choices used this cohort, this is not independent external or prospective confirmation.",
+    "No causal treatment-effect or treatment-recommendation claim is supported."
+  ],
+  "known_limitations": [
+    "The normalized cohort lacks patient-specific treatment administration events.",
+    "A canonical A/C-T schedule proxy is used.",
+    "Some cases changed fail-closed status across alternative Monte Carlo seeds during pre-lock robustness testing.",
+    "The production seed is fixed for deterministic output.",
+    "The model represents tumor volume only.",
+    "External and prospective validation remain incomplete."
+  ]
+}

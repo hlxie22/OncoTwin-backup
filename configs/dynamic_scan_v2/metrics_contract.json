@@ -1,0 +1,58 @@
+{
+  "contract_version": "v2_00_1",
+  "administrative_horizon_days": 730.0,
+  "discrete_intervals": 24,
+  "month_width_days": 30.416666666666668,
+  "cause_codes": {
+    "0": "CENSOR_OR_NO_EVENT_CONDITIONAL_STATE",
+    "1": "PROGRESSION",
+    "2": "DEATH",
+    "3": "SWITCH"
+  },
+  "estimand": {
+    "name": "progression_or_death_before_or_in_competition_with_switch",
+    "pfs_risk_at_horizon": "CIF(PROGRESSION) + CIF(DEATH)",
+    "pfs_probability_at_horizon": "1 - CIF(PROGRESSION) - CIF(DEATH)",
+    "switch": "distinct observed competing cause; never collapsed into progression/death or censoring",
+    "censoring": "right censoring",
+    "zero_time": "survival_time_days <= 0 excluded by frozen supervised eligibility rule"
+  },
+  "primary_metric": {
+    "name": "PATIENT_BALANCED_PFS_BRIER_4H_MEAN",
+    "historical_alias": "patient_integrated_brier_4h / patient-balanced PFS IBS",
+    "clarification": "Arithmetic mean of four fixed-horizon IPCW Brier scores, not a continuous-time numerical integral.",
+    "horizons_months": [3, 6, 12, 18],
+    "horizon_days_rule": "horizon_month * (730 / 24)",
+    "patient_balance": "Each row receives 1 / number_of_evaluation_landmarks_for_its_patient before horizon-specific IPCW weighting.",
+    "censoring_km": "Fit once on CHORD original-training survival rows only; censoring is the KM event and progression/death/switch are non-censoring observations.",
+    "switch_at_or_before_horizon": "observed non-case for progression/death subdistribution Brier target"
+  },
+  "likelihoods": {
+    "legacy_replay": {
+      "name": "LEGACY_MONTH_CEILING_NLL",
+      "status": "REPLAY_ONLY",
+      "rule": "Events use containing month; censoring uses no-event probability through the entire containing month via ceil(time/month_width).",
+      "known_approximation": "Interior-bin censoring contributes unobserved remainder of the containing month. Historical values remain immutable."
+    },
+    "v2_supporting": {
+      "name": "FRACTIONAL_CENSOR_NLL_V1",
+      "status": "LOCKED_SUPPORTING_METRIC",
+      "event_rule": "Event retains interval-event mass in its containing month.",
+      "censor_rule": "Completed bins contribute full log no-event probability; the observed fraction of an interior censoring bin contributes fraction * log(no-event probability), equivalent to a constant within-bin total hazard interpolation.",
+      "selection_role": "secondary/supporting; does not replace the locked primary Brier metric"
+    }
+  },
+  "bootstrap": {
+    "unit": "patient",
+    "resampling": "sample patient clusters with replacement; every draw is retained as a distinct bootstrap cluster even when the same source patient is selected multiple times",
+    "repetitions_final": 2000,
+    "seed": 20261007
+  },
+  "numerical_tolerances": {
+    "archived_row_nll_max_abs": 0.0002,
+    "archived_pfs_max_abs": 0.00002,
+    "archived_aggregate_nll_abs": 0.00002,
+    "archived_aggregate_brier_abs": 0.000002,
+    "probability_mass_abs": 1e-10
+  }
+}

@@ -12,6 +12,18 @@ from experiments.prior_builder.ai_residual_policy import (
     apply_ai_residual_policy,
     sample_ai_residual_prior,
 )
+from experiments.prior_builder.interval_calibration import (
+    apply_interval_calibrator,
+    load_interval_calibrator,
+)
+from experiments.prior_builder.early_response_update import (
+    apply_early_response_update,
+    load_early_response_updater,
+)
+from experiments.prior_builder.layer6_runtime import (
+    load_layer6_ensemble,
+    predict_layer6,
+)
 from experiments.prior_builder.mri_feature_rules import (
     apply_mri_feature_rules,
     sample_mri_feature_prior,
@@ -33,6 +45,21 @@ from .common import EvalResult
 
 
 DEFAULT_REPORT_PATH = Path("evals/reports/v1_real_data_prior_layer_eval.md")
+CALIBRATED_LAYER4_CANDIDATE = (
+    "layer4_mri_qc_calibrated_candidate"
+)
+STATIC_LAYER4_SOURCE_PREDICTION = (
+    "layer4_mri_qc_static_pre_early_response"
+)
+EARLY_RESPONSE_CANDIDATE = (
+    "early_response_update_candidate"
+)
+EARLY_RESPONSE_POINT_SOURCE = (
+    "early_response_update_candidate_point"
+)
+LAYER6_CANDIDATE = (
+    "layer6_late_response_candidate"
+)
 FAKE_TOKENS = ("demo", "synthetic", "simulated", "toy", "fixture")
 BASELINES = ("baseline_no_change", "linear_early", "exponential_early")
 BASELINE_IN_SCOPE = tuple(f"{name}_in_scope" for name in BASELINES)
@@ -78,9 +105,92 @@ def run_real_data_eval(
     n_samples: int = 2000,
     seed: int = 2026,
     allow_demo_data: bool = False,
+    interval_calibrator_path: Path | None = None,
+    allow_candidate_interval_calibrator: bool = False,
+    early_response_updater_path: Path | None = None,
+    early_response_interval_calibrator_path: Path | None = None,
+    allow_candidate_early_response_updater: bool = False,
+    layer6_artifact_dir: Path | None = None,
 ) -> dict[str, object]:
     if n_samples < 100:
         raise ValueError("n_samples must be at least 100")
+
+    interval_calibrator = (
+        load_interval_calibrator(
+            interval_calibrator_path,
+            allow_candidate=(
+                allow_candidate_interval_calibrator
+            ),
+        )
+        if interval_calibrator_path is not None
+        else None
+    )
+
+    early_paths = (
+        early_response_updater_path,
+        early_response_interval_calibrator_path,
+    )
+
+    if sum(path is not None for path in early_paths) == 1:
+        raise ValueError(
+            "Early-response updater and interval "
+            "calibrator must be provided together."
+        )
+
+    early_response_updater = (
+        load_early_response_updater(
+            early_response_updater_path,
+            allow_candidate=(
+                allow_candidate_early_response_updater
+            ),
+        )
+        if early_response_updater_path is not None
+        else None
+    )
+
+    early_response_interval_calibrator = (
+        load_interval_calibrator(
+            early_response_interval_calibrator_path,
+            allow_candidate=(
+                allow_candidate_interval_calibrator
+            ),
+        )
+        if early_response_interval_calibrator_path
+        is not None
+        else None
+    )
+
+    if (
+        early_response_updater is not None
+        and early_response_updater.source_prediction
+        != STATIC_LAYER4_SOURCE_PREDICTION
+    ):
+        raise ValueError(
+            "Early-response updater source prediction "
+            "does not match static Layer 4."
+        )
+
+    if layer6_artifact_dir is not None:
+        if interval_calibrator is None:
+            raise ValueError(
+                "Layer 6 requires the calibrated static "
+                "Layer 4 candidate."
+            )
+
+        if (
+            early_response_updater is None
+            or early_response_interval_calibrator is None
+        ):
+            raise ValueError(
+                "Layer 6 requires the paired D1 early-response "
+                "updater and interval calibrator."
+            )
+
+        layer6_ensemble = load_layer6_ensemble(
+            layer6_artifact_dir
+        )
+    else:
+        layer6_ensemble = None
 
     cases = load_real_cohort(cohort, allow_demo_data=allow_demo_data)
     rows = []
@@ -123,16 +233,132 @@ def run_real_data_eval(
         prior4 = apply_mri_feature_rules(prior3, case["context"])
         audit_by_layer["layer4_mri_qc"] = _layer4_audit_summary(case, prior4)
         warnings += list(prior4.warnings)
-        samples4 = sample_mri_feature_prior(
+        samples4_static = sample_mri_feature_prior(
             prior4,
             n_samples=n_samples,
             seed=seed + 2000 + index,
         ).samples
-        samples4, layer4_early_rule = _apply_layer4_early_response_rules(case, samples4)
+        static_layer4_prediction = _interval(
+            case,
+            samples4_static,
+        )
+
+        samples4, layer4_early_rule = (
+            _apply_layer4_early_response_rules(
+                case,
+                samples4_static,
+            )
+        )
         if layer4_early_rule:
-            audit_by_layer.setdefault("layer4_mri_qc", {}).setdefault("rules", []).append(layer4_early_rule)
-        predictions["layer4_mri_qc"] = _interval(case, samples4)
-        debug_by_layer["layer4_mri_qc"] = _debug_summary(case, samples4)
+            audit_by_layer.setdefault(
+                "layer4_mri_qc",
+                {},
+            ).setdefault(
+                "rules",
+                [],
+            ).append(layer4_early_rule)
+
+        predictions["layer4_mri_qc"] = _interval(
+            case,
+            samples4,
+        )
+        debug_by_layer["layer4_mri_qc"] = (
+            _debug_summary(case, samples4)
+        )
+
+        if interval_calibrator is not None:
+            calibrated_prediction = (
+                apply_interval_calibrator(
+                    static_layer4_prediction,
+                    interval_calibrator,
+                    source_prediction=(
+                        STATIC_LAYER4_SOURCE_PREDICTION
+                    ),
+                )
+            )
+            predictions[
+                CALIBRATED_LAYER4_CANDIDATE
+            ] = calibrated_prediction
+            audit_by_layer[
+                CALIBRATED_LAYER4_CANDIDATE
+            ] = dict(
+                calibrated_prediction["calibration"]
+            )
+
+        if early_response_updater is not None:
+            point_update = apply_early_response_update(
+                static_layer4_prediction,
+                case,
+                early_response_updater,
+            )
+            interval_update = apply_interval_calibrator(
+                point_update,
+                early_response_interval_calibrator,
+                source_prediction=(
+                    EARLY_RESPONSE_POINT_SOURCE
+                ),
+            )
+
+            early_prediction = {
+                "point_ml": interval_update["point_ml"],
+                "lower_80_ml": (
+                    interval_update["lower_80_ml"]
+                ),
+                "upper_80_ml": (
+                    interval_update["upper_80_ml"]
+                ),
+                "lower_95_ml": (
+                    interval_update["lower_95_ml"]
+                ),
+                "upper_95_ml": (
+                    interval_update["upper_95_ml"]
+                ),
+                "early_response_update": (
+                    point_update[
+                        "early_response_update"
+                    ]
+                ),
+                "calibration": (
+                    interval_update["calibration"]
+                ),
+            }
+
+            predictions[
+                EARLY_RESPONSE_CANDIDATE
+            ] = early_prediction
+            audit_by_layer[
+                EARLY_RESPONSE_CANDIDATE
+            ] = {
+                "early_response_update": (
+                    point_update[
+                        "early_response_update"
+                    ]
+                ),
+                "interval_calibration": (
+                    interval_update["calibration"]
+                ),
+            }
+
+        if layer6_ensemble is not None:
+            layer6_prediction = predict_layer6(
+                case,
+                predictions[
+                    CALIBRATED_LAYER4_CANDIDATE
+                ],
+                predictions[
+                    EARLY_RESPONSE_CANDIDATE
+                ],
+                layer6_ensemble,
+            )
+
+            predictions[
+                LAYER6_CANDIDATE
+            ] = layer6_prediction
+            audit_by_layer[
+                LAYER6_CANDIDATE
+            ] = dict(
+                layer6_prediction["layer6"]
+            )
 
         prior5 = apply_ai_residual_policy(prior4, case["context"])
         audit_by_layer["layer5_ai_residual"] = prior5.layer_contribution()
@@ -165,6 +391,42 @@ def run_real_data_eval(
             "Cohort has fewer than 20 cases; treat metrics as early evidence."
         )
 
+    layer6_runtime = None
+    if layer6_ensemble is not None:
+        status_counts: dict[str, int] = {}
+        candidate_count = 0
+
+        for row in rows:
+            prediction = row["predictions"].get(
+                LAYER6_CANDIDATE
+            )
+            if prediction is None:
+                continue
+
+            candidate_count += 1
+            layer6_audit = prediction["layer6"]
+            status = str(
+                layer6_audit.get("status", "unknown")
+            )
+            status_counts[status] = (
+                status_counts.get(status, 0) + 1
+            )
+
+        layer6_runtime = {
+            "candidate": LAYER6_CANDIDATE,
+            "artifact_dir": str(
+                layer6_ensemble.artifact_dir
+            ),
+            "manifest_sha256": (
+                layer6_ensemble.manifest_sha256
+            ),
+            "member_sha256s": list(
+                layer6_ensemble.member_sha256s
+            ),
+            "candidate_count": candidate_count,
+            "status_counts": status_counts,
+        }
+
     return {
         "cohort_path": str(cohort),
         "case_count": len(cases),
@@ -174,6 +436,16 @@ def run_real_data_eval(
         "case_predictions": rows,
         "skipped_cases": skipped,
         "warnings": warnings,
+        "layer6_runtime": layer6_runtime,
+        "interval_calibration": (
+            interval_calibrator.audit_payload(
+                source_prediction=(
+                    STATIC_LAYER4_SOURCE_PREDICTION
+                ),
+            )
+            if interval_calibrator is not None
+            else None
+        ),
     }
 
 
@@ -184,12 +456,32 @@ def run_real_data_eval_result(
     n_samples: int = 2000,
     seed: int = 2026,
     allow_demo_data: bool = False,
+    interval_calibrator_path: Path | None = None,
+    allow_candidate_interval_calibrator: bool = False,
+    early_response_updater_path: Path | None = None,
+    early_response_interval_calibrator_path: Path | None = None,
+    allow_candidate_early_response_updater: bool = False,
+    layer6_artifact_dir: Path | None = None,
 ) -> EvalResult:
     result = run_real_data_eval(
         cohort,
         n_samples=n_samples,
         seed=seed,
         allow_demo_data=allow_demo_data,
+        interval_calibrator_path=interval_calibrator_path,
+        allow_candidate_interval_calibrator=(
+            allow_candidate_interval_calibrator
+        ),
+        early_response_updater_path=(
+            early_response_updater_path
+        ),
+        early_response_interval_calibrator_path=(
+            early_response_interval_calibrator_path
+        ),
+        allow_candidate_early_response_updater=(
+            allow_candidate_early_response_updater
+        ),
+        layer6_artifact_dir=layer6_artifact_dir,
     )
     write_markdown_report(result, report_path)
     final_layer = result["metrics"].get(FINAL_PRIOR_LAYER, {})
@@ -666,7 +958,16 @@ def _metrics_table(metrics: Mapping[str, Mapping[str, object]]) -> str:
         "| Model | n | MAE ml | RMSE ml | log RMSE | MAPE | 80% cov | 95% cov | 80% width ml |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
-    for name in (*BASELINES, *BASELINE_IN_SCOPE, *LAYERS):
+    ordered_models = (
+        *BASELINES,
+        *BASELINE_IN_SCOPE,
+        *LAYERS,
+        CALIBRATED_LAYER4_CANDIDATE,
+        EARLY_RESPONSE_CANDIDATE,
+        LAYER6_CANDIDATE,
+    )
+
+    for name in ordered_models:
         if name not in metrics:
             continue
         metric = metrics[name]
@@ -1921,6 +2222,54 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--n-samples", type=int, default=2000)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--allow-demo-data", action="store_true")
+    parser.add_argument(
+        "--interval-calibrator",
+        type=Path,
+        help=(
+            "Optional versioned interval-calibration artifact. "
+            "Adds a separate candidate prediction key."
+        ),
+    )
+    parser.add_argument(
+        "--allow-candidate-interval-calibrator",
+        action="store_true",
+        help=(
+            "Explicitly permit a candidate_posthoc interval "
+            "calibrator."
+        ),
+    )
+    parser.add_argument(
+        "--early-response-updater",
+        type=Path,
+        help=(
+            "Optional versioned early MRI point-update "
+            "artifact."
+        ),
+    )
+    parser.add_argument(
+        "--early-response-interval-calibrator",
+        type=Path,
+        help=(
+            "Interval calibrator paired with the early "
+            "response updater."
+        ),
+    )
+    parser.add_argument(
+        "--allow-candidate-early-response-updater",
+        action="store_true",
+        help=(
+            "Explicitly permit a candidate_posthoc early "
+            "response updater."
+        ),
+    )
+    parser.add_argument(
+        "--layer6-artifact-dir",
+        type=Path,
+        help=(
+            "Optional deployable Layer 6 ensemble directory. "
+            "Requires all Layer 4 and D1 calibration artifacts."
+        ),
+    )
     args = parser.parse_args(argv)
 
     result = run_real_data_eval_result(
@@ -1929,6 +2278,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         n_samples=args.n_samples,
         seed=args.seed,
         allow_demo_data=args.allow_demo_data,
+        interval_calibrator_path=args.interval_calibrator,
+        allow_candidate_interval_calibrator=(
+            args.allow_candidate_interval_calibrator
+        ),
+        early_response_updater_path=(
+            args.early_response_updater
+        ),
+        early_response_interval_calibrator_path=(
+            args.early_response_interval_calibrator
+        ),
+        allow_candidate_early_response_updater=(
+            args.allow_candidate_early_response_updater
+        ),
+        layer6_artifact_dir=(
+            args.layer6_artifact_dir
+        ),
     )
     print(f"Status: {result.status}")
     print(result.summary)

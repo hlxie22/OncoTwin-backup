@@ -1,0 +1,32 @@
+{
+  "abstention": {
+    "unknown_current_scan_state": "ABSTAIN_UNKNOWN_CURRENT_SCAN_STATE",
+    "unknown_required_clock": "ABSTAIN_UNKNOWN_REQUIRED_CLOCK"
+  },
+  "alpha": 0.52,
+  "cause_order": [
+    "no_event",
+    "progression",
+    "death",
+    "switch"
+  ],
+  "checkpoint": "V2-07",
+  "external_confirmation": "PENDING_NEW_INDEPENDENT_COHORT",
+  "horizons_months": [
+    3,
+    6,
+    12,
+    18
+  ],
+  "output_semantics": {
+    "CIFs": "cause-specific cumulative incidence for progression, death, switch; progression_or_death is their progression+death sum",
+    "PFS": "1 - progression CIF - death CIF; switch remains a competing event and is not counted as a PFS event",
+    "POST": "forecast from repaired line-agnostic temporal state after current scan evidence",
+    "PRE": "forecast from repaired line-agnostic temporal state before current scan evidence",
+    "selected": "PRE logits + 0.52*(POST logits-PRE logits)"
+  },
+  "selected_rule": "v2_03_frozen_temporal_constant_alpha",
+  "status": "RESEARCH_RELEASE_READY_EXTERNAL_CONFIRMATION_PENDING",
+  "time_bins": 24,
+  "v2_06_protocol": "artifacts/dynamic_scan_v2/v2_06/locked_external_protocol.json"
+}

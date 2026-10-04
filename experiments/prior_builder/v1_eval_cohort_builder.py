@@ -108,6 +108,7 @@ BIOMARKER_FIELDS = (
     "brca1_status",
     "brca2_status",
     "hrd_status",
+    "mammaprint_status",
 )
 MRI_FEATURE_FIELDS = (
     "volume_ml",

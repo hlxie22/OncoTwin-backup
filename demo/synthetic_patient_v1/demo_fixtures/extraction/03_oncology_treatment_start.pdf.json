@@ -1,0 +1,47 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "af2df714b7b4baba1d1faeb85a95b30aa9ce326996ea1fb72493ada4a8a8c36b",
+  "source_file": "baseline/03_oncology_treatment_start.pdf",
+  "response": {
+    "document_type": "treatment",
+    "facts": [
+      {
+        "fact_type": "treatment",
+        "value": "letrozole 2.5 mg daily + ribociclib 600 mg days 1-21 every 28 days",
+        "effective_date": "2025-02-03",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Letrozole 2.5 mg by mouth once daily; planned start 02/03/2025. Ribociclib 600 mg by mouth once daily on days 1-21 of each 28-day cycle; planned start 02/03/2025.",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "liver",
+        "effective_date": "2025-01-30",
+        "unit": null,
+        "confidence": 0.98,
+        "source_page": 1,
+        "source_snippet": "Primary diagnosis: Metastatic breast cancer, ER positive / HER2 negative. Disease sites: Liver and bone.",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "bone",
+        "effective_date": "2025-01-30",
+        "unit": null,
+        "confidence": 0.98,
+        "source_page": 1,
+        "source_snippet": "Primary diagnosis: Metastatic breast cancer, ER positive / HER2 negative. Disease sites: Liver and bone.",
+        "attributes": {
+          "active": true
+        }
+      }
+    ]
+  }
+}

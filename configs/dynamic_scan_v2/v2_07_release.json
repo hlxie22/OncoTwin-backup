@@ -1,0 +1,35 @@
+{
+  "checkpoint": "V2-07",
+  "version": "v2_07_1",
+  "selected_rule": "v2_03_frozen_temporal_constant_alpha",
+  "branch_family": "r1_temporal_fixed",
+  "locked_alpha": 0.52,
+  "deploy_seed": 20261001,
+  "torch_epochs": 10,
+  "torch_batch_size": 512,
+  "torch_learning_rate": 0.0003,
+  "torch_weight_decay": 0.02,
+  "gradient_clip_norm": 1.0,
+  "months": 24,
+  "causes": 4,
+  "temporal_dim": 192,
+  "tumor_dim": 128,
+  "portable_context_names": [
+    "scan_number_patient_log",
+    "genomic_available",
+    "genomic_age_scaled"
+  ],
+  "cause_order": [
+    "no_event",
+    "progression",
+    "death",
+    "switch"
+  ],
+  "training_population": "original CHORD train+val only, survival_mask=True, exact V2-02 eligible modeling population",
+  "training_objective": "0.5*(PRE fractional-censor NLL + POST fractional-censor NLL), patient-balanced",
+  "performance_claim_policy": "Final all-development fit is deployment-only; in-sample scores are not reported as validation evidence.",
+  "historical_test_policy": "Original CHORD test is excluded from V2-07 fitting and is not reopened for selection/evaluation.",
+  "external_policy": "No DFCI/VICC or other external outcomes are opened; external confirmation remains pending a genuinely new independent cohort.",
+  "inference_boundary": "Prepared landmark tensors after frozen upstream R1 temporal/genomic preprocessing; raw-cohort intake remains governed by V2-06.",
+  "resume_policy": "Epoch-level atomic training-state checkpoint; deterministic epoch seeding permits safe resume without changing the intended optimization schedule."
+}

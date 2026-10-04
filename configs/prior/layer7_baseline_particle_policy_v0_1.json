@@ -1,0 +1,77 @@
+{
+  "analysis_version": "oncotwin_layer7_baseline_particle_policy_v0_1",
+  "fixed_parameters": {
+    "carrying_capacity_ml": 300.0,
+    "drug_decay": {
+      "anthracycline": 0.25,
+      "endocrine_agent": 0.06,
+      "her2_directed_agent": 0.16,
+      "taxane": 0.2
+    },
+    "drug_ec50": {
+      "anthracycline": 0.5,
+      "endocrine_agent": 0.7,
+      "her2_directed_agent": 0.5,
+      "taxane": 0.5
+    },
+    "inactive_drug_sensitivities": {
+      "endocrine_agent": 0.0,
+      "her2_directed_agent": 0.0
+    },
+    "observation_noise_fraction": 0.12,
+    "resistant_sensitivity_scale": 0.05
+  },
+  "future_field_fragments": [
+    "early",
+    "followup",
+    "follow_up",
+    "mid_treatment",
+    "post_treatment",
+    "final",
+    "heldout",
+    "held_out",
+    "outcome",
+    "observed",
+    "response",
+    "residual",
+    "surgery",
+    "pathologic_complete_response",
+    "pcr",
+    "rcb"
+  ],
+  "limitations": [
+    "Exploratory particle policy; not yet confirmatory-locked.",
+    "Fixed nuisance parameters are inherited from the existing V1 volume-ODE adapter fixtures and must be evaluated before locking.",
+    "Particles represent a volume-only mechanistic approximation.",
+    "No causal treatment-effect claim or treatment recommendation is supported."
+  ],
+  "particle_counts": {
+    "confirmatory_candidate": 4096,
+    "development": 2000,
+    "readiness": 128,
+    "unit_test": 32
+  },
+  "rules": {
+    "particle_weights": "uniform_before_observation_update",
+    "use_baseline_mri_rules": true,
+    "use_baseline_pathology_rules": true,
+    "use_early_measurement_during_prior_construction": false,
+    "use_final_outcome_during_prior_construction": false,
+    "use_layer2_population_prior": true,
+    "use_layer5_ai_residual": false,
+    "use_layer6_prediction": false
+  },
+  "sampling": {
+    "hard_bound_policy": "deterministic_rejection_sampling",
+    "max_rounds": 100,
+    "minimum_batch_size": 32,
+    "oversampling_factor": 2
+  },
+  "scope": {
+    "contract_id": "v1a_tnbc_chemo_parameter_contract",
+    "disease": "TNBC or contract-resolved TNBC-like disease",
+    "state": "tumor volume only",
+    "treatment": "A/C-T-style neoadjuvant chemotherapy"
+  },
+  "status": "exploratory_not_locked"
+}

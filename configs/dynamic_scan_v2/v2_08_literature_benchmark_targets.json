@@ -1,0 +1,81 @@
+{
+  "verified_as_of": "2026-10-02",
+  "purpose": "Literature-facing benchmark targets for post-run interpretation; values are not used by V2-08 computation or acceptance.",
+  "references": [
+    {
+      "short_name": "MSK-CHORD metastatic breast cancer line-start PFS",
+      "year": 2026,
+      "status": "medRxiv preprint v4",
+      "url": "https://www.medrxiv.org/content/10.64898/2026.02.24.26346242v4",
+      "population": "2881 metastatic breast cancer patients, 8791 metastatic lines of therapy",
+      "prediction_time": "start of each metastatic treatment line",
+      "endpoint": "line-specific PFS over 2 years",
+      "reported_metrics": {
+        "antolini_c": "0.681 +/- 0.006",
+        "integrated_brier_score": "0.124 +/- 0.004",
+        "external_c_dfci": "0.643 +/- 0.002",
+        "external_c_vicc": "0.627 +/- 0.005"
+      },
+      "comparability_to_v2": "closest source/population context but different landmark, estimand, weighting, and evaluation protocol; do not directly rank IBS against V2 patient-balanced Brier"
+    },
+    {
+      "short_name": "PREVAIL dynamic radiographic PFS from longitudinal PSA",
+      "year": 2021,
+      "status": "peer-reviewed",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8207237/",
+      "population": "763 men with metastatic castration-resistant prostate cancer",
+      "prediction_time": "dynamic landmark/joint-model follow-up",
+      "endpoint": "5-month prospect of radiographic progression/PFS",
+      "reported_metrics": {
+        "landmark_with_psa_slope_prediction_error": "0.132 +/- 0.008",
+        "landmark_current_psa_prediction_error": "0.140 +/- 0.008",
+        "landmark_with_psa_slope_auc": "0.800 +/- 0.018",
+        "landmark_current_psa_auc": "0.743 +/- 0.018"
+      },
+      "comparability_to_v2": "moderate conceptual comparator for incremental longitudinal information; single cancer, trial population, biomarker-driven, different horizon"
+    },
+    {
+      "short_name": "Dynamic-DeepHit-Lite prostate active surveillance",
+      "year": 2022,
+      "status": "peer-reviewed",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9357044/",
+      "population": "prostate active surveillance cohort",
+      "prediction_time": "baseline and yearly follow-up landmarks",
+      "endpoint": "progression during active surveillance",
+      "reported_metrics": {
+        "dynamic_deephit_time_dependent_concordance": "approximately 0.78-0.82 depending on prediction/evaluation time"
+      },
+      "comparability_to_v2": "dynamic survival-method comparator; much more structured follow-up and different disease setting"
+    },
+    {
+      "short_name": "Serial CT imminent progression in advanced pancreatic cancer",
+      "year": 2026,
+      "status": "peer-reviewed",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13370104/",
+      "population": "advanced pancreatic cancer during chemotherapy",
+      "prediction_time": "serial CT follow-up",
+      "endpoint": "binary progression at next follow-up visit",
+      "reported_metrics": {
+        "internal_auc": "0.77",
+        "external_auc": "0.76",
+        "prospective_auc": "0.74"
+      },
+      "comparability_to_v2": "strong serial-imaging novelty comparator but binary next-visit endpoint rather than competing-risk PFS curves"
+    },
+    {
+      "short_name": "2025 systematic review of oncology dynamic prediction",
+      "year": 2025,
+      "status": "peer-reviewed npj Precision Oncology",
+      "url": "https://www.nature.com/articles/s41698-025-01162-7",
+      "population": "174 dynamic prediction models from 165 oncology studies",
+      "reported_metrics": {
+        "ai_models_fraction": "8/174 (4.6%)",
+        "high_dimensional_ct_mri_or_multimodal_multiple_timepoint_models": "5/174 (2.9%)",
+        "prediction_models_using_brier": "28.7%",
+        "prediction_models_not_validated": "38.8%",
+        "dynamic_vs_static_comparisons_favoring_dynamic": "28/29"
+      },
+      "comparability_to_v2": "field-level novelty and evaluation-rigor context; not a performance benchmark"
+    }
+  ]
+}

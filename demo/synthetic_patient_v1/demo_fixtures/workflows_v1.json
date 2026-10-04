@@ -1,0 +1,30 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "note": "Synthetic deterministic text fixtures for future CP4 workflows. Forecast numbers are never hard-coded.",
+  "record_explanations": {
+    "02_metastatic_liver_pathology.pdf": "The liver biopsy confirms that the breast cancer has spread to the liver. It remains estrogen-receptor positive. The progesterone-receptor result is negative in this metastatic sample, which differs from the earlier breast biopsy and should be reviewed as a real change in specimen results.",
+    "11_newest_ct_progression.pdf": "The newest CT shows that cancer in the liver has grown and that a new liver lesion has appeared. The known bone spots are unchanged."
+  },
+  "what_changed_after_progression_scan": {
+    "scan_reported": "The newest CT shows progression in the liver: the dominant liver lesion grew and a new liver metastasis appeared. Known bone metastases were unchanged.",
+    "forecast_language_template": "Before this scan, the 6-month outlook was {pre_pfs_6m_pct}%. After adding the scan, it is {selected_pfs_6m_pct}%, a change of {delta_6m_pp} percentage points."
+  },
+  "visit_questions_after_progression_scan": [
+    "What does the liver progression on this scan mean for the current treatment plan?",
+    "Do you recommend another biopsy or blood-based genomic test now that the cancer has progressed?",
+    "What treatment options are most relevant if we decide the current regimen is no longer controlling the liver disease?",
+    "Are there clinical trials I should consider at this point?"
+  ],
+  "visit_questions_after_esr1_result": [
+    "How does the ESR1 D538G result affect the way you think about endocrine therapy?",
+    "Does this result change which next-line treatments are most relevant?",
+    "Would you want to confirm anything with tissue testing, or is the ctDNA result sufficient for planning?",
+    "Are there trials specifically relevant to ESR1-mutated ER-positive metastatic breast cancer?"
+  ],
+  "visit_brief_static": {
+    "headline": "ER-positive/HER2-negative metastatic breast cancer with liver and bone disease; recent liver progression after prolonged disease control on letrozole plus ribociclib.",
+    "current_treatment": "Letrozole 2.5 mg daily plus ribociclib 400 mg on days 1-21 of a 28-day cycle.",
+    "latest_scan": "04/29/2026 CT: progression in the liver with growth of the dominant lesion and a new liver metastasis; bone disease stable.",
+    "new_molecular_result": "05/08/2026 plasma ctDNA: ESR1 D538G, VAF 3.8%."
+  }
+}

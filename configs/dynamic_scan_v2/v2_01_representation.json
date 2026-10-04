@@ -1,0 +1,60 @@
+{
+  "version": "v2_01_1",
+  "checkpoint": "V2-01",
+  "purpose": "Build causal paired-scan and longitudinal-change representations without predictive model selection.",
+  "anchor_interface": "artifacts/checkpoint7r2_transport_safe_supervised/prepared/scan_index.parquet",
+  "authoritative_scan_source": "artifacts/checkpoint1/canonical/chord_breast_scan_episodes_w3.parquet",
+  "history_cutoff": "prior landmark_day < current episode_start_day",
+  "portable_core": {
+    "current_state": ["NON_PROGRESSIVE", "INDETERMINATE", "PROGRESSIVE"],
+    "coverage_regions": ["chest", "abdomen", "pelvis", "head", "other"],
+    "prior_states": 2,
+    "include_nonprogressive_run": true,
+    "include_coverage_change": true,
+    "include_current_relative_comparability_only_in_post": true,
+    "utilization_separate_block": true
+  },
+  "optional_streams": {
+    "modality": {
+      "enabled": true,
+      "mask_required": true,
+      "current_is_post_only": true,
+      "prior_history_is_pre_visible": true
+    },
+    "site_positive": {
+      "enabled": true,
+      "mask_required": true,
+      "semantic_rule": "positive mention/support only; never infer disease-negative state from absence",
+      "first_observed_positive_rule": "literal first observed positive mention, never labeled new metastasis"
+    },
+    "genomics": {
+      "enabled_in_paired_scan_encoder": false,
+      "reason": "kept as a separate frozen molecular stream for V2-02 fusion",
+      "availability_rule": "availability_day < landmark_day"
+    },
+    "raw_report_text": {
+      "enabled": false,
+      "reason": "authorized source not established"
+    },
+    "lesion_measurements": {
+      "enabled": false,
+      "reason": "matched lesion measurement source not established"
+    }
+  },
+  "prohibited_model_facing": [
+    "absolute treatment-line identity",
+    "line-relative elapsed time",
+    "line-specific scan count",
+    "future outcomes",
+    "future censoring",
+    "DFCI/VICC predictor rows",
+    "DFCI/VICC outcome rows"
+  ],
+  "encoder": {
+    "class": "PairedScanEncoder",
+    "hidden_dim": 48,
+    "output_dim": 32,
+    "training": "architecture-only smoke in V2-01; fold-specific survival training begins V2-02"
+  },
+  "selection_policy": "No predictive comparison or survival-model selection is performed in V2-01."
+}

@@ -1,0 +1,35 @@
+{
+  "checkpoint": "V2-05",
+  "version": "v2_05_1",
+  "candidate_source": "V2-04 selected candidate",
+  "locked_alpha_source": "V2-03 selected_update_rule.json",
+  "bootstrap": {"repetitions": 2000, "seed": 20261005},
+  "specificity": {
+    "reassignment_seed": 20261006,
+    "minimum_correct_vs_reassigned_brier_gain": 0.00010,
+    "content_control_margin": 0.00025
+  },
+  "robustness": {
+    "minimum_seed_mean_brier_gain": 0.00050,
+    "minimum_improving_seeds": 2,
+    "maximum_single_seed_regression": 0.00050,
+    "nll_guardrail": 0.01,
+    "window_brier_spread_limit": 0.015,
+    "minimum_window_common_rows": 250,
+    "minimum_stratum_patients": 50
+  },
+  "calibration": {"bins": 10, "maximum_ece_regression": 0.02},
+  "final_fit": {"seed": 20261005},
+  "controls": {
+    "last_scan_only_gbt": true,
+    "explicit_content_only": true,
+    "explicit_coverage_timing_only": true,
+    "stale_line_start_primary_status": "NOT_PRIMARY_COMPARABLE_BY_DESIGN"
+  },
+  "window_sensitivity": {
+    "enabled": true,
+    "source": "checkpoint6d exact W0/W7 prepared inputs regenerated through repaired checkpoint7r1 temporal encoder",
+    "require_same_landmark_day": true,
+    "require_same_three_state_assessment": true
+  }
+}

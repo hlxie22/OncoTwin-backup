@@ -1,5 +1,21 @@
-data/raw/
-data/processed/
+# ============================================================
+# OncoTwin repository ignore policy
+# Keep source, configs, synthetic demo assets, and frozen deploy
+# artifacts. Exclude datasets, runtime state, generated builds,
+# experiment intermediates, acceptance output, and scratch files.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# DATASETS / EXTERNAL DATA
+# ------------------------------------------------------------
+
+data/
+raw_data/
+datasets/
+external_data/
+protected_data/
+
 *.tcia
 *.nii
 *.nii.gz
@@ -7,55 +23,185 @@ data/processed/
 *.nrrd
 *.mha
 
-# Python bytecode/cache
+ispy2_derived_metadata.csv
+ispy2_derived_metadata.sql
+
+
+# ------------------------------------------------------------
+# PYTHON CACHE / TOOLING
+# ------------------------------------------------------------
+
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Python tooling caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 
-# Local environments
 .venv/
 venv/
 env/
 
-# Logs and generated reports
+
+# ------------------------------------------------------------
+# NODE / NEXT.JS
+# ------------------------------------------------------------
+
+node_modules/
+.next/
+out/
+
+apps/oncotwin-web/node_modules/
+apps/oncotwin-web/.next/
+
+
+# ------------------------------------------------------------
+# APP LOCAL RUNTIME
+# ------------------------------------------------------------
+
+.oncotwin-dev/
+
+*.sqlite
+*.sqlite3
+*.db
+
+uploads/
+tmp/
+.cache/
+
+redis-data/
+postgres-data/
+
+
+# ------------------------------------------------------------
+# SECRETS / LOCAL CONFIG
+# ------------------------------------------------------------
+
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+
+credentials.json
+secrets.json
+
+
+# ------------------------------------------------------------
+# LOGS / SLURM / SCRATCH
+# ------------------------------------------------------------
+
 logs/
-evals/reports/
-
-# Generated repo context / repomix outputs
-repomix-output.xml
-*repomix*.md
-
-environment.yml
-install-repomix-in-conda-env.sh
-# Python bytecode
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Patch backups / scratch files
-*.bak
-*.bak_*
-*.tmp
 *.log
-
-# Local data / generated artifacts
-data/
-v1_slurm_bundle/
-ispy2_derived_metadata.csv
-ispy2_derived_metadata.sql
-setup_s5cmd_nosign.sh
-
-# Slurm runtime outputs
 *.out
 *.err
+
 slurm/**/*.out
 slurm/**/*.err
 slurm/**/*.log
+
+*.bak
+*.bak_*
 *.bak*
+
+v1_slurm_bundle/
+
+
+# ------------------------------------------------------------
+# GENERATED REPOSITORY CONTEXT
+# ------------------------------------------------------------
+
+repomix-output.xml
+repomix.txt
+*repomix*.md
+
+
+# ------------------------------------------------------------
+# APP ACCEPTANCE / INSTALLATION ARTIFACTS
+#
+# Source code + tests stay tracked. Generated acceptance databases,
+# logs, preinstall backups, audit bundles, etc. do not.
+# ------------------------------------------------------------
+
+artifacts/app_cp1/
+artifacts/app_cp2/
+artifacts/app_cp3/
+artifacts/app_cp4/
+artifacts/app_cp45/
+
+artifacts/app_demo_fixture/
+artifacts/app_demo_v4_*/
+artifacts/app_patient_copy_polish_*/
+artifacts/app_synthetic_contract_audit/
+
+
+# ------------------------------------------------------------
+# HISTORICAL RESEARCH CHECKPOINT OUTPUT
+#
+# These are derived training/evaluation artifacts, often large.
+# The frozen deploy artifacts needed by the current app are added
+# explicitly later with git add -f.
+# ------------------------------------------------------------
+
+artifacts/checkpoint*/
+artifacts/prior_builder/
+
+# V2 experiment outputs are derived except the frozen release
+# material that we will add explicitly.
+artifacts/dynamic_scan_v2/
+
+
+# ------------------------------------------------------------
+# OLD GENERATED REPORTS
+# ------------------------------------------------------------
+
+evals/reports/
+
+
+# ------------------------------------------------------------
+# LOCAL SETUP HELPERS / GENERATED ENV FILES
+# ------------------------------------------------------------
+
+environment.yml
+install-repomix-in-conda-env.sh
+setup_s5cmd_nosign.sh
+
+
+# ------------------------------------------------------------
+# KNOWN ACCIDENTAL SHELL-FRAGMENT FILES
+# ------------------------------------------------------------
+
+/-q
+/0.5,
+/0001_checkpoint1,
+/20261003_cp2_forecast,
+/20261004_cp4_intelligence,
+/endpoint
+/immutable
+/next
+/optional
+/oncotwin-web@0.1.0
+/libstdc++.so.6.0.36
+/t -v \
+/ts before commit.
+/tatus --short -- \
+
+# ------------------------------------------------------------
+# HISTORICAL PATCH / SCRATCH COPIES
+# ------------------------------------------------------------
+
+*.pre_fix*
+*.pre_20*
+*.tmp.*
+*.before_*
+*.pre_cp*
+*.pre_policy*
+*.pre_trainonly*
+
+# Old bundled demo archives; canonical demo lives under
+# demo/synthetic_patient_v1/
+demo/*.zip

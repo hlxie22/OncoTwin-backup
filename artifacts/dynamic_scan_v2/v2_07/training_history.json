@@ -1,0 +1,42 @@
+[
+  {
+    "epoch": 1,
+    "patient_balanced_pair_fractional_nll": 5.5825568773338095
+  },
+  {
+    "epoch": 2,
+    "patient_balanced_pair_fractional_nll": 2.972890878423429
+  },
+  {
+    "epoch": 3,
+    "patient_balanced_pair_fractional_nll": 2.86172136285849
+  },
+  {
+    "epoch": 4,
+    "patient_balanced_pair_fractional_nll": 2.8244826716279112
+  },
+  {
+    "epoch": 5,
+    "patient_balanced_pair_fractional_nll": 2.8001544572919013
+  },
+  {
+    "epoch": 6,
+    "patient_balanced_pair_fractional_nll": 2.7779202160409637
+  },
+  {
+    "epoch": 7,
+    "patient_balanced_pair_fractional_nll": 2.762854803616357
+  },
+  {
+    "epoch": 8,
+    "patient_balanced_pair_fractional_nll": 2.746762968257967
+  },
+  {
+    "epoch": 9,
+    "patient_balanced_pair_fractional_nll": 2.7310423280249534
+  },
+  {
+    "epoch": 10,
+    "patient_balanced_pair_fractional_nll": 2.7180970335451557
+  }
+]

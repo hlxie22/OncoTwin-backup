@@ -1,0 +1,51 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "ddaaf6153717ecf6ce80a29ce389d78470ac94c69c4836a8603a1d49b8d11354",
+  "source_file": "baseline/01_primary_breast_pathology.pdf",
+  "response": {
+    "document_type": "pathology",
+    "facts": [
+      {
+        "fact_type": "diagnosis",
+        "value": "invasive ductal carcinoma",
+        "effective_date": "2025-01-04",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "LEFT BREAST, 10 O'CLOCK, CORE BIOPSY: Invasive carcinoma of no special type (ductal), Nottingham grade 2.",
+        "attributes": {}
+      },
+      {
+        "fact_type": "er_status",
+        "value": "positive",
+        "effective_date": "2025-01-04",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Estrogen receptor (ER) - Positive - 95% tumor nuclei; strong intensity",
+        "attributes": {}
+      },
+      {
+        "fact_type": "pr_status",
+        "value": "positive",
+        "effective_date": "2025-01-04",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Progesterone receptor (PR) - Positive - 20% tumor nuclei; moderate intensity",
+        "attributes": {}
+      },
+      {
+        "fact_type": "her2_status",
+        "value": "negative",
+        "effective_date": "2025-01-04",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "HER2 by IHC - Negative (1+) - Faint/incomplete membrane staining; no overexpression",
+        "attributes": {}
+      }
+    ]
+  }
+}

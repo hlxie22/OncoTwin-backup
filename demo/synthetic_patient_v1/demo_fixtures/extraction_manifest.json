@@ -1,0 +1,54 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "schema_version": "demo.fixture.extraction.v1",
+  "documents": {
+    "ddaaf6153717ecf6ce80a29ce389d78470ac94c69c4836a8603a1d49b8d11354": {
+      "source_file": "baseline/01_primary_breast_pathology.pdf",
+      "fixture_file": "extraction/01_primary_breast_pathology.pdf.json"
+    },
+    "b375efc91a80c2b9631ab3792e83e0cd10e82ab8d195c0e0830cda2b86edae42": {
+      "source_file": "baseline/02_metastatic_liver_pathology.pdf",
+      "fixture_file": "extraction/02_metastatic_liver_pathology.pdf.json"
+    },
+    "af2df714b7b4baba1d1faeb85a95b30aa9ce326996ea1fb72493ada4a8a8c36b": {
+      "source_file": "baseline/03_oncology_treatment_start.pdf",
+      "fixture_file": "extraction/03_oncology_treatment_start.pdf.json"
+    },
+    "2f0b46b3bfee17dc2dca349a48e7e2e354ba32258a26f69d687aa1fd90b3bc5c": {
+      "source_file": "baseline/04_baseline_ct.pdf",
+      "fixture_file": "extraction/04_baseline_ct.pdf.json"
+    },
+    "36fdaa613c3a02ff036923cff8608888c7075934e45f5c922e40e0fbc4ad2c0d": {
+      "source_file": "baseline/05_followup_ct_1.pdf",
+      "fixture_file": "extraction/05_followup_ct_1.pdf.json"
+    },
+    "26846bed83f8eb8e8fc898b5f8e8128d3e1da73656ba8d648f3c037b58ab2d23": {
+      "source_file": "baseline/06_selected_labs_scanned.pdf",
+      "fixture_file": "extraction/06_selected_labs_scanned.pdf.json"
+    },
+    "06a00190986f145af6f3511efc4f9c8069c03ffab93a8ef5366eacffb0714f19": {
+      "source_file": "baseline/07_oncology_followup_dose_adjustment.pdf",
+      "fixture_file": "extraction/07_oncology_followup_dose_adjustment.pdf.json"
+    },
+    "7f958da8e59bd4f3f7a450e48b2fa2408b7f359ed2ddac14e9c5dd4db902b702": {
+      "source_file": "baseline/08_followup_ct_2.pdf",
+      "fixture_file": "extraction/08_followup_ct_2.pdf.json"
+    },
+    "2e92274ddfb3d6ccff315e1479a5d5a9d513470479bf1de1ffecb6f1ba14e3d2": {
+      "source_file": "baseline/09_followup_ct_3.pdf",
+      "fixture_file": "extraction/09_followup_ct_3.pdf.json"
+    },
+    "917d8e628a7d3477faeea3059d8bed90500456e7931550fa0d4f4b212db1d091": {
+      "source_file": "baseline/10_followup_ct_4.pdf",
+      "fixture_file": "extraction/10_followup_ct_4.pdf.json"
+    },
+    "f81beb28b7ce7407311d2527c2c0a8d1fcb03b3b3ea413f8b0a0717e5275ae19": {
+      "source_file": "new_evidence/11_newest_ct_progression.pdf",
+      "fixture_file": "extraction/11_newest_ct_progression.pdf.json"
+    },
+    "457fed70e4532540ad31291719706cd4b28dcbbb767d31169a23372186322424": {
+      "source_file": "extension/12_post_progression_ctdna_esr1.pdf",
+      "fixture_file": "extraction/12_post_progression_ctdna_esr1.pdf.json"
+    }
+  }
+}

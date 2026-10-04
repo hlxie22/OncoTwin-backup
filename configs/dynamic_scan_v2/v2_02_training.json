@@ -1,0 +1,58 @@
+{
+  "checkpoint": "V2-02",
+  "version": "v2_02_1",
+  "screening_seed": 20261001,
+  "torch_epochs": 10,
+  "torch_batch_size": 512,
+  "torch_learning_rate": 0.0003,
+  "torch_weight_decay": 0.02,
+  "gradient_clip_norm": 1.0,
+  "linear_learning_rate": 0.001,
+  "linear_weight_decay": 0.01,
+  "linear_epochs": 18,
+  "gbt": {
+    "max_iter": 90,
+    "learning_rate": 0.07,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 60,
+    "l2_regularization": 1.0
+  },
+  "model_families": [
+    "linear_core",
+    "gbt_core",
+    "paired_core",
+    "paired_full",
+    "paired_full_robust",
+    "r1_temporal_fixed"
+  ],
+  "selection": {
+    "primary_metric": "PATIENT_BALANCED_PFS_BRIER_4H_MEAN",
+    "tie_margin": 0.0005,
+    "portable_noninferiority_margin": 0.0005,
+    "full_information_noninferiority_margin": 0.0015,
+    "supporting_metric": "FRACTIONAL_CENSOR_PATIENT_NLL_V1"
+  },
+  "observation_profiles": {
+    "full_supported": 0.5,
+    "portable_scan_core": 0.18,
+    "no_genomics": 0.1,
+    "current_optional_missing": 0.08,
+    "scan_core_no_genomics": 0.09,
+    "mixed_sparse": 0.05
+  },
+  "profile_semantics": {
+    "portable_scan_core": "Remove prior/current modality and site-positive streams before the paired-scan encoder; retain core state/coverage/change features and genomics.",
+    "no_genomics": "Zero the genomic embedding and set genomic availability/age to unavailable before supervised encoding.",
+    "current_optional_missing": "Remove current-episode modality/site-positive streams while preserving prior optional history.",
+    "scan_core_no_genomics": "Portable scan core plus no genomics.",
+    "mixed_sparse": "Drop site-positive history/current plus genomics while retaining modality when observed.",
+    "full_supported": "Use actually observed supported streams and masks."
+  },
+  "robust_input_policy": {
+    "uses_unmasked_r1_temporal_latent": false,
+    "reason": "Synthetic modality/site removal must occur before any encoder that can contain those streams. The robust branch therefore consumes V2-01 source-transparent structured tensors and separately maskable genomic embeddings; R1 temporal latent is a comparator only.",
+    "paired_pre_post_same_history_profile": true,
+    "line_derived_features": "prohibited",
+    "profile_draw_unit": "patient per epoch; all eligible landmarks for that patient share the same profile draw within the epoch"
+  }
+}

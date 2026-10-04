@@ -69,8 +69,8 @@ class V1EvalCohortBuilderTest(unittest.TestCase):
             )
             clinical = root / "clinical.csv"
             clinical.write_text(
-                "patient_id,er_status,pr_status,her2_status,treatment_context,grade\n"
-                "registry_001,negative,negative,negative,neoadjuvant chemotherapy,3\n",
+                "patient_id,er_status,pr_status,her2_status,treatment_context,grade,mammaprint_status\n"
+                "registry_001,negative,negative,negative,neoadjuvant chemotherapy,3,1\n",
                 encoding="utf-8",
             )
             output = root / "cohort.jsonl"
@@ -92,6 +92,7 @@ class V1EvalCohortBuilderTest(unittest.TestCase):
         self.assertEqual(row["baseline_volume_ml"], 30.0)
         self.assertEqual(row["final_volume_ml"], 5.0)
         self.assertEqual(row["grade"], "3")
+        self.assertEqual(row["mammaprint_status"], "1")
 
     def test_default_treatment_context_only_fills_missing_treatment(self):
         with tempfile.TemporaryDirectory() as tmpdir:

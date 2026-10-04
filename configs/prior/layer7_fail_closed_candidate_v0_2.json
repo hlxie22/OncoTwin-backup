@@ -1,0 +1,40 @@
+{
+  "analysis_version": "oncotwin_layer7_fail_closed_candidate_v0_2",
+  "status": "exploratory_prelock_candidate",
+  "candidate_name": "layer7_fail_closed_posterior_candidate",
+  "safety": {
+    "strategy": "fail_closed",
+    "ess_threshold_fraction": 0.1,
+    "threshold_source": "Predeclared Layer 7 exploratory posterior-runtime policy",
+    "accepted_health_statuses": [
+      "updated_healthy"
+    ],
+    "fallback_on_unaccepted_health_status": true,
+    "fallback_prediction": "exact_mechanistic_prior_prediction"
+  },
+  "robustness_grid": {
+    "particle_counts": [
+      128,
+      256,
+      512
+    ],
+    "seeds": [
+      730000,
+      730101,
+      730202
+    ]
+  },
+  "selection_rationale": [
+    "The threshold of 0.1 was declared before outcome-based safety comparison.",
+    "Raw low-ESS cases accounted for 99.9148 percent of posterior squared error.",
+    "Fail-closed updating removed catastrophic weight-collapse predictions.",
+    "Compared with tempering, fail-closed updating had lower RMSE, narrower intervals, lower maximum error, and more direct interpretation.",
+    "Tempering remains a secondary sensitivity analysis and is not discarded."
+  ],
+  "limitations": [
+    "This is still an exploratory pre-lock candidate.",
+    "The evaluation uses a canonical cohort-level A/C-T schedule proxy.",
+    "The same cohort used for exploratory diagnosis cannot constitute independent confirmatory evidence.",
+    "Fallback means that the early observation did not produce a numerically supported posterior under the current particle prior and likelihood."
+  ]
+}

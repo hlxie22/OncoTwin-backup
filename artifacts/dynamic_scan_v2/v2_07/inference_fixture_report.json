@@ -1,0 +1,21 @@
+{
+  "batch_size_invariance_curve_max_abs": 2.384185791015625e-07,
+  "batch_size_invariance_logit_max_abs": 1.430511474609375e-06,
+  "batch_size_invariance_max_abs": 1.430511474609375e-06,
+  "batch_size_invariance_probability_max_abs": 2.384185791015625e-07,
+  "batch_size_invariance_tolerances": {
+    "curve_atol": 5e-07,
+    "logit_atol": 3e-06,
+    "probability_atol": 5e-07
+  },
+  "batch_sizes_checked": [
+    23,
+    7,
+    1
+  ],
+  "expected_sha256": "0ed1e3a4304abf3cf47b69700993dc059c336568c63a861d0e73147eb9f24b6b",
+  "input_sha256": "717660e10e5589f994a62e39441b659965814d36be57c8626ca6cc5cb63bb59c",
+  "rows": 23,
+  "unavailable_genomics_batch_size": 23,
+  "unavailable_genomics_invariance_max_abs": 0.0
+}

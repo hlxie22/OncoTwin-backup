@@ -1,0 +1,29 @@
+{
+  "checkpoint": "V2-08",
+  "version": "v2_08_1",
+  "purpose": "post-selection research characterization; no model development",
+  "locked_alpha": 0.52,
+  "locked_horizons_months": [3, 6, 12, 18],
+  "monthly_characterization_horizons_months": [1, 24],
+  "metric_reproduction_tolerance": 0.00001,
+  "risk_stratification_bins": 5,
+  "bootstrap": {
+    "seed": 20261008,
+    "brier_repetitions": 2000,
+    "auc_repetitions": 500,
+    "unit": "patient_cluster"
+  },
+  "claims_policy": {
+    "state_of_the_art_claim_requires_matched_literature_estimand": true,
+    "first_of_kind_claim_not_generated_by_code": true,
+    "integrated_brier_is_literature_facing_supplementary": true,
+    "primary_internal_metric_remains_patient_balanced_3_6_12_18m_brier": true
+  },
+  "access": {
+    "historical_test_outcomes": "PROHIBITED",
+    "protected_external_rows": "PROHIBITED",
+    "external_prediction_regeneration": "PROHIBITED",
+    "model_retraining": "PROHIBITED",
+    "model_selection": "PROHIBITED"
+  }
+}

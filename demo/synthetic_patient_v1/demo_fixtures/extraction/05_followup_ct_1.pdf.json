@@ -1,0 +1,55 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "36fdaa613c3a02ff036923cff8608888c7075934e45f5c922e40e0fbc4ad2c0d",
+  "source_file": "baseline/05_followup_ct_1.pdf",
+  "response": {
+    "document_type": "radiology",
+    "facts": [
+      {
+        "fact_type": "scan_assessment",
+        "value": "stable",
+        "effective_date": "2025-04-28",
+        "unit": null,
+        "confidence": 0.97,
+        "source_page": 1,
+        "source_snippet": "No new metastatic disease. Overall disease burden is stable to mildly improved with no evidence of progression.",
+        "attributes": {}
+      },
+      {
+        "fact_type": "scan_modality",
+        "value": "CT chest abdomen pelvis",
+        "effective_date": "2025-04-28",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "CT Chest, Abdomen and Pelvis With IV Contrast",
+        "attributes": {}
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "liver",
+        "effective_date": "2025-04-28",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Interval decrease in hepatic metastatic disease",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "bone",
+        "effective_date": "2025-04-28",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "increased sclerosis of known osseous metastases, compatible with treatment response",
+        "attributes": {
+          "active": true
+        }
+      }
+    ]
+  }
+}

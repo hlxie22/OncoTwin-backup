@@ -1,0 +1,36 @@
+{
+  "analysis_version": "oncotwin_layer7_exploratory_eval_policy_v0_1",
+  "status": "exploratory_not_locked",
+  "particle_count": 128,
+  "seed": 730000,
+  "simulation": {
+    "dt_days": 1.0,
+    "allow_beyond_schedule": false
+  },
+  "likelihood": {
+    "family": "existing_qc_aware_volume_likelihood",
+    "override_noise_fraction": null,
+    "ess_threshold_fraction": 0.1,
+    "include_failed_qc_observations": false
+  },
+  "schedule_proxy": {
+    "version": "oncotwin_layer7_canonical_act_schedule_v0_1",
+    "description": "Exploratory canonical A/C-T schedule proxy because the current normalized cohort records treatment context but not patient-level administration events.",
+    "anthracycline_days": [0, 14, 28, 42],
+    "taxane_start_day": 56,
+    "taxane_interval_days": 7,
+    "relative_dose": 1.0
+  },
+  "posterior_health": {
+    "boundary_fraction_of_hard_range": 0.02,
+    "boundary_collapse_mass": 0.5,
+    "boundary_mass_increase": 0.25,
+    "material_mass_target": 0.95
+  },
+  "interpretation": [
+    "Exploratory real-cohort evaluation, not a locked confirmatory analysis.",
+    "The treatment schedule is a cohort-level A/C-T proxy rather than patient-specific administration history.",
+    "No likelihood, threshold, prior, or schedule decision may be declared final from this run.",
+    "Final outcome volume is used only for evaluation after inference."
+  ]
+}

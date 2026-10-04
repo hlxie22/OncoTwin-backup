@@ -1,0 +1,55 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "7f958da8e59bd4f3f7a450e48b2fa2408b7f359ed2ddac14e9c5dd4db902b702",
+  "source_file": "baseline/08_followup_ct_2.pdf",
+  "response": {
+    "document_type": "radiology",
+    "facts": [
+      {
+        "fact_type": "scan_assessment",
+        "value": "stable",
+        "effective_date": "2025-07-30",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Stable hepatic metastatic disease without new liver lesion. Stable osseous metastatic disease.",
+        "attributes": {}
+      },
+      {
+        "fact_type": "scan_modality",
+        "value": "CT chest abdomen pelvis",
+        "effective_date": "2025-07-30",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "CT Chest, Abdomen and Pelvis With IV Contrast",
+        "attributes": {}
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "liver",
+        "effective_date": "2025-07-30",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Stable hepatic metastatic disease without new liver lesion.",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "bone",
+        "effective_date": "2025-07-30",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Stable osseous metastatic disease.",
+        "attributes": {
+          "active": true
+        }
+      }
+    ]
+  }
+}

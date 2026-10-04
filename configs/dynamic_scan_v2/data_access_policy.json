@@ -1,0 +1,36 @@
+{
+  "policy_version": "v2_00_1",
+  "mode": "DEVELOPMENT_ONLY",
+  "blocked_path_tokens": [
+    "dfci",
+    "dana-farber",
+    "dana_farber",
+    "danafarber",
+    "vicc",
+    "vanderbilt"
+  ],
+  "blocked_relative_roots": [
+    "artifacts/checkpoint7r3g1_external_prediction_freeze",
+    "artifacts/checkpoint7b1_external_endpoint_freeze",
+    "artifacts/checkpoint7b2_external_validation"
+  ],
+  "blocked_basenames": [
+    "data_clinical_supp_survival.txt",
+    "data_clinical_supp_survival_treatment.txt",
+    "cancer_level_dataset_index.csv",
+    "cancer_panel_test_level_dataset.csv",
+    "patient_level_dataset.csv",
+    "regimen_cancer_level_dataset.csv"
+  ],
+  "allowed_schema_positive_controls": [
+    "artifacts/checkpoint1/canonical/bpc_msk_scan_audit.parquet"
+  ],
+  "rules": [
+    "V2-00 through V2-05 may not read DFCI or VICC predictor or outcome rows.",
+    "Do not regenerate or inspect frozen DFCI/VICC predictions.",
+    "Do not read quarantined BPC hard-outcome source files, including the MSK regimen-level outcome table.",
+    "BPC-MSK derived scan-schema positive-control artifacts are permitted.",
+    "CHORD and GENIE development artifacts are permitted.",
+    "Historical external summary JSON may be cited manually from the handoff but is not an input to V2 model selection."
+  ]
+}

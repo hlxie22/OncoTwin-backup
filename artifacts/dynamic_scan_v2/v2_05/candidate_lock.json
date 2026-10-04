@@ -1,0 +1,152 @@
+{
+  "baseline_metric": {
+    "brier": 0.17120816942856606,
+    "nll": 2.81883622356219
+  },
+  "bootstrap": {
+    "baseline_brier": 0.1712081694285661,
+    "candidate_brier": 0.169968950133707,
+    "ci_high": 0.00018899375988594872,
+    "ci_low": -0.0027788972301000503,
+    "delta_candidate_minus_baseline": -0.0012392192948590952,
+    "patients": 2443,
+    "probability_delta_below_zero": 0.9505,
+    "repetitions": 2000,
+    "scope": "paired patient resampling conditional on fixed selected models, fixed folds, fixed censoring KM, and completed model-selection process",
+    "seed": 20261005
+  },
+  "candidate": {
+    "auxiliary_mode": "none",
+    "genomic_mode": "none",
+    "locked_alpha": 0.52,
+    "name": "post_temporal_plus_explicit_scan__genomic_none",
+    "representation_mode": "post_temporal_plus_explicit_scan"
+  },
+  "candidate_metric": {
+    "brier": 0.16996895013370705,
+    "nll": 2.7852199804938724
+  },
+  "checks": {
+    "calibration_guardrail": true,
+    "clinical_content_specificity": false,
+    "correct_scan_specificity": true,
+    "nll_guardrail": true,
+    "seed_robustness": true,
+    "window_robustness": true
+  },
+  "final_model": {
+    "status": "FALLBACK_REUSES_FROZEN_V2_03_SPEC; final deploy fit deferred to V2-07"
+  },
+  "resume_provenance": {
+    "alternate_temporal_caches_reused_if_present": true,
+    "control_models_retrained": false,
+    "mode": "POST_FAILURE_WINDOW_REPAIR",
+    "pre_window_artifacts_reused": true
+  },
+  "seed_robustness": {
+    "baseline": 0.17120816942856606,
+    "checks": {
+      "improving_seed_count": true,
+      "seed_mean_gain": true,
+      "worst_seed_regression": true
+    },
+    "details": [
+      {
+        "brier": 0.16996895013370705,
+        "folds": [
+          {
+            "brier": 0.16782288125552242,
+            "fold": 0,
+            "nll": 2.7405009249658536,
+            "patients": 809,
+            "rows": 5692
+          },
+          {
+            "brier": 0.16834158162458196,
+            "fold": 1,
+            "nll": 2.801284448046693,
+            "patients": 833,
+            "rows": 5767
+          },
+          {
+            "brier": 0.1738409449072616,
+            "fold": 2,
+            "nll": 2.8136794242525083,
+            "patients": 801,
+            "rows": 5735
+          }
+        ],
+        "nll": 2.7852199804938724,
+        "seed": 20261004
+      },
+      {
+        "brier": 0.16952737187177858,
+        "folds": [
+          {
+            "brier": 0.1678185588329164,
+            "fold": 0,
+            "nll": 2.751507760098816,
+            "patients": 809,
+            "rows": 5692
+          },
+          {
+            "brier": 0.16966425899291956,
+            "fold": 1,
+            "nll": 2.795522985106264,
+            "patients": 833,
+            "rows": 5767
+          },
+          {
+            "brier": 0.1711102198468277,
+            "fold": 2,
+            "nll": 2.823887995269496,
+            "patients": 801,
+            "rows": 5735
+          }
+        ],
+        "nll": 2.7902475271077884,
+        "seed": 20261018
+      },
+      {
+        "brier": 0.17142480490314832,
+        "folds": [
+          {
+            "brier": 0.16901653243347461,
+            "fold": 0,
+            "nll": 2.7528423673526317,
+            "patients": 809,
+            "rows": 5692
+          },
+          {
+            "brier": 0.16973459335647628,
+            "fold": 1,
+            "nll": 2.820303826111729,
+            "patients": 833,
+            "rows": 5767
+          },
+          {
+            "brier": 0.17562628488715482,
+            "fold": 2,
+            "nll": 2.814632248107987,
+            "patients": 801,
+            "rows": 5735
+          }
+        ],
+        "nll": 2.796104377025725,
+        "seed": 20261101
+      }
+    ],
+    "improving_seeds": 2,
+    "mean_gain": 0.0009011271256880726,
+    "mean_score": 0.170307042302878,
+    "scores": [
+      0.16996895013370705,
+      0.16952737187177858,
+      0.17142480490314832
+    ],
+    "status": "PASS",
+    "worst_seed_regression": 0.00021663547458225518
+  },
+  "selected": "v2_03_frozen_temporal_constant_alpha",
+  "v2_04_candidate_retained": false
+}

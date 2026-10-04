@@ -1,0 +1,55 @@
+{
+  "fixture_id": "maya_rowan_v1",
+  "task": "document_extraction",
+  "document_sha256": "2f0b46b3bfee17dc2dca349a48e7e2e354ba32258a26f69d687aa1fd90b3bc5c",
+  "source_file": "baseline/04_baseline_ct.pdf",
+  "response": {
+    "document_type": "radiology",
+    "facts": [
+      {
+        "fact_type": "scan_assessment",
+        "value": "indeterminate",
+        "effective_date": "2025-01-27",
+        "unit": null,
+        "confidence": 0.96,
+        "source_page": 1,
+        "source_snippet": "This examination serves as the baseline cross-sectional study for subsequent response assessment; no prior comparable CT is available.",
+        "attributes": {}
+      },
+      {
+        "fact_type": "scan_modality",
+        "value": "CT chest abdomen pelvis",
+        "effective_date": "2025-01-27",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "CT Chest, Abdomen and Pelvis With IV Contrast",
+        "attributes": {}
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "liver",
+        "effective_date": "2025-01-27",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Multiple hepatic lesions and sclerotic osseous lesions, consistent with metastatic disease",
+        "attributes": {
+          "active": true
+        }
+      },
+      {
+        "fact_type": "disease_site",
+        "value": "bone",
+        "effective_date": "2025-01-27",
+        "unit": null,
+        "confidence": 0.99,
+        "source_page": 1,
+        "source_snippet": "Sclerotic lesions in T8 and L2 are suspicious for osseous metastases.",
+        "attributes": {
+          "active": true
+        }
+      }
+    ]
+  }
+}
